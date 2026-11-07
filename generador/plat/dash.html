@@ -1,0 +1,32 @@
+<section id="hoy" class="dash"><h2 class="sh">¿Qué quieres hacer hoy?</h2>
+ <div class="acts5">
+  <a class="act" href="estudio.html#continuar" target="_self"><b>📖 Continuar estudiando</b><span id="d-cont">Retoma donde te quedaste.</span></a>
+  <a class="act" href="estudio.html#errores" target="_self"><b>❌ Repasar mis errores</b><span id="d-err">Tus preguntas falladas.</span></a>
+  <a class="act" href="estudio.html#reforzar" target="_self"><b>⚠️ Reforzar temas débiles</b><span>Práctica dirigida a lo que más fallas.</span></a>
+  <a class="act" href="estudio.html#examen" target="_self"><b>📝 Hacer un simulador</b><span>10 a 100 preguntas, con o sin ayudas.</span></a>
+  <a class="act" href="#presentaciones"><b>📚 Explorar todos los temas</b><span>Presentaciones, libro y bancos.</span></a>
+ </div>
+ <form class="hsearch" id="hsf" role="search"><input id="hsq" type="search" placeholder="Buscar en el libro, presentaciones, preguntas, errores y notas…" aria-label="Buscar en toda la página"><button type="submit">🔎 Buscar</button></form>
+ <div class="qlinks"><a href="estudio.html#plan" target="_self">🚨 Tengo examen mañana</a><a href="estudio.html#comparar" target="_self">⚖️ Comparar conceptos</a><a href="estudio.html#mapa" target="_self">🗺️ Mapas conceptuales</a><a href="estudio.html#visual" target="_self">🔬 Visualizaciones</a><a href="estudio.html#guardados" target="_self">🔖 Mis guardados</a><a href="estudio.html#panel" target="_self">📊 Panel completo</a></div>
+ <div class="dcols">
+  <div class="prog"><div class="ph"><h3>Mi progreso</h3><a href="estudio.html#progreso" target="_self">Ver detalle por subtema →</a></div><div id="d-prog"></div></div>
+  <div class="prog"><div class="ph"><h3>⚠️ Necesitas reforzar</h3><a href="estudio.html#reforzar" target="_self">Ver todo →</a></div><div id="d-weak"></div></div>
+ </div>
+</section>
+<script src="datos/meta.js"></script><script src="datos/progreso.js"></script>
+<script>(function(){
+const M=window.META,P=window.PROG;if(!M||!P)return;const ST=P.load(),T=M.TEMAS,SUB=M.SUBTEMAS;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const enc=s=>encodeURIComponent(s).replace(/-/g,'%2D');
+document.getElementById('hsf').onsubmit=e=>{e.preventDefault();const v=document.getElementById('hsq').value.trim();if(v)location.href='estudio.html#buscar-'+enc(v)};
+const c=ST.cont;if(c&&M.SECS[c.t])document.getElementById('d-cont').textContent=T[c.t]+' · parte '+(c.k+1)+': '+M.SECS[c.t][c.k].t;else document.getElementById('d-cont').textContent='Aún no hay lectura guardada: empieza un capítulo.';
+const ne=Object.keys(ST.errs||{}).length;document.getElementById('d-err').textContent=ne?ne+(ne===1?' pregunta pendiente.':' preguntas pendientes.'):'No hay errores pendientes.';
+document.getElementById('d-prog').innerHTML=Object.keys(T).map(t=>{const x=P.temaStats(ST,t,SUB[t]);const nr=(ST.read&&ST.read[t]||[]).length,ns=M.SECS[t].length;
+ return `<div class="prow"><div class="pt2"><b>${esc(T[t])}</b><span>${nr} de ${ns} partes leídas</span></div>${x.ok?`<div class="pbar"><i style="width:${x.pct}%"></i></div><div class="pv"><b>${x.pct}%</b> de dominio · ${x.n} preguntas distintas · ${x.subsCon} de ${x.subsTot} subtemas con datos</div>`:`<div class="pv muted">Aún no hay suficiente información para calcular tu dominio. <span>(${x.n} de ${P.MIN_TEMA} preguntas distintas)</span></div>`}</div>`}).join('');
+const W=P.weakConcepts(ST,Object.keys(T)).slice(0,5),WS=P.weakSubs(ST,Object.keys(T),SUB).slice(0,3);
+let h='';
+W.forEach(g=>{h+=`<div class="wr"><div><b>${esc(g.c)}</b><span>${esc(T[g.t])} · ${g.x} ${g.x===1?'error':'errores'} de ${g.y} preguntas</span></div><a href="estudio.html#concepto-${g.t}-${enc(g.c)}" target="_self">→ Estudiar este concepto</a></div>`});
+WS.forEach(w=>{h+=`<div class="wr"><div><b>${esc(SUB[w.t][w.s])}</b><span>${esc(T[w.t])} · subtema con ${w.pct}% (${w.n} preguntas)</span></div><a href="estudio.html#concepto-${w.t}-${enc('§'+w.s)}" target="_self">→ Estudiar este subtema</a></div>`});
+if(!h)h=`<p class="muted">Aún no hay suficiente información para detectar puntos débiles.${ne?` Tienes ${ne} ${ne===1?'error pendiente':'errores pendientes'} en <a href="estudio.html#errores" target="_self">Repasar errores</a>.`:' Responde preguntas en el banco o en el simulador.'}</p>`;
+document.getElementById('d-weak').innerHTML=h;
+})();</script>

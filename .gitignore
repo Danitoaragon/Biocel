@@ -1,0 +1,7 @@
+node_modules/
+__pycache__/
+*.pyc
+herramientas-dev/salida/
+.DS_Store
+Thumbs.db
+.env

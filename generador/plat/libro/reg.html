@@ -1,0 +1,315 @@
+<section data-id="intro" data-title="Introducción">
+<p class="lead">Un hepatocito y un reticulocito de la misma persona tienen el mismo ADN, pero fabrican proteínas muy distintas. Una bacteria tiene unos 4000 genes y, en cada momento, solo usa una pequeña parte. La diferencia no está en qué genes se tienen, sino en <b>cuáles se encienden, cuándo y cuánto</b>.</p>
+<p>La <b>regulación de la expresión génica</b> es el control de la síntesis de las macromoléculas codificadas por los genes: el conjunto de mecanismos que permiten, o no, que un gen se transcriba y se traduzca en un momento dado. No todos los productos génicos se necesitan al mismo tiempo ni en la misma cantidad, y producirlos todos siempre sería un despilfarro de energía. Por eso la expresión de los genes se ajusta a las circunstancias: en las bacterias, al ambiente en el que crecen; en los organismos pluricelulares, además, al tipo celular y a la etapa del desarrollo.</p>
+<p>Este capítulo se basa en los tres documentos del tema: el capítulo <i>Regulación de la Expresión Génica</i> (Anello, Arnal y Barbisan, en <i>Elementos de Genética</i>, UNLP), los apuntes <i>Regulación de la expresión génica en procariontes</i> (operones y fagos) y el artículo <i>Regulación de la expresión génica: cómo operan los mecanismos epigenéticos</i> (Cavagnari, Arch Argent Pediatr 2012). Los recuadros <b>📌 Del documento</b> resumen lo que dicen esas fuentes; el texto corrido es la explicación paso a paso.</p>
+<h3>¿Por qué importa en Medicina?</h3>
+<p>Todas las células somáticas tienen la misma carga genética, pero expresan proteínas distintas: el <b>fenotipo celular</b> no depende solo de la secuencia del ADN, sino de qué genes se expresan y cuáles están silenciados (<b>expresión selectiva de genes</b>). Entender cómo se encienden y se apagan los genes es la base para comprender la diferenciación celular, la respuesta de las células a hormonas y al ambiente y, más adelante en la carrera, cómo actúan varios fármacos y por qué ciertas alteraciones de la regulación participan en enfermedades.</p>
+{{FIG:d_reg.F_niveles}}
+<div class="box concepto"><b>Idea central del capítulo</b>El paso que más se regula es el <b>inicio de la transcripción</b>. En las bacterias se controla con <b>operones</b> (proteínas reguladoras que se unen a un operador); en los eucariotas se controla en muchos niveles, empezando por el <b>estado de la cromatina</b> (abierta o cerrada) y siguiendo por la transcripción, el procesamiento del ARN, la traducción y las modificaciones de la proteína.</div>
+</section>
+
+<section data-id="fundamentos" data-title="Conceptos fundamentales">
+<h3>¿En qué niveles se puede regular?</h3>
+<p>Los apuntes de procariontes dividen la regulación de la producción de proteínas en tres niveles: <b>replicación</b>, <b>transcripción</b> y <b>traducción</b>. De ellos, el mejor conocido es la regulación de la transcripción. Aunque en los eucariontes es más compleja, muchos de sus principios son los mismos que en las bacterias, por eso se estudian primero las bacterias. En los eucariotas, el documento de la UNLP describe cinco niveles: <b>cromatina, transcripcional, postranscripcional, traduccional y postraduccional</b>.</p>
+<h3>Genes constitutivos y genes adaptativos</h3>
+<p>Algunos procesos metabólicos son necesarios siempre, en casi todas las células. Los genes que codifican las enzimas de ese metabolismo básico se expresan de forma continua: son <b>genes constitutivos</b>, también llamados <b>"genes que guardan la casa"</b> (<i>housekeeping</i>), y sus productos son <b>sistemas enzimáticos constitutivos</b>. Que se expresen siempre no significa que no estén regulados; simplemente su regulación los mantiene encendidos.</p>
+<p>Otros genes solo se expresan en situaciones concretas, cuando la célula se adapta a un ambiente determinado: son los <b>genes adaptativos</b>, y sus enzimas, <b>sistemas enzimáticos adaptativos</b>. Algunos libros los llaman "genes regulados", pero el nombre no es bueno, porque sugiere que solo ellos están regulados.</p>
+<h3>Sistemas inducibles y sistemas represibles</h3>
+<table class="cmp"><tr><th></th><th>Sistema inducible</th><th>Sistema represible (reprimible)</th></tr>
+<tr><td>Qué lo controla</td><td>El <b>sustrato</b> de la enzima provoca su síntesis</td><td>El <b>producto final</b> de la vía impide la síntesis de las enzimas</td></tr>
+<tr><td>Molécula efectora</td><td><b>Inductor</b></td><td><b>Correpresor</b></td></tr>
+<tr><td>Estado por defecto</td><td>Apagado; se enciende con el inductor</td><td>Encendido; se apaga con el correpresor</td></tr>
+<tr><td>Tipo de vía</td><td><b>Catabólica</b> (degradación): lac, arabinosa, maltosa</td><td><b>Anabólica</b> (síntesis): triptófano, histidina</td></tr>
+<tr><td>Nombre en los apuntes</td><td>"Inducción positiva"</td><td>"Inducción negativa"</td></tr></table>
+<p>La lógica es económica. Si la bacteria va a <b>degradar</b> un azúcar, solo le conviene fabricar las enzimas cuando el azúcar está presente: el propio sustrato actúa como señal (inductor). En <i>E. coli</i>, sin galactósido hay de una a diez unidades de β-galactosidasa por miligramo de materia seca; con galactósido se detectan hasta <b>10 000 unidades</b>. Si la bacteria va a <b>sintetizar</b> un aminoácido, le conviene dejar de hacerlo cuando ya lo tiene: el producto final actúa como señal de apagado (correpresor).</p>
+<h3>Control positivo y control negativo</h3>
+<p>Se habla de <b>control negativo</b> cuando el producto del gen regulador <b>reprime</b> la expresión de los genes: actúa como <b>represor</b>, y la expresión ocurre siempre, a menos que el represor la apague. Se habla de <b>control positivo</b> cuando el producto del gen regulador <b>activa</b> la expresión: actúa como <b>activador</b>, y la transcripción solo ocurre si el activador estimula la producción de ARNm.</p>
+<p>Combinando las dos clasificaciones hay cuatro tipos posibles de sistemas:</p>
+<table class="cmp"><tr><th>Tipo</th><th>Combinación</th><th>Ejemplos</th></tr>
+<tr><td>1</td><td>Inducible, control negativo</td><td>Operón lactosa, operón galactosa</td></tr>
+<tr><td>2</td><td>Inducible, control positivo</td><td>Operón arabinosa, operón maltosa (y el operón lac, por CAP)</td></tr>
+<tr><td>3</td><td>Represible, control negativo</td><td>Operón triptófano, operón histidina</td></tr>
+<tr><td>4</td><td>Represible, control positivo</td><td>No se han descrito</td></tr></table>
+<div class="box ojo"><b>Ojo con esto</b>"Inducible/represible" responde a <b>qué molécula</b> cambia el estado (sustrato o producto final). "Positivo/negativo" responde a <b>qué hace la proteína reguladora</b> (activar o reprimir). Son dos preguntas distintas; un mismo operón puede estar bajo los dos controles, como el operón lac.</div>
+<div class="box examen" data-sub="conceptos"><b>Posible pregunta de examen</b>¿Por qué los sistemas inducibles suelen corresponder a vías catabólicas y los represibles a vías anabólicas? (Porque conviene degradar un sustrato solo cuando está presente, y conviene dejar de sintetizar un producto cuando ya abunda.)</div>
+</section>
+
+<section data-id="operon" data-title="El operón y el operón lac">
+<h3>El modelo del operón</h3>
+<p>François <b>Jacob</b> y Jacques <b>Monod</b> estudiaron el sistema de la lactosa en <i>E. coli</i> y propusieron el modelo del <b>operón</b>, que explica cómo se regula la expresión génica en bacterias; por ello recibieron el Premio Nobel en 1965. Un operón es un grupo de genes estructurales cuya expresión está regulada por los mismos elementos de control (promotor y operador) y por genes reguladores.</p>
+{{FIG:d_reg.F_operon}}
+<table class="cmp"><tr><th>Elemento</th><th>Qué es</th></tr>
+<tr><td>Genes estructurales</td><td>Llevan la información de los polipéptidos; son los genes cuya expresión se regula. Suelen ser varios y se transcriben juntos en un <b>ARNm policistrónico</b> (poligénico, multigénico).</td></tr>
+<tr><td>Promotor (P)</td><td>Secuencia reconocida por la ARN polimerasa para iniciar la transcripción; está justo antes de los genes estructurales.</td></tr>
+<tr><td>Operador (O)</td><td>Secuencia reconocida por la proteína reguladora; está entre el promotor y los genes estructurales y a menudo se solapa con el promotor.</td></tr>
+<tr><td>Gen regulador (i)</td><td>Codifica la proteína reguladora. <b>No forma parte del operón</b>: está cerca, pero no inmediatamente al lado, y tiene su propio promotor.</td></tr>
+<tr><td>Proteína reguladora</td><td>Producto del gen regulador; se une al operador.</td></tr>
+<tr><td>Inductor / efector</td><td>Molécula difusible cuya presencia cambia la forma de la proteína reguladora.</td></tr></table>
+<p>Como el operador suele solaparse con el promotor, que tenga o no una proteína reguladora unida decide si la ARN polimerasa puede transcribir. Los operones bacterianos suelen ser poligénicos (policistrónicos); en cambio, las unidades de transcripción eucariotas suelen contener un solo gen (monocistrónicas). Además, en las bacterias la transcripción y la traducción están <b>acopladas</b>: ocurren una inmediatamente después de la otra, en el mismo compartimento.</p>
+<div class="box prof"><b>📌 Del documento · Elementos que regulan la expresión en bacterias</b><ul><li><b>Elementos de control:</b> promotor y operador.</li><li><b>Genes estructurales:</b> codifican polipéptidos.</li><li><b>Gen regulador:</b> codifica la proteína reguladora.</li><li><b>Moléculas difusibles:</b> proteínas reguladoras y efectores (inductores).</li></ul></div>
+<h3>El operón lac: control negativo</h3>
+<p><i>E. coli</i> tiene un único cromosoma circular. Cuando la lactosa es su fuente de carbono, necesita tres enzimas, codificadas por tres genes estructurales en el orden <b>z-y-a</b>:</p>
+<ul><li><b>Gen z</b> → <b>β-galactosidasa</b>: hidroliza (cliva) la lactosa en glucosa y galactosa.</li>
+<li><b>Gen y</b> → <b>galactósido permeasa</b>: transporta β-galactósidos (lactosa) al interior de la célula.</li>
+<li><b>Gen a</b> → <b>tiogalactósido transacetilasa</b>: transfiere el acetilo de la acetil-CoA al 6-OH de un aceptor tiogalactósido. Los apuntes aclaran que este gen no está relacionado directamente con el metabolismo de la lactosa.</li></ul>
+<p>El operón lac es un sistema <b>inducible bajo control negativo</b>. El gen regulador (gen <b>i</b> o <b>I</b>) produce una <b>proteína represora</b>, un <b>tetrámero</b> de cuatro cadenas idénticas (de unos 38 000 de peso molecular cada una).</p>
+<ul><li><b>Sin lactosa:</b> el represor está unido al operador e impide que la ARN polimerasa transcriba los genes estructurales. El operón está apagado.</li>
+<li><b>Con lactosa:</b> el inductor se une al represor, le cambia la conformación y el represor se suelta del operador. La ARN polimerasa transcribe los tres genes en un solo ARNm policistrónico.</li></ul>
+{{FIG:d_libro.F_lac}}
+<p>El <b>verdadero inductor</b> no es la lactosa, sino la <b>alolactosa</b>, que forma la propia β-galactosidasa a partir de la lactosa. En el laboratorio se usa un análogo sintético, el <b>IPTG</b> (isopropil tiogalactósido), que no necesita la permeasa para entrar a la bacteria. En una bacteria normal (i⁺ P O z⁺y⁺a⁺), sin inductor no se expresa ninguno de los tres genes, y con inductor se expresan los tres.</p>
+<h3>El operón lac: control positivo y represión catabólica</h3>
+<p>El operón lac tiene un segundo control, <b>positivo</b>, ejercido por la <b>proteína activadora por catabolitos (CAP)</b>, también llamada <b>CRP</b>. CAP es un <b>dímero</b> que solo está activo cuando lleva unido <b>AMP cíclico (AMPc)</b>. El complejo CAP-AMPc se une a un sitio CAP del promotor (cerca de la posición −60) y estimula la unión de la ARN polimerasa: sin CAP-AMPc, la polimerasa se une mal y la transcripción es muy baja aunque no haya represor.</p>
+<p>Cuando hay <b>glucosa</b>, <i>E. coli</i> la usa de forma preferente y directa, sin inducir ninguna enzima. Mientras hay glucosa, los niveles de AMPc son bajos; a medida que la glucosa se consume, la célula produce AMPc y, cuando casi se agotó, el AMPc es alto y favorece la transcripción del operón lac. Así, aunque haya lactosa, la bacteria no gasta energía en usarla mientras tenga glucosa. Este sistema general se llama <b>represión catabólica</b> y afecta también a los operones de arabinosa, maltosa y galactosa. Los apuntes señalan que aún no se conoce con precisión por qué el AMPc baja cuando hay glucosa.</p>
+{{FIG:d_reg.F_cap}}
+<p>Los mutantes de la <b>adenilato ciclasa</b> (la enzima que forma AMPc a partir de ATP) y los mutantes de <b>CAP</b> tienen niveles muy bajos de expresión del operón lac: sin AMPc o sin CAP, el sistema permanece apagado.</p>
+{{VIZ:lac}}
+<div class="box ojo"><b>Ojo con esto</b>Para que el operón lac se exprese al máximo se necesitan <b>dos condiciones</b>: que haya lactosa (para quitar al represor) y que no haya glucosa (para que haya CAP-AMPc). Los documentos llaman a CAP "proteína activadora del AMPc" o "CRP"; en otros libros CRP significa <i>cAMP receptor protein</i>. Es la misma proteína.</div>
+<div class="box examen" data-sub="lac"><b>Posible pregunta de examen</b>Una bacteria crece en un medio con glucosa y lactosa. ¿Por qué el operón lac casi no se transcribe si el represor ya se soltó? (Porque con glucosa el AMPc es bajo, CAP no está activa y la ARN polimerasa no se une bien al promotor: represión catabólica.)</div>
+</section>
+
+<section data-id="mutantes" data-title="Mutantes y diploides parciales">
+<h3>Cómo se descubrió el funcionamiento del operón</h3>
+<p>El conocimiento profundo del operón lac se obtuvo estudiando <b>mutantes</b> de los genes estructurales, de los elementos de control y del gen regulador, y estudiando <b>diploides parciales</b>. Los primeros mutantes (z⁻, y⁻, a⁻), aislados por Lederberg y colaboradores, alteraban las enzimas y permitieron deducir que los tres genes están juntos en el orden z-y-a. Jacob y Monod aislaron después mutantes del gen regulador y del operador.</p>
+<p>Un <b>mutante constitutivo</b> es el que expresa siempre los genes del operón, haya o no inductor.</p>
+<table class="cmp"><tr><th>Mutante</th><th>Qué está alterado</th><th>Consecuencia</th><th>En el diploide parcial</th></tr>
+<tr><td><b>i⁻</b></td><td>Gen regulador: represor inactivo, no se une al operador</td><td>Constitutivo</td><td>Recesivo frente a i⁺ (trans)</td></tr>
+<tr><td><b>Oᶜ</b> (operador constitutivo)</td><td>Secuencia del operador: el represor ya no la reconoce</td><td>Constitutivo</td><td>Dominante en <b>cis</b></td></tr>
+<tr><td><b>Oᴼ</b> ("operador cero")</td><td>En realidad, el <b>promotor</b>: la ARN polimerasa no lo reconoce</td><td>No hay transcripción</td><td>—</td></tr>
+<tr><td><b>iˢ</b> (superrepresor)</td><td>Zona central del represor: no reconoce al inductor</td><td>Siempre reprimido</td><td>Dominante sobre i⁺</td></tr>
+<tr><td><b>i⁻ᵈ</b></td><td>Extremo amino (NH₂) del represor: une inductor pero no operador</td><td>Constitutivo</td><td>Dominante sobre i⁺</td></tr>
+<tr><td><b>iQ</b></td><td>Promotor del gen regulador</td><td>Según los apuntes: no aparece represor, constitutivo</td><td>—</td></tr></table>
+<div class="box ojo"><b>Ojo con esto</b>Los apuntes describen al mutante <b>iQ</b> como uno que no produce represor. En la mayoría de los libros de genética (Griffiths, Lewin), iQ ("Q" de <i>quantity</i>) es una mutación del promotor del gen i que <b>aumenta</b> la cantidad de represor. Aprende la versión de tus apuntes para el examen, pero conviene confirmar con tu profesor cuál espera.</div>
+<p>El operador es una región de <b>17 a 25 nucleótidos</b> situada justo antes del gen z y después del promotor, con una enorme especificidad por el represor. Tanto i⁻ como Oᶜ afectan a los tres genes estructurales a la vez, porque se transcriben juntos.</p>
+<h3>Diploides parciales: cis y trans</h3>
+<p>Las bacterias son haploides. Un <b>diploide parcial</b> (merodiploide o merocigoto) es una bacteria que tiene parte de sus genes en dos dosis. Se obtiene mediante un plásmido <b>F′</b> (factor sexual que lleva un fragmento del cromosoma bacteriano, en este caso el operón lac): así la bacteria tiene una copia del operón en el cromosoma y otra en el F′. Los diploides parciales obtenidos solo por conjugación (F⁺ × F⁻) eran inestables; por eso los F′ fueron tan importantes.</p>
+{{FIG:d_reg.F_cistrans_bact}}
+<ul><li><b>i⁺ P O z⁺y⁺a⁺ / i⁺ P Oᶜ z⁺y⁺a⁺:</b> se expresan los genes con y sin lactosa. El operador constitutivo es <b>dominante en cis</b>: solo afecta a los genes de su <b>misma molécula</b> de ADN. Esto demuestra que el operador es una secuencia que no produce ninguna molécula difusible.</li>
+<li><b>i⁺ P O z⁺y⁺a⁺ / i⁻ P O z⁺y⁺a⁺:</b> sin lactosa no hay expresión; con lactosa sí. El gen i⁺ es <b>dominante en trans</b>: su producto, una proteína difusible, actúa sobre los operadores de las dos moléculas.</li></ul>
+<p>¿Por qué iˢ e i⁻ᵈ son dominantes? Porque el represor es un tetrámero. En i⁺/iˢ, los tetrámeros con polipéptidos mutantes se quedan pegados a los dos operadores y no se sueltan con el inductor. En i⁺/i⁻ᵈ, los polipéptidos normales y mutantes se combinan al azar: solo 1 de cada 16 tetrámeros (1/2⁴) es totalmente normal y 15/16 llevan al menos una cadena mutante que les impide unirse al operador, de modo que se transcribe casi siempre.</p>
+<div class="box prof"><b>📌 Del documento · Ejercicio resuelto (sistema inducible de control negativo)</b><p>Gen A = represor, región B = operador, gen C = enzima. ¿Hay enzima con inductor / sin inductor?</p><table class="cmp"><tr><th>Cepa</th><th>Con inductor</th><th>Sin inductor</th><th>Razón</th></tr><tr><td>A⁺ B⁺ C⁺</td><td>+</td><td>−</td><td>Normal</td></tr><tr><td>A⁻ B⁺ C⁺</td><td>+</td><td>+</td><td>Sin represor</td></tr><tr><td>A⁺ B⁻ C⁺</td><td>+</td><td>+</td><td>Operador mutado: constitutivo</td></tr><tr><td>A⁺ B⁺ C⁻</td><td>−</td><td>−</td><td>Enzima mutada</td></tr><tr><td>A⁻ B⁺ C⁺ / F′ A⁺ B⁻ C⁻</td><td>+</td><td>−</td><td>El represor del F′ actúa en trans sobre el cromosoma</td></tr><tr><td>A⁺ B⁺ C⁻ / F′ A⁻ B⁻ C⁺</td><td>+</td><td>+</td><td>Operador mutado en cis con C⁺: constitutivo</td></tr></table></div>
+<div class="box examen" data-sub="mutantes"><b>Posible pregunta de examen</b>¿Cómo demuestras con un diploide parcial que el operador no codifica una proteína? (Porque Oᶜ solo vuelve constitutivos los genes de su misma molécula: actúa en cis. Si produjera una molécula difusible, actuaría también sobre la otra copia.)</div>
+</section>
+
+<section data-id="trp" data-title="Operón triptófano y atenuación">
+<h3>El operón trp: un sistema represible</h3>
+<p>El operón triptófano de <i>E. coli</i> contiene <b>cinco genes estructurales</b>, en el orden <b>trpE-trpD-trpC-trpB-trpA</b>, precedidos por el promotor y el operador (P O trpE…trpA). Curiosamente, las enzimas que codifican actúan en la ruta de síntesis del triptófano en el mismo orden en que están los genes en el cromosoma. El gen regulador, <b>trpR</b>, está en otra región del cromosoma, no muy lejos.</p>
+<ul><li><b>Sin triptófano (o muy poco):</b> el represor TrpR, solo, no puede unirse al operador. La ARN polimerasa transcribe el operón y la bacteria sintetiza triptófano.</li>
+<li><b>Con triptófano:</b> el triptófano se une al represor, le cambia la conformación y ahora sí puede unirse al operador. La transcripción se bloquea.</li></ul>
+{{FIG:d_reg.F_trp}}
+<p>El triptófano actúa como <b>correpresor</b>. La diferencia esencial con el operón lac es que en el lac el represor solo se une al operador <b>sin</b> su efector, mientras que en el trp el represor solo se une al operador <b>con</b> su efector (el triptófano). La represión no es total: el operón trp tiene un segundo mecanismo, la atenuación.</p>
+<h3>La atenuación</h3>
+<p>Charles <b>Yanofsky</b> estudió mutantes trpR⁻ (sin represor activo) y observó que, aun así, quitar el triptófano del medio aumentaba casi <b>10 veces</b> la producción de ARNm del operón. Encontró que la responsable era una región entre el operador y el gen trpE: la <b>región líder</b>, de unas <b>160 bases</b>, que no se traduce a la proteína estructural. Los mutantes que producían siempre el máximo tenían una deleción de unas 30 bases (posiciones 130 a 160). Llamó <b>atenuador</b> a esa región, porque su presencia disminuye la transcripción.</p>
+<p>Con triptófano abundante se transcriben las primeras <b>141 bases</b> de la región líder, pero solo 1 de cada 10 ARNm llega hasta el final: el atenuador funciona como un <b>terminador</b> de la transcripción. Sin triptófano, el atenuador se desactiva y todos los ARNm se completan.</p>
+<p>La región líder tiene un sitio de unión al ribosoma y codifica un <b>péptido líder de 14 aminoácidos</b> con <b>dos triptófanos seguidos</b>. Además contiene <b>cuatro regiones</b> (1, 2, 3 y 4) con secuencias complementarias que pueden formar horquillas: la 2 puede aparearse con la 3, y la 3 con la 4. La horquilla 3:4, seguida de una serie de uracilos, es un terminador <b>independiente de Rho</b>.</p>
+{{FIG:d_reg.F_aten}}
+<ol><li>En la bacteria la transcripción y la traducción están acopladas: el ribosoma empieza a traducir el péptido líder mientras la ARN polimerasa avanza.</li>
+<li><b>Mucho triptófano:</b> hay ARNt cargados con triptófano, el ribosoma traduce la región 1 sin detenerse y queda sobre la región 2. La 2 no puede aparearse con la 3, así que la 3 se aparea con la 4: se forma la horquilla terminadora y la transcripción se detiene antes de los genes estructurales.</li>
+<li><b>Poco triptófano:</b> faltan ARNt-Trp, el ribosoma se detiene en los codones de triptófano de la región 1. Las regiones 2 y 3 se aparean (horquilla antiterminadora), la 3 ya no puede formar la horquilla con la 4 y la ARN polimerasa transcribe todo el operón.</li></ol>
+<p>La atenuación aparece en muchos operones biosintéticos de aminoácidos: <b>his</b> (histidina), <b>phe</b> (fenilalanina), <b>leu</b> (leucina). En todos, el péptido líder es rico en el aminoácido que controla el operón. Algunos solo tienen atenuación; otros tienen además represión.</p>
+<div class="box ojo"><b>Ojo con esto</b>Los apuntes de procariontes sugieren que la terminación anticipada podría depender del factor ρ; el capítulo de la UNLP (y los libros actuales) la describen como terminación <b>independiente de Rho</b>: horquilla 3:4 + poli-U. Usa esta última.</div>
+<div class="box examen" data-sub="trp"><b>Posible pregunta de examen</b>¿Por qué la atenuación solo puede existir en procariotas? (Porque depende de que el ribosoma traduzca el péptido líder mientras la ARN polimerasa todavía transcribe; en eucariotas la transcripción ocurre en el núcleo y la traducción en el citoplasma.)</div>
+<h3>Interacción entre operones</h3>
+<p>En una célula hay muchos sistemas regulados a la vez. Dos sistemas enzimáticos pueden ser <b>dependientes</b> (uno necesita al otro), <b>excluyentes</b> (la presencia de uno impide la del otro) o <b>alternativos</b> (independientes). Se explica porque el producto de una enzima puede ser inductor o correpresor de otro sistema.</p>
+</section>
+
+<section data-id="fagos" data-title="Regulación en bacteriófagos">
+<h3>Los fagos toman el control de la bacteria</h3>
+<p>Los bacteriófagos son virus que infectan bacterias y ponen a su servicio la síntesis de ADN y de proteínas de la célula. Su estrategia común es la <b>regulación temporal o en cascada</b>: sus genes se expresan en grupos, en un orden fijo (tempranos → medios → tardíos), y cada grupo produce algo que enciende al siguiente. Los apuntes describen tres estrategias:</p>
+<table class="cmp"><tr><th>Fago</th><th>Estrategia</th></tr>
+<tr><td>T7</td><td>Fabrica una <b>ARN polimerasa nueva</b></td></tr>
+<tr><td>SP01</td><td>Fabrica <b>subunidades nuevas</b> que se unen a la ARN polimerasa de la bacteria</td></tr>
+<tr><td>λ (lambda)</td><td>Produce <b>proteínas activadoras o represoras</b> de sus propios operones</td></tr></table>
+<h3>Fago T7</h3>
+<p>El T7 tiene una relación lítica con <i>E. coli</i>; su ADN es lineal, de doble hélice, de unas 12 micras, sin extremos redundantes. Sus genes están en el cromosoma en el mismo orden en que se expresan:</p>
+<ul><li><b>Clase I (tempranos):</b> los transcribe la ARN polimerasa de la bacteria desde tres promotores, en un ARNm policistrónico con los genes 0.3 (metilasa que vence el sistema de restricción bacteriano), 0.7 (proteína cinasa), <b>1 (ARN polimerasa del fago)</b>, 1.1 y 1.3 (ADN ligasa).</li>
+<li>La cinasa del gen 0.7 fosforila a la ARN polimerasa bacteriana y la inactiva: dejan de transcribirse los genes de la bacteria.</li>
+<li><b>Clase II (medios):</b> los transcribe la nueva polimerasa de T7. Incluyen la replicación del ADN viral (genes 2, 4 y 5, este último la ADN polimerasa), la degradación del ADN bacteriano (3, endonucleasa; 6, exonucleasa) y la lisis (3.5, lisozima).</li>
+<li><b>Clase III (tardíos):</b> proteínas de la cabeza (10, cápside; 14, 15, 16), de la cola (11, 12, 17), proteína interna (13), maduración del ADN (18, 19) y ensamblaje.</li></ul>
+{{FIG:d_reg.F_t7}}
+<h3>Fago SP01</h3>
+<p>El SP01 infecta a <i>Bacillus subtilis</i>. No fabrica una polimerasa nueva: modifica la de la bacteria con subunidades nuevas que cambian los promotores que reconoce. La polimerasa bacteriana transcribe los <b>genes tempranos</b>, entre ellos el <b>polipéptido 28</b>; al unirse a la polimerasa, gp28 le hace reconocer los promotores de los <b>genes medios</b> y dejar de reconocer los bacterianos. Entre los medios están los polipéptidos <b>33 y 34</b>, que se unen a la polimerasa y la dirigen a los promotores de los <b>genes tardíos</b>. Es otra regulación en cascada.</p>
+<h3>Fago λ: lisis o lisogenia</h3>
+<p>El fago λ tiene ADN lineal de doble hélice con extremos cohesivos. Al infectar a <i>E. coli</i> puede seguir dos caminos:</p>
+<ul><li><b>Respuesta lítica:</b> el ADN se replica, se sintetizan los componentes de la cápside y la bacteria se lisa, liberando nuevos virus.</li>
+<li><b>Respuesta lisogénica:</b> el ADN se circulariza y se integra en un punto concreto del cromosoma bacteriano. Integrado se llama <b>profago</b> y se replica junto con la bacteria. A veces se suelta (<b>inducción</b>), se replica y lisa la bacteria.</li></ul>
+<p><b>Ciclo lítico: tres rondas de transcripción.</b></p>
+<ol><li><b>Temprano-inmediata:</b> la ARN polimerasa de <i>E. coli</i> se une al promotor derecho (P<sub>R</sub>) y transcribe <b>cro</b>, y al promotor izquierdo (P<sub>L</sub>) y transcribe <b>N</b>.</li>
+<li><b>Temprano-retrasada:</b> la proteína <b>N</b> actúa como <b>antiterminador</b>: interactúa con la ARN polimerasa e impide que termine, de modo que se transcriben <b>cII, O, P y Q</b> hacia la derecha y <b>cIII</b> hacia la izquierda. O y P sirven para replicar el ADN; cII y cIII regulan la lisogenia. N es muy inestable, así que el ciclo lítico necesita expresarla continuamente.</li>
+<li><b>Tardía:</b> la proteína <b>Q</b> activa (también como antiterminador) los genes tardíos: <b>S y R</b> (lisis), A, W, B, C, nu3, D, E, FI y FII (cabeza) y Z, U, V, G, T, H, M, L, I y J (cola).</li></ol>
+{{FIG:d_reg.F_lambda_flujo}}
+<p><b>Lisogenia.</b> Tras la transcripción de N y cro, las proteínas <b>cII y cIII</b> estimulan la transcripción del gen <b>cI</b> (y de rex) desde el promotor <b>P<sub>RE</sub></b> (establecimiento del represor). cIII protege a cII de la proteólisis. cI codifica el <b>represor λ</b>, que bloquea los operadores O<sub>R</sub> y O<sub>L</sub>: ya no se transcriben N y cro, ni O, P, Q ni los genes tardíos. Además cII y cIII estimulan, desde el promotor <b>P<sub>INT</sub></b>, los genes de integración. La <b>integración</b> solo requiere la proteína <b>int</b>; la <b>escisión</b> requiere <b>int y xis</b>. Ambas ocurren en una región de 15 pb común a los sitios <i>att</i> del fago y de la bacteria (región central O).</p>
+<p><b>Competencia entre lisis y lisogenia.</b> Cada operador tiene tres sitios de unas 17 pb (O<sub>R</sub>1, O<sub>R</sub>2, O<sub>R</sub>3 y lo mismo en O<sub>L</sub>), separados por regiones ricas en A-T. El represor cI y la proteína <b>Cro</b> ("antirrepresor") compiten por ellos:</p>
+<ul><li>El represor cI también se transcribe desde un segundo promotor, <b>P<sub>RM</sub></b> (mantenimiento), activado por el propio represor: es <b>autorregulación</b> (regulación autógena). P<sub>RM</sub> se solapa con O<sub>R</sub>3.</li>
+<li><b>Lisogenia:</b> los dímeros del represor ocupan O<sub>R</sub>1 y O<sub>R</sub>2 y dejan libre O<sub>R</sub>3: se transcribe cI y no cro.</li>
+<li><b>Lisis:</b> Cro tiene afinidad O<sub>R</sub>3 &gt; O<sub>R</sub>2 = O<sub>R</sub>1. A baja concentración se une a O<sub>R</sub>3, bloquea la transcripción de cI desde P<sub>RM</sub> y permite la transcripción desde P<sub>R</sub>. A concentraciones altas ocupa también O<sub>R</sub>2 y O<sub>R</sub>1 y frena su propia transcripción.</li>
+<li><b>Inducción (de lisogenia a lisis):</b> el daño del ADN activa la proteína <b>RecA</b> (respuesta SOS), cuya actividad proteasa inactiva al represor cI. Bajan sus dímeros, se liberan O<sub>R</sub>1 y O<sub>R</sub>2, deja de transcribirse cI y empieza a transcribirse cro.</li></ul>
+{{FIG:d_reg.F_lambda}}
+<div class="box examen" data-sub="fagos"><b>Posible pregunta de examen</b>¿Qué tienen en común las estrategias de T7, SP01 y λ? (Todas son regulación en cascada: un grupo de genes produce una proteína —polimerasa, subunidad o activador— que enciende al grupo siguiente.)</div>
+</section>
+
+<section data-id="eucariotas" data-title="Eucariotas: cromatina y transcripción">
+<h3>Por qué es más compleja</h3>
+<p>Los organismos eucariotas superiores provienen de una sola célula diploide que se multiplica y se <b>diferencia</b>; la diferenciación es el resultado de "encender" y "apagar" distintos genes. Además, las células deben responder al ambiente. En eucariotas no existe un modelo general de regulación como el operón: los sistemas de control actúan en múltiples etapas, a menudo ramificadas, y un mismo gen puede regularse por muchos mecanismos distintos. Los niveles son: <b>cromatina, transcripcional, postranscripcional, traduccional y postraduccional</b>.</p>
+<h3>Nivel de la cromatina: condensación</h3>
+<p>La <b>descondensación de la cromatina</b> es el primer nivel de regulación: aquí se seleccionan los genes que la célula podrá transcribir. La cromatina está formada por ADN enrollado alrededor de histonas formando nucleosomas. Las regiones muy condensadas en el núcleo en interfase forman la <b>heterocromatina</b>, transcripcionalmente inerte; las regiones más laxas forman la <b>eucromatina</b>, con genes activos. Los cambios en esta organización se llaman <b>remodelación de la cromatina</b> y son necesarios para que se unan las polimerasas y empiece la transcripción, y también para la replicación, la reparación y la recombinación del ADN.</p>
+<p>La estructura química de las histonas es el principal factor que determina el grado de empaquetamiento. Las enzimas <b>histona acetiltransferasas (HAT)</b> añaden grupos acetilo a lisinas conservadas del extremo N-terminal de las histonas. Las lisinas tienen carga positiva y el ADN carga negativa; al acetilarlas se neutraliza su carga, las histonas se unen con menos fuerza al ADN, se desestabiliza la fibra de cromatina de 30 nm y los promotores quedan libres para las proteínas que inician la transcripción. Las <b>desacetilasas de histonas (HDAC)</b> hacen lo contrario.</p>
+{{FIG:d_reg.F_cromatina}}
+<div class="box ojo"><b>Ojo con esto</b>El documento de la UNLP dice que la acetilación "neutraliza la carga negativa del ADN". Lo que se neutraliza en realidad es la carga <b>positiva de las lisinas</b> de las histonas; el efecto final es el mismo: menos atracción entre histonas y ADN.</div>
+<h3>Metilación del ADN</h3>
+<p>Otra forma de cambiar la actividad del genoma es modificar químicamente el propio ADN. Las <b>ADN metiltransferasas</b> añaden un grupo metilo a citosinas, que pasan a <b>5-metilcitosina</b>. La mayoría de los metilos están en dinucleótidos <b>CpG</b> (una citosina seguida de una guanina). En los vertebrados hasta un <b>10 %</b> de las citosinas está metilado; en las plantas, hasta un <b>30 %</b>. Estos cambios producen un silenciamiento <b>semipermanente</b>, a veces de cromosomas completos, y con frecuencia se heredan a las células hijas.</p>
+<ul><li><b>Metilación de mantenimiento:</b> tras la replicación, metila la hebra nueva tomando como referencia los sitios metilados de la hebra parental.</li>
+<li><b>Metilación de novo:</b> metila posiciones nuevas y cambia el patrón de una región.</li></ul>
+<p>Ambas reprimen la expresión. Entre el <b>40 % y el 50 %</b> de los genes humanos están cerca de islas CpG, y el estado de metilación de la isla refleja la expresión del gen vecino: los genes de mantenimiento, que se expresan en todos los tejidos, tienen islas CpG <b>no metiladas</b>. La ausencia de metilos se asocia con la <b>posibilidad</b> de transcribir, no con el acto de transcribir.</p>
+{{FIG:d_reg.F_metil}}
+<div class="box prof"><b>📌 Del documento · Experimento con el gen de β-globina</b><p>Se introdujo el gen de β-globina humana en fibroblastos de ratón. Sin metilar se expresa; metilado en sus 27 sitios CG, la expresión se bloquea por completo. Con construcciones metiladas en distintas regiones se vio que <b>no existe un único sitio crítico</b>: la expresión depende de que estén sin metilar varios sitios entre el 1 y el 16 (cerca del promotor). Con enzimas de restricción sensibles a la metilación (CfoI y HpaII no cortan si su sitio está metilado) se comprobó que el patrón de metilación se <b>heredó</b> tal cual en las células.</p></div>
+<h3>Nivel transcripcional: cis y trans</h3>
+<p>En un gen activo, el control principal es el <b>inicio</b>: la interacción de la ARN polimerasa con su promotor. Es, probablemente, el nivel de regulación más común; el documento señala que no hay evidencias de control en otras etapas de la transcripción eucariota.</p>
+<ul><li>Un <b>elemento regulador en cis</b> es una secuencia contigua al gen que afecta su tasa de transcripción: el promotor y sus cajas (<b>CAAT</b>, <b>GC</b>) y los <b>amplificadores</b> (<i>enhancers</i>, potenciadores), situados hacia 5′ y a veces alejados del promotor.</li>
+<li>La <b>regulación en trans</b> la ejercen proteínas (factores de transcripción) que reconocen esos elementos y modifican la velocidad de la transcripción. Unas la activan (<b>activadores</b>) y otras la inhiben (<b>silenciadores</b>).</li></ul>
+<p>Los factores de transcripción tienen al menos <b>dos dominios</b>: uno de <b>unión al ADN</b>, que reconoce los genes diana, y uno de <b>acción sobre la transcripción</b>, que se une a la ARN polimerasa II o a proteínas mediadoras. Se agrupan en familias según su dominio de unión al ADN, y los dominios son intercambiables: un dominio de activación de mamífero unido a un dominio de unión de levadura forma un factor funcional que activa todos los genes con la secuencia diana de ese dominio.</p>
+{{FIG:d_reg.F_trans_euc}}
+<p><b>Choque térmico.</b> Un solo elemento cis puede controlar muchos genes. Cuando sube la temperatura se apagan algunos genes, se encienden los de choque térmico y cambia la traducción. Todos los genes de choque térmico tienen una secuencia consenso común, el <b>HSE</b>, reconocida por un factor de transcripción; al activarse ese factor se encienden a la vez todos los genes con HSE en su promotor.</p>
+<p><b>Genes GAL de levadura.</b> <i>Saccharomyces cerevisiae</i> induce cinco genes para usar la galactosa (cinasa, transferasa y epimerasa, que convierten galactosa en glucosa). Participan el activador <b>GAL4</b>, el represor <b>GAL80</b> y la secuencia <b>UAS</b> (<i>upstream activation sequence</i>), que actúa como enhancer. GAL4 se une a una secuencia de <b>17 pb</b> del UAS. Sin galactosa, el complejo GAL4-GAL80 está unido al UAS, pero GAL80 impide que GAL4 active. Con galactosa (inductor), GAL80 se separa y GAL4 activa la transcripción. El represor GAL80 <b>no se une al ADN</b>, sino al activador. Este sistema se usa en <i>Drosophila</i>: una línea de moscas lleva GAL4, otra lleva UAS unido a un gen de interés, y su descendencia permite estudiar cuándo y dónde se expresa una proteína.</p>
+{{FIG:d_reg.F_gal4}}
+<div class="box examen" data-sub="transcripcional"><b>Posible pregunta de examen</b>¿Qué diferencia hay entre un elemento cis y un factor trans? (El elemento cis es una secuencia de ADN junto al gen que regula, como un promotor o un enhancer; el factor trans es una proteína difusible que se une a esa secuencia.)</div>
+</section>
+
+<section data-id="postrans" data-title="Postranscripcional, traduccional y postraduccional">
+<h3>Nivel postranscripcional</h3>
+<p>Una vez transcrito el gen, la célula todavía decide qué ARNm maduro se forma, cuánto dura y si se traduce. El documento lo divide en cuatro mecanismos:</p>
+{{FIG:d_reg.F_utr}}
+<h4>1. Corte y empalme alternativo (splicing diferencial)</h4>
+<p>Muchos genes producen un único ARNm maduro, pero otros tienen patrones de splicing diferencial: un mismo transcrito primario se empalma de más de una forma, y los exones internos pueden <b>sustituirse, añadirse o eliminarse</b>. A veces se forman todos los productos en la misma célula; otras, el patrón depende de condiciones concretas. Existen proteínas que desvían el uso de sitios de splicing. El splicing alternativo puede dar varias proteínas de un solo gen, pero también puede introducir un codón de terminación o cambiar el marco de lectura.</p>
+<p>Ejemplo del documento: el <b>murciélago vampiro</b> (<i>Desmodus rotundus</i>) tiene en la cara un sensor de radiación infrarroja. El gen del sensor existe en todos los mamíferos y normalmente solo se activa por encima de 60 °C (para alejarse del calor y evitar quemaduras); en ciertos tejidos del rostro del vampiro, por splicing alternativo, el umbral baja a <b>30 °C</b>, lo que le permite detectar presas a 36–37 °C. Es un splicing específico de especie y de tejido.</p>
+<h4>2. Regiones regulatorias del ARNm (UTR)</h4>
+<p>El ARNm maduro tiene regiones no traducidas en 5′ y 3′ (<b>UTR</b>, <i>untranslated regions</i>). La <b>5′ UTR</b> controla la expresión mediante sitios internos de entrada de ribosomas (<b>IRES</b>), sitios de unión de represores o activadores, su estructura secundaria, codones de inicio no-AUG, el entorno del AUG, codones de inicio previos al marco (<b>uAUG</b>) y marcos de lectura previos al principal (<b>uORF</b>). Muchos genes usan 5′ UTR alternativas para regular su expresión en el espacio o en el tiempo: en ratones y conejos de vientre claro, la distribución de pigmento depende de transcritos del gen <i>ASIP</i> con distintas 5′ UTR.</p>
+<p>En la <b>3′ UTR</b> está el sitio de poliadenilación. Elegir un sitio de corte y poli-A diferente puede cambiar el extremo carboxilo de la proteína y dar polipéptidos con actividades totalmente distintas, según factores específicos de tejido o del desarrollo.</p>
+<h4>3. Estabilidad y almacenamiento del ARNm</h4>
+<p>La vida media de los ARNm varía mucho, y cambiarla es un modo de regular. El <b>cap 5′</b> y la <b>cola poli-A</b> dan estabilidad y protegen de la degradación prematura. Una región rica en <b>AU</b> en 3′ puede ser el blanco de una proteína que acorta la cola poli-A y desestabiliza el mensaje.</p>
+<p>Ejemplo: los ARNm de las <b>histonas</b>. Fuera de la división celular duran tan poco que no se puede medir; durante la división viven de 15 a 60 minutos; si la replicación se bloquea, su vida media se desploma. Así, la síntesis de histonas queda acoplada a la replicación y se fabrican tantas histonas como ADN se sintetiza. Estos ARNm no tienen poli-A; su estabilidad depende de una <b>horquilla</b> en el extremo 3′, que podría interactuar con el ribosoma y con una actividad 3′ exonucleasa. Si se elimina la horquilla, el mensajero se estabiliza; si se une a un mensajero estable, lo desestabiliza.</p>
+<p>El <b>almacenamiento</b> de ARNm en el núcleo o el citoplasma también regula: muchos genes se transcriben y sus productos nunca aparecen, aunque no se conoce bien cómo se decide.</p>
+<h4>4. Silenciamiento por ARN pequeños</h4>
+<p>Los eucariotas superiores tienen pequeños ARN que silencian genes, por degradación del ARNm o evitando su traducción. Es una regulación fina y mucho menos costosa que regular la transcripción. Los más estudiados son los <b>microARN</b>:</p>
+<ol><li>En el núcleo se sintetiza un <b>pri-miARN</b>.</li>
+<li>El complejo <b>Microprocesador</b> lo corta y forma el <b>pre-miARN</b> (horquilla).</li>
+<li>El pre-miARN se exporta al citoplasma, donde la enzima <b>DICER</b> lo corta en fragmentos cortos de doble cadena.</li>
+<li>Los fragmentos se unen a proteínas <b>Argonauta</b> y se incorporan al complejo <b>RISC</b>; una actividad tipo helicasa separa las hebras y queda la hebra <b>guía</b> (antisentido).</li>
+<li>RISC se une al ARNm blanco complementario y lo silencia.</li></ol>
+{{FIG:d_reg.F_mirna}}
+<h3>Nivel traduccional</h3>
+<p>Es el nivel menos conocido. Un mecanismo es la unión de proteínas citoplasmáticas a sitios específicos del ARNm. El ejemplo clásico es el hierro: la <b>ferritina</b> almacena hierro dentro de la célula y el <b>receptor de transferrina</b> capta la transferrina, que transporta el hierro en la sangre. Ambos ARNm tienen un <b>elemento de respuesta al hierro (IRE)</b> de unos 30 nucleótidos: en el de ferritina está en <b>5′</b>; en el del receptor, en <b>3′</b>.</p>
+<ul><li><b>Hierro bajo:</b> la <b>aconitasa citosólica</b> se une a los IRE. En 5′ (ferritina) impide que se ensamble la maquinaria de traducción: no se fabrica más ferritina. En 3′ (receptor) protege al ARNm de su secuencia desestabilizadora rica en AU: se traduce más receptor.</li>
+<li><b>Hierro alto:</b> el hierro se une a la aconitasa, que cambia de forma y suelta los IRE. Se traduce la ferritina y el ARNm del receptor se degrada rápido.</li></ul>
+{{FIG:d_reg.F_ire}}
+<div class="box ojo"><b>Ojo con esto</b>El documento escribe "se induce la traducción del ARNm de la transferrina" en el caso de hierro alto; por el contexto, debe decir <b>ferritina</b>. La lógica: si sobra hierro, se guarda (ferritina ↑) y se deja de captar (receptor ↓).</div>
+<p>Otros mecanismos traduccionales del documento:</p>
+<ul><li><b>Proteínas que estabilizan ARNm:</b> la hormona <b>prolactina</b> se une al ARNm de la <b>caseína</b> y lo estabiliza; sin ella se degrada.</li>
+<li><b>Degradación mediada por mutaciones sin sentido (NMD):</b> durante el splicing se coloca un <b>complejo de unión de exones (EJC)</b> aguas arriba de cada unión exón-exón. Normalmente el codón de paro está en el último exón, y el ribosoma, al recorrer el ARNm de 5′ a 3′, retira todos los EJC. Si un splicing defectuoso o una mutación crea un paro prematuro, el ribosoma se desensambla antes, quedan EJC sin retirar y el ARNm se degrada. El documento usa el ejemplo de la talasemia β⁰ por deleción de una base en el exón 1 o 2 de la β-globina.</li>
+<li><b>eIF2:</b> es una proteína G trimérica. Con GTP recluta al ARNt iniciador con metionina y se asocia a la subunidad menor; el complejo se une al ARNm y busca el AUG en dirección 3′. Al aparearse el ARNt con el AUG, el GTP se hidroliza a GDP y se libera eIF2-GDP. Controlar este ciclo regula el inicio de la traducción.</li>
+<li>La <b>concentración de ARNt</b> y de <b>subunidades ribosomales</b> para formar polirribosomas también regula la traducción.</li></ul>
+{{FIG:d_reg.F_nmd}}
+<h3>Nivel postraduccional</h3>
+<p>Las proteínas recién sintetizadas pueden sufrir modificaciones que controlan cuantitativa o cualitativamente la expresión: <b>glicosilaciones, fosforilaciones, acetilaciones, ribosilaciones</b>, etc. Las proteínas de secreción llevan un <b>péptido señal</b> hidrofóbico en el extremo N-terminal; cuando sale del ribosoma, la <b>partícula de reconocimiento de señal (SRP)</b> lo reconoce y lleva el ribosoma al retículo endoplásmico, donde la cadena entra al lumen conforme se sintetiza. Otras proteínas se sintetizan como <b>precursores inactivos</b> que deben cortarse para activarse: las procaspasas (caspasas), la insulina y el glucagón, y las enzimas tripsina y quimotripsina.</p>
+<div class="box examen" data-sub="traduccional"><b>Posible pregunta de examen</b>¿Por qué el mismo sensor (la aconitasa unida al IRE) tiene efectos opuestos sobre la ferritina y el receptor de transferrina? (Porque depende de la posición del IRE: en 5′ bloquea el inicio de la traducción; en 3′ protege al ARNm de la degradación.)</div>
+</section>
+
+<section data-id="epigenetica" data-title="Mecanismos epigenéticos">
+<h3>¿Qué es la epigenética?</h3>
+<p>El artículo de Cavagnari define la <b>epigenética</b> como el estudio de los <b>cambios heredables en la expresión de los genes que no pueden atribuirse a cambios en la secuencia del ADN</b>. Se han identificado más de veinte mecanismos epigenéticos; los más estudiados son cinco, y todos actúan modificando el <b>estado de la cromatina</b>: una cromatina compacta y no permisiva lleva al silenciamiento; una cromatina relajada y permisiva, con promotores accesibles, lleva a la expresión.</p>
+<p>Recordatorio de estructura: unos <b>146 pares de bases</b> se enrollan sobre un octámero de histonas (dos H2A, dos H2B, dos H3 y dos H4) formando el centro del nucleosoma; los nucleosomas están separados, como cuentas de un collar, por la histona <b>H1</b>, y se pliegan hasta formar la cromatina. Con tinciones especiales se distinguen la heterocromatina (intensamente teñida y compacta, inactiva) y la eucromatina (menos teñida y laxa, activa). Para transcribir, los factores de transcripción deben reclutar a la ARN polimerasa al promotor, y para eso necesitan acceder a él.</p>
+{{FIG:d_reg.F_epi}}
+<h3>1. Metilación del ADN</h3>
+<p>Es la unión covalente de un grupo metilo (−CH₃) a la <b>posición 5 de una citosina</b>. Silencia los genes de dos formas: <b>directa</b>, desplazando a los factores activadores que normalmente se unen al ADN, e <b>indirecta</b>, atrayendo proteínas que se unen a citosinas metiladas y reprimen la transcripción. Ocurre en dinucleótidos <b>CpG</b>. Algunos CpG se concentran en <b>islas CpG</b> de las regiones promotoras, que habitualmente <b>no</b> están metiladas; los CpG fuera de las islas son los que suelen estar metilados.</p>
+<p><b>¿Cómo se hereda?</b> Estructuralmente, la secuencia 5′-CpG-3′ tiene en la hebra complementaria también 5′-CpG-3′ (se lee 5′-GpC-3′ en sentido opuesto), así que ambas hebras pueden metilarse y, tras la replicación, cada hebra hija conserva una hebra metilada original. Funcionalmente, las <b>ADN metiltransferasas</b> reconocen 5′-metil-CpG-3′ y metilan la citosina de la hebra complementaria. Hay metiltransferasas <b>de novo</b> y <b>de mantenimiento</b>.</p>
+<p><b>Funciones fisiológicas:</b> inactivación del cromosoma X en las mujeres, silenciamiento de genes "imprintados" (impronta), regulación de la transcripción, diferenciación celular, estabilidad del genoma y defensa contra virus y parásitos (silenciando sus secuencias). La heterocromatina está mucho más metilada que la eucromatina.</p>
+<p><b>Detección:</b> enzimas de restricción sensibles a la metilación; tratamiento con <b>bisulfito de sodio</b> (la citosina no metilada se convierte en uracilo) seguido de secuenciación; e inmunoprecipitación con anticuerpos anti-metilcitosina.</p>
+<h3>2. Modificación postraduccional de las histonas</h3>
+<p>Las histonas pueden ser <b>acetiladas, fosforiladas, metiladas, glucosiladas, ADP-ribosiladas</b>, etc. Estas marcas se combinan y funcionan como un <b>código de histonas</b> que indica si la cromatina está activa (nucleosoma relajado) o inactiva (nucleosoma condensado); es decir, la información no está solo en la secuencia (código genético) sino también en su entorno.</p>
+<ul><li><b>Acetiltransferasas (HAT):</b> hiperacetilan las histonas, relajan el nucleosoma y <b>activan</b> el gen.</li>
+<li><b>Desacetilasas (HDAC):</b> desacetilan las lisinas, condensan el nucleosoma y <b>silencian</b> el gen.</li>
+<li>La eucromatina tiene histonas con lisinas hiperacetiladas; la heterocromatina, hipoacetiladas. Por ejemplo, la hiperacetilación y la hipometilación de la lisina 20 de la histona H4 se asocian a regiones activas.</li>
+<li>La <b>metilación de histonas</b> envía señales más complejas: puede activar o reprimir según el residuo metilado.</li></ul>
+<p>Se detectan con inmunoprecipitación de la cromatina usando anticuerpos contra histonas modificadas. Los mecanismos actúan en conjunto: existen <b>proteínas de unión a metil-CpG</b> que llevan desacetilasas de histonas a las regiones de ADN metilado, de modo que metilación del ADN y desacetilación de histonas cooperan para silenciar.</p>
+<h3>3. Silenciamiento por ARN no codificante</h3>
+<p>Los <b>microARN</b> son ARN pequeños (<b>18–25 nucleótidos</b>), endógenos y no codificantes, que impiden la expresión de un gen bloqueando su traducción (mecanismo antisentido) o mediando la degradación de los ARNm con secuencia complementaria. Desde el punto de vista epigenético, además pueden remodelar la cromatina modificando el patrón de metilación de una secuencia, participan en la formación de heterocromatina y en la corrección selectiva de errores de metilación, lo que protegería contra la pérdida transgeneracional del patrón.</p>
+<h3>4. Remodelado de la cromatina dependiente de ATP</h3>
+<p>Para expresar un gen, la maquinaria debe acceder al ADN. Existen complejos proteicos que usan la energía de la <b>hidrólisis de ATP</b> para debilitar el contacto nucleosoma-ADN y <b>reposicionar los nucleosomas</b>, deslizándolos sobre el ADN (mediante un giro o un cambio conformacional transitorio) <b>sin disociarlos</b>. Así exponen secuencias ocultas; por el mismo mecanismo pueden ocultar regiones expuestas, de modo que regulan tanto positiva como negativamente. Actúan en conjunto con la acetilación de histonas.</p>
+<h3>5. Complejos Polycomb y Trithorax</h3>
+<p>Son complejos multiproteicos que cambian la cromatina de una conformación "cerrada" a una "abierta" y viceversa. Las proteínas del grupo <b>Polycomb</b> (descritas en <i>Drosophila melanogaster</i>) son <b>represoras</b>: llevan la cromatina a una forma menos accesible y silencian los genes; en humanos participan en la regulación del ciclo celular. El grupo <b>Trithorax</b> es <b>activador</b>: hace la cromatina más accesible y favorece la expresión.</p>
+<table class="cmp"><tr><th>Mecanismo</th><th>Qué hace</th><th>Efecto</th></tr>
+<tr><td>Metilación del ADN</td><td>CH₃ en C5 de citosinas (CpG)</td><td>Silencia</td></tr>
+<tr><td>HAT / HDAC</td><td>Acetilan / desacetilan lisinas de histonas</td><td>Activa / silencia</td></tr>
+<tr><td>Metilación de histonas</td><td>Depende del residuo</td><td>Activa o reprime</td></tr>
+<tr><td>microARN</td><td>Degradan o bloquean ARNm; heterocromatina</td><td>Silencia</td></tr>
+<tr><td>Remodelado dependiente de ATP</td><td>Desliza nucleosomas sin disociarlos</td><td>Ambos sentidos</td></tr>
+<tr><td>Polycomb / Trithorax</td><td>Cierran / abren la cromatina</td><td>Reprime / activa</td></tr></table>
+<div class="box examen" data-sub="epigen"><b>Posible pregunta de examen</b>¿Por qué se dice que la metilación del ADN y la desacetilación de histonas cooperan? (Porque las proteínas de unión a metil-CpG reclutan desacetilasas de histonas a las regiones metiladas: el ADN metilado termina en cromatina compacta y silenciada.)</div>
+<h3>Importancia médica (lo que mencionan los documentos)</h3>
+<table class="cmp"><tr><th>Mecanismo</th><th>Relación mencionada</th></tr>
+<tr><td>Hipometilación global del ADN</td><td>Inestabilidad del genoma y activación de oncogenes (cáncer)</td></tr>
+<tr><td>Hipermetilación del promotor de un supresor de tumores</td><td>Silencia el gen (ejemplo: retinoblastoma)</td></tr>
+<tr><td>Fármacos desmetilantes (azacitidina)</td><td>Reactivar genes silenciados por metilación</td></tr>
+<tr><td>Inhibidores de HDAC</td><td>En estudio</td></tr>
+<tr><td>microARN</td><td>Pueden actuar como supresores de tumores u oncogenes</td></tr>
+<tr><td>NMD</td><td>Degrada ARNm con paro prematuro (ejemplo: talasemia β⁰)</td></tr></table>
+</section>
+
+<section data-id="comparacion" data-title="Procariotas frente a eucariotas">
+<table class="cmp"><tr><th>Procariotas</th><th>Eucariotas</th></tr>
+<tr><td>ADN poco empaquetado; no hay regulación a nivel de cromatina; ADN disponible para transcribir</td><td>ADN muy empaquetado con histonas; regulación por condensación/descondensación de la cromatina</td></tr>
+<tr><td>—</td><td>Regiones con ADN metilado; la metilación reprime la expresión</td></tr>
+<tr><td>Genes en operones con un único promotor; sistemas inducibles y represibles</td><td>Cada gen tiene su propio promotor; enhancers y elementos cis y trans</td></tr>
+<tr><td>Transcripción y traducción acopladas en el citoplasma</td><td>Separadas física y temporalmente; ambas participan en la regulación</td></tr>
+<tr><td>ARNm policistrónicos</td><td>ARNm monocistrónicos</td></tr>
+<tr><td>El ARNm no se procesa</td><td>El ARNm se procesa (UTR, splicing diferencial); el procesamiento regula su estabilidad y expresión</td></tr>
+<tr><td>No hay transporte ni almacenamiento de ARNm</td><td>El transporte y el almacenamiento del ARNm alteran su expresión</td></tr>
+<tr><td>La traducción no se regula</td><td>La traducción puede regularse</td></tr>
+<tr><td>No hay modificación postraduccional</td><td>Las proteínas pueden sufrir modificaciones postraduccionales</td></tr></table>
+<p>Esta tabla resume el documento de la UNLP. Es un esquema simplificado: en realidad las bacterias sí regulan algo la traducción (la atenuación depende de ella) y sí modifican algunas proteínas, pero a una escala mucho menor que los eucariotas. Para el examen, la idea clave es que <b>en procariotas casi todo se decide al inicio de la transcripción</b>, mientras que en eucariotas hay control en cada etapa.</p>
+<div class="box examen" data-sub="comparacion"><b>Posible pregunta de examen</b>Menciona tres niveles de regulación que existen en eucariotas y no en procariotas. (Cromatina, procesamiento del ARNm —splicing, UTR— y transporte o almacenamiento del ARNm.)</div>
+</section>
+
+<section data-id="alto" data-title="Puntos de alto rendimiento">
+<ul class="hy">
+<li>Regulación de la expresión génica = control de qué genes se expresan, cuándo y cuánto. El punto más regulado: el <b>inicio de la transcripción</b>.</li>
+<li>Genes constitutivos ("que guardan la casa") vs adaptativos.</li>
+<li>Inducible (inductor, catabólico) vs represible (correpresor, anabólico). Positivo (activador) vs negativo (represor).</li>
+<li>Operón (Jacob y Monod, Nobel 1965): promotor + operador + genes estructurales; el gen regulador no es parte del operón.</li>
+<li>Operón lac: z (β-galactosidasa), y (permeasa), a (transacetilasa). Inducible, control negativo + positivo (CAP-AMPc). Inductor real: alolactosa; análogo: IPTG.</li>
+<li>Glucosa → AMPc bajo → CAP inactiva → represión catabólica.</li>
+<li>i⁻ y Oᶜ: constitutivos. Oᶜ dominante en cis; i⁺ dominante en trans. iˢ siempre reprimido. Represor = tetrámero.</li>
+<li>Operón trp: 5 genes (E, D, C, B, A); trp = correpresor; represible, control negativo.</li>
+<li>Atenuación: péptido líder con 2 Trp; mucho Trp → horquilla 3:4 (terminador); poco Trp → 2:3 (antiterminador).</li>
+<li>Fagos: T7 (polimerasa nueva), SP01 (subunidades nuevas: gp28, gp33/34), λ (activadores/represores). Regulación en cascada.</li>
+<li>λ: cI (represor) en OR1 y OR2 → lisogenia; Cro en OR3 → lisis; RecA corta a cI → inducción. N y Q = antiterminadores.</li>
+<li>Eucariotas: cromatina → transcripcional → postranscripcional → traduccional → postraduccional.</li>
+<li>HAT acetila → abre; HDAC → cierra. Metilación de CpG → silencia (de novo y de mantenimiento).</li>
+<li>Cis = secuencia (promotor, enhancer); trans = proteína difusible (factor con dominio de unión y de activación).</li>
+<li>GAL4 (activador) + GAL80 (represor que se une a GAL4) + UAS.</li>
+<li>microARN: pri-miARN → Microprocesador → pre-miARN → Dicer → RISC (Argonauta) → ARNm blanco.</li>
+<li>IRE: ferritina (5′) y receptor de transferrina (3′); aconitasa = sensor de hierro.</li>
+<li>Epigenética: cambios heredables sin cambiar la secuencia. Cinco mecanismos: metilación del ADN, histonas, ARN no codificante, remodelado por ATP, Polycomb/Trithorax.</li></ul>
+</section>
+
+<section data-id="errores" data-title="Errores frecuentes">
+<table class="cmp"><tr><th>Error frecuente</th><th>Lo correcto</th></tr>
+<tr><td>"El gen regulador forma parte del operón."</td><td>Tiene su propio promotor y no es parte del operón; está cerca.</td></tr>
+<tr><td>"La lactosa es el inductor directo."</td><td>El inductor real es la alolactosa (el IPTG es un análogo).</td></tr>
+<tr><td>"Con lactosa, el operón lac siempre se expresa al máximo."</td><td>Si hay glucosa, el AMPc es bajo y la expresión es mínima (represión catabólica).</td></tr>
+<tr><td>"El represor trp se une al operador sin triptófano."</td><td>Solo se une cuando el triptófano (correpresor) está unido a él.</td></tr>
+<tr><td>"Inducible = control positivo."</td><td>Son clasificaciones distintas: lac es inducible y de control negativo.</td></tr>
+<tr><td>"Oᶜ actúa sobre las dos copias del diploide parcial."</td><td>Actúa solo en cis (su misma molécula de ADN).</td></tr>
+<tr><td>"Con mucho triptófano se forma la horquilla 2:3."</td><td>Se forma la 3:4 (terminador); la 2:3 se forma con poco triptófano.</td></tr>
+<tr><td>"La acetilación de histonas compacta la cromatina."</td><td>La relaja; la desacetilación (HDAC) la compacta.</td></tr>
+<tr><td>"La metilación del ADN cambia la secuencia."</td><td>Es una marca química sobre la citosina; no cambia la secuencia (es epigenética).</td></tr>
+<tr><td>"GAL80 se une al ADN."</td><td>GAL80 se une al activador GAL4, no al ADN.</td></tr>
+<tr><td>"El remodelado por ATP disocia los nucleosomas."</td><td>Los desliza sin disociarlos.</td></tr>
+<tr><td>"Polycomb activa y Trithorax reprime."</td><td>Polycomb reprime (cierra); Trithorax activa (abre).</td></tr></table>
+</section>
+
+<section data-id="resumen" data-title="Resumen final">
+<p>La expresión génica se regula para que cada célula fabrique solo las proteínas que necesita. En las <b>bacterias</b>, los genes de una misma vía se agrupan en <b>operones</b> controlados por un promotor, un operador y una proteína reguladora codificada por un gen regulador. Los sistemas pueden ser <b>inducibles</b> (catabólicos, como el operón lac) o <b>represibles</b> (anabólicos, como el operón trp), y estar bajo <b>control negativo</b> (represor) o <b>positivo</b> (activador). El operón lac combina ambos: el represor responde a la lactosa y CAP-AMPc responde a la glucosa (represión catabólica). El operón trp combina represión y <b>atenuación</b>, que aprovecha el acoplamiento entre transcripción y traducción. Los estudios con mutantes y diploides parciales demostraron que el operador actúa en <b>cis</b> y el gen regulador en <b>trans</b>.</p>
+<p>Los <b>bacteriófagos</b> regulan sus genes en cascada: T7 fabrica su propia ARN polimerasa, SP01 modifica la de la bacteria y λ decide entre lisis y lisogenia según la competencia entre el represor cI y la proteína Cro por los operadores.</p>
+<p>En los <b>eucariotas</b> la regulación ocurre en cinco niveles. Primero, la <b>cromatina</b> debe abrirse (acetilación de histonas, ausencia de metilación del ADN). Después, el inicio de la transcripción depende de <b>elementos cis</b> (promotor, enhancers) y <b>factores trans</b> con un dominio de unión al ADN y otro de activación. Luego se regula el ARN (splicing alternativo, UTR, estabilidad, microARN), la traducción (IRE, eIF2, NMD) y la proteína (modificaciones, péptido señal, precursores). Los <b>mecanismos epigenéticos</b> —metilación del ADN, modificación de histonas, ARN no codificante, remodelado dependiente de ATP y complejos Polycomb y Trithorax— cambian de forma heredable qué genes se expresan sin cambiar la secuencia del ADN.</p>
+<div class="box quiz"><b>¿Quieres comprobar cuánto aprendiste?</b>Haz el quiz del tema para medir tu comprensión.</div>
+</section>
