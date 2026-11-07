@@ -7,18 +7,18 @@ const css=String.raw`
 article.book.ed{
   --e-paper:#fbfaf7;--e-ink:#141a2f;--e-mut:#5e6377;--e-rule:#dcd8ce;--e-plate:#f3f1ec;--e-plate2:#ebe8e1;
   --e-sg:#b9790f;--e-sgl:#f6e3bd;--e-rc:#5d43a6;--e-rcl:#e7e0f6;--e-td:#2346c4;--e-tdl:#dfe6fb;--e-rs:#25725a;--e-rsl:#d7ece3;--e-of:#a8442f;--e-ofl:#f5ddd5;
-  --e-mem:#ead9b4;--e-memh:#c9ae74;--e-cyt:#fbfaf7;--e-nuc:#efeaf7;--e-mu:#8a8fa3;
+  --e-mem:#ead9b4;--e-memh:#c9ae74;--e-cyt:#fbfaf7;--e-nuc:#efeaf7;--e-mu:#8a8fa3;--e-lh:#d99a55;--e-lt:#c9a96a;--e-core:#f7eed8;--e-exo:#eef2f3;--e-dk:#5e6377;
   --e-disp:"Fraunces","Cormorant Garamond",Georgia,serif;--e-body:"Source Serif 4",Georgia,serif;--e-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
   background:var(--e-paper);color:var(--e-ink);border:0;border-radius:0;max-width:1080px;padding:0 0 48px;font-family:var(--e-body);box-shadow:none}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) article.book.ed{
   --e-paper:#11141f;--e-ink:#e9e6dd;--e-mut:#9ca1b6;--e-rule:#2b3044;--e-plate:#171b29;--e-plate2:#1e2333;
   --e-sg:#e2a646;--e-sgl:#3d311b;--e-rc:#a892ee;--e-rcl:#2c2547;--e-td:#7f9cff;--e-tdl:#1f2a52;--e-rs:#5fc39d;--e-rsl:#173a30;--e-of:#e3846c;--e-ofl:#43241d;
-  --e-mem:#4a3f29;--e-memh:#8a7446;--e-cyt:#141826;--e-nuc:#1d1a2e;--e-mu:#6f7590;color-scheme:dark}}
+  --e-mem:#4a3f29;--e-memh:#8a7446;--e-cyt:#141826;--e-nuc:#1d1a2e;--e-mu:#6f7590;--e-lh:#c08a4a;--e-lt:#76623d;--e-core:#2a2519;--e-exo:#0f1520;--e-dk:#9ca1b6;color-scheme:dark}}
 :root[data-theme="dark"] article.book.ed{
   --e-paper:#11141f;--e-ink:#e9e6dd;--e-mut:#9ca1b6;--e-rule:#2b3044;--e-plate:#171b29;--e-plate2:#1e2333;
   --e-sg:#e2a646;--e-sgl:#3d311b;--e-rc:#a892ee;--e-rcl:#2c2547;--e-td:#7f9cff;--e-tdl:#1f2a52;--e-rs:#5fc39d;--e-rsl:#173a30;--e-of:#e3846c;--e-ofl:#43241d;
-  --e-mem:#4a3f29;--e-memh:#8a7446;--e-cyt:#141826;--e-nuc:#1d1a2e;--e-mu:#6f7590;color-scheme:dark}
-@media (min-width:901px){.reader.ed-r{grid-template-columns:190px minmax(0,1fr)}}
+  --e-mem:#4a3f29;--e-memh:#8a7446;--e-cyt:#141826;--e-nuc:#1d1a2e;--e-mu:#6f7590;--e-lh:#c08a4a;--e-lt:#76623d;--e-core:#2a2519;--e-exo:#0f1520;--e-dk:#9ca1b6;color-scheme:dark}
+@media (min-width:901px){.reader.ed-r:not(.noside){grid-template-columns:190px minmax(0,1fr)}}
 .ed .crumb,.ed>h1.ct{display:none}
 .ed b{color:inherit;font-weight:650}
 /* ---------- portada ---------- */
@@ -36,6 +36,7 @@ article.book.ed{
 .ed-chain i{font-style:normal;color:#5d6688;padding:0 10px}
 .ed-chain a[data-c=sg]{border-color:#e2a646}.ed-chain a[data-c=rc]{border-color:#a892ee}.ed-chain a[data-c=td]{border-color:#7f9cff}.ed-chain a[data-c=rs]{border-color:#5fc39d}
 .ed-hero .art{position:relative;min-height:300px}
+.ed .ed-hero .b-core{fill:#3b3424}.ed .ed-hero .b-tail{stroke:#a88d55;opacity:.75}.ed .ed-hero .b-head circle{fill:#c9ae74;stroke:#6b5a33}
 .ed-hero svg{position:absolute;inset:0;width:100%;height:100%}
 .ed-hero .art .lgd{position:absolute;right:16px;bottom:12px;font:500 10.5px/1.6 var(--e-mono);color:#7e88aa;text-align:right;letter-spacing:.06em}
 @keyframes edDrift{0%{transform:translate(0,0)}50%{transform:translate(var(--dx),var(--dy))}100%{transform:translate(0,0)}}

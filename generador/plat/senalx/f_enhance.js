@@ -13,8 +13,9 @@ function enhance(art,ctx){
   if(!art||art.dataset.ed)return;art.dataset.ed='1';
   cleanups.forEach(f=>{try{f()}catch(e){}});cleanups=[];
   if(!document.getElementById('ed-fonts')){const l=document.createElement('link');l.id='ed-fonts';l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=IBM+Plex+Mono:wght@400;500;600&display=swap';document.head.appendChild(l)}
-  if(!document.getElementById('ed-css')){const s=document.createElement('style');s.id='ed-css';s.textContent=X.css+X.ideaCSS+X.commCSS+X.recCSS+X.casCSS+X.msgCSS+X.ampCSS+X.termCSS+X.cellCSS+X.sumCSS;document.head.appendChild(s)}
-  art.classList.add('ed');const rd=art.closest('.reader');if(rd)rd.classList.add('ed-r');
+  if(!document.getElementById('ed-css')){const s=document.createElement('style');s.id='ed-css';s.textContent=X.css+X.bioCSS+X.scCSS+X.escCSS+X.ideaCSS+X.commCSS+X.recCSS+X.casCSS+X.msgCSS+X.ampCSS+X.termCSS+X.cellCSS+X.sumCSS;document.head.appendChild(s)}
+  art.classList.add('ed');
+  if(!art.querySelector(':scope>.b-defs'))art.insertAdjacentHTML('afterbegin',X.B.defs());const rd=art.closest('.reader');if(rd)rd.classList.add('ed-r');
   // ---- portada ----
   art.insertAdjacentHTML('afterbegin',X.hero());
   const hero=art.querySelector('.ed-hero');
@@ -36,6 +37,9 @@ function enhance(art,ctx){
   wrapStatic(S0.querySelector('figure.fig[data-f="d_senal.F_esquema"]'),'Figura estática: esquema general');
   const fT=S1.querySelector('figure.fig[data-f="d_senal.F_tipos"]');
   if(fT){const el=place(X.comm(++n),fT,'before');X.wireComm(el);wrapStatic(fT,'Figura estática: formas de comunicación')}
+  // escalas: de la célula a la molécula (antes de la figura estática de receptores)
+  const fR=S2.querySelector('figure.fig[data-f="d_senal.F_receptores"]');
+  if(fR){const el=place(X.scale(++n),fR,'before');X.wireScale(el);wrapStatic(fR,'Figura estática: receptores de superficie e intracelulares')}
   const hTres=h3(S2,'Tres clases');
   if(hTres){let anchor=hTres.nextElementSibling;while(anchor&&anchor.classList.contains('notes'))anchor=anchor.nextElementSibling;
     const el=place(X.rec(++n),anchor||hTres,anchor?'before':'after');

@@ -79,6 +79,49 @@ try {
   const sx = await pg.evaluate(() => ({ ok: !!window.SENALX, plates: document.querySelectorAll('.ex-plate').length, ctl: document.querySelectorAll('.ex-ctl button, .ex-ctl input').length }));
   check('Señalización: módulos interactivos', sx.ok && sx.plates > 0, `${sx.plates} láminas, ${sx.ctl} controles`);
   if (sx.ctl) { const e0 = errs.length; await pg.locator('.ex-ctl button').first().click().catch(() => {}); await pg.waitForTimeout(300); check('Señalización: interacción sin errores', errs.length === e0); }
+  {
+    const e0 = errs.length;
+    // escalas: de la célula a la molécula
+    await pg.locator('#ex-esc').scrollIntoViewIfNeeded();
+    for (const lv of [1, 2]) { await pg.click(`#ex-esc [data-lv="${lv}"]`); await pg.waitForTimeout(1300); }
+    await pg.click('#ex-esc [data-s="cor"]'); await pg.waitForTimeout(400);
+    await pg.click('#ex-esc [data-lv="4"]'); await pg.waitForTimeout(1500);
+    const esc = await pg.evaluate(() => ({ lv: document.querySelector('#ex-esc [data-lv].on')?.dataset.lv, mech: !document.querySelector('#ex-esc .sc-mech').hidden, q: document.querySelector('#ex-esc .sc-qa .q').textContent }));
+    check('Señalización: figura de escalas (5 niveles)', esc.lv === '4' && esc.mech && esc.q.length > 3, `nivel ${+esc.lv + 1} · «${esc.q}»`);
+    // receptores: cada escena se reproduce y llega a su última fase
+    let okR = 0;
+    for (const r of ['canal', 'gpcr', 'rtk', 'nuc']) {
+      await pg.click(`#ex-rec .rc-t[data-r="${r}"]`); await pg.waitForTimeout(150);
+      await pg.locator('#ex-rec .b-ph [data-ph]').last().click(); await pg.waitForTimeout(400);
+      if (await pg.evaluate(() => document.querySelector('#ex-rec .b-ph li.cur') === [...document.querySelectorAll('#ex-rec .b-ph li')].pop())) okR++;
+    }
+    check('Señalización: receptores con fases (canal, GPCR, RTK, nuclear)', okR === 4, `${okR}/4`);
+    // amplificación: los contadores crecen hasta el final
+    await pg.locator('#ex-amp').scrollIntoViewIfNeeded(); await pg.locator('#ex-amp .b-ph [data-ph]').last().click(); await pg.waitForTimeout(3200);
+    const amp = await pg.evaluate(() => [...document.querySelectorAll('#ex-amp [data-r=num]')].map((n) => +n.textContent));
+    check('Señalización: amplificación visible', amp[0] === 1 && amp[amp.length - 1] === 18, amp.join(' → '));
+    // célula final: seleccionar, acercar, ruta, pausa
+    await pg.locator('#ex-cel').scrollIntoViewIfNeeded();
+    await pg.locator('#ex-cel .ce[data-id="pka"]').dispatchEvent('click'); await pg.waitForTimeout(900);
+    const cel = await pg.evaluate(() => ({ h: document.querySelector('#ex-cel .ce-side h4').textContent, dt: [...document.querySelectorAll('#ex-cel .ce-side dt')].map((d) => d.textContent), vb: document.querySelector('#ex-cel svg').getAttribute('viewBox') }));
+    check('Señalización: célula explorable (tarjeta y acercamiento)', /PKA/.test(cel.h) && cel.dt.includes('Qué ocurre después') && !/^0\.00 0\.00 1000/.test(cel.vb), `${cel.h} · viewBox ${cel.vb}`);
+    await pg.click('#ex-cel [data-md="route"]'); await pg.click('#ex-cel .ce-r[data-r="rtk"]'); await pg.click('#ex-cel [data-a="play"]'); await pg.waitForTimeout(2200); await pg.click('#ex-cel [data-a="play"]');
+    const st = await pg.evaluate(() => ({ t: document.querySelector('#ex-cel [data-a=play]').textContent, h: document.querySelector('#ex-cel .ce-side h4').textContent }));
+    check('Señalización: rutas con reproducir/pausa', /paso [2-9]/.test(st.h) && st.t !== 'Pausa', `${st.h} · botón «${st.t}»`);
+    check('Señalización: figuras nuevas sin errores', errs.length === e0, errs.slice(e0).join(' | '));
+  }
+  // 4c. Índice lateral: se oculta y se vuelve a abrir (desktop, iPad y móvil)
+  for (const [nm, vp] of [['escritorio', { width: 1366, height: 900 }], ['iPad', { width: 1024, height: 1366 }], ['iPad vertical', { width: 820, height: 1180 }], ['móvil', { width: 390, height: 844 }]]) {
+    const p2 = await ctx.newPage(); await p2.setViewportSize(vp); p2.on('pageerror', (e) => errs.push(`índice ${nm} :: ${e.message}`));
+    await p2.goto(B + 'estudio.html#libro-senal-1'); await p2.waitForTimeout(900);
+    const st = () => p2.evaluate(() => { const r = document.querySelector('.reader'), t = document.querySelector('aside.toc'), a = document.querySelector('article.book').getBoundingClientRect(); const c = document.elementFromPoint(innerWidth / 2, innerHeight * 0.7); return { vis: getComputedStyle(t).display !== 'none', w: Math.round(a.width), free: !!(c && c.closest('article.book')), exp: document.querySelector('#rt-side').getAttribute('aria-expanded') }; });
+    const s0 = await st(); await p2.click('#rt-side'); await p2.waitForTimeout(300); const s1 = await st();
+    if (s1.vis && vp.width <= 900) { await p2.click('.toc-x'); } else { await p2.click('#rt-side'); }
+    await p2.waitForTimeout(300); const s2 = await st();
+    const ok = vp.width > 900 ? (s0.vis && !s1.vis && s1.w > s0.w && s1.free && s2.vis) : (!s0.vis && s1.vis && !s2.vis && s2.free && s2.exp === 'false');
+    check(`índice ${nm}: se oculta y se vuelve a abrir`, ok, `${s0.vis ? 'visible' : 'oculto'} → ${s1.vis ? 'visible' : 'oculto'} → ${s2.vis ? 'visible' : 'oculto'} · lectura ${s0.w}→${s1.w}px`);
+    await p2.close();
+  }
 
   // 5. Animaciones
   await pg.goto(B + 'estudio.html#libro-mito-2'); await pg.waitForTimeout(400);

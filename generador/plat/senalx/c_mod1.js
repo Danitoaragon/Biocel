@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const X=window.__SX,{S,esc,frame,onView,RM}=X;
+const X=window.__SX,{S,esc,frame,onView,RM}=X;const B=X.B;
 // ======================= PORTADA =======================
 function hero(){
   const C=[560,520],R=470,rad=d=>d*Math.PI/180,pt=(r,d)=>[C[0]+r*Math.cos(rad(d)),C[1]+r*Math.sin(rad(d))];
@@ -9,9 +9,9 @@ function hero(){
   let pores='';for(let d=196;d<=300;d+=9){const [x,y]=pt(244,d);pores+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.2" fill="#141a31"/>`}
   let er='';[275,292,309].forEach((r,j)=>{er+=`<circle cx="${C[0]}" cy="${C[1]}" r="${r}" fill="none" stroke="#2f6b57" stroke-width="2.2" stroke-dasharray="${36-j*6} ${10+j*4}" stroke-dashoffset="${j*17}" opacity=".85"/>`});
   let cyto='';for(let i=0;i<9;i++){const a=205+rand()*80;const [x1,y1]=pt(450,a),[x2,y2]=pt(330+rand()*40,a+(rand()-.5)*10);cyto+=`<line x1="${x1.toFixed(0)}" y1="${y1.toFixed(0)}" x2="${x2.toFixed(0)}" y2="${y2.toFixed(0)}" stroke="#24305a" stroke-width="1.2"/>`}
-  const gpcr=`<g>${Array.from({length:7},(_,i)=>`<rect x="${-21+i*6}" y="-16" width="4.6" height="32" rx="2" fill="#3b2f6e" stroke="#a892ee" stroke-width="1"/>`).join('')}</g>`;
-  const rtk=`<g>${[-7,7].map(x=>`<ellipse cx="${x}" cy="-24" rx="6" ry="8" fill="#3b2f6e" stroke="#a892ee"/><rect x="${x-1.5}" y="-16" width="3" height="32" fill="#a892ee"/><rect x="${x-6}" y="16" width="12" height="16" rx="3" fill="#1d2448" stroke="#a892ee"/>`).join('')}</g>`;
-  const chan=`<g><rect x="-11" y="-17" width="9" height="34" rx="3" fill="#3b2f6e" stroke="#a892ee"/><rect x="2" y="-17" width="9" height="34" rx="3" fill="#3b2f6e" stroke="#a892ee"/></g>`;
+  const gpcr=`<g transform="scale(.62) translate(-36 -38)">${B.tm7(0,0,{h:76})}</g>`;
+  const rtk=`<g>${[-7,7].map((x,i)=>`${B.blob(x,-26,6,8,'rc',{seed:411+i,f:false})}${B.helix(x-2,-17,4,32,'rc',{step:4})}${B.blob(x,24,7,9,'rc',{seed:413+i,f:false})}`).join('')}</g>`;
+  const chan=`<g>${B.helix(-11,-18,8,36,'rc',{step:4})}${B.helix(3,-18,8,36,'rc',{step:4})}</g>`;
   let rec='';[[212,gpcr],[224,chan],[236,gpcr],[249,rtk],[262,gpcr],[274,gpcr]].forEach(([d,g])=>{const [x,y]=pt(R,d);rec+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${d+90})">${g}</g>`});
   const [gx,gy]=pt(R,236),[nx,ny]=[Math.cos(rad(236)),Math.sin(rad(236))];
   const bound=[gx+nx*30,gy+ny*30];
@@ -22,9 +22,8 @@ function hero(){
   const inner=pt(R-40,236);let glow='';for(let i=0;i<5;i++){const [x,y]=pt(R-50-i*24,236+(i%2?3:-3));glow+=`<circle class="glow" cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${3.4}" fill="#7f9cff" style="animation-delay:${(i*.18).toFixed(2)}s"/>`}
   const svg=`<svg viewBox="0 0 520 440" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Corte de una célula: membrana con receptores, ligandos que se acercan desde el exterior, citoplasma con retículo endoplásmico y núcleo">
    <rect width="520" height="440" fill="#0c1122"/>
-   <circle cx="${C[0]}" cy="${C[1]}" r="${R}" fill="#141a31" stroke="#3b3424" stroke-width="26"/>
-   <circle cx="${C[0]}" cy="${C[1]}" r="${R+10}" fill="none" stroke="#c9ae74" stroke-width="5.5" stroke-linecap="round" stroke-dasharray="0 8.5"/>
-   <circle cx="${C[0]}" cy="${C[1]}" r="${R-10}" fill="none" stroke="#c9ae74" stroke-width="5.5" stroke-linecap="round" stroke-dasharray="0 8.5"/>
+   <circle cx="${C[0]}" cy="${C[1]}" r="${R}" fill="#141a31"/>
+   ${B.bilayer(B.sample(t=>{const a=rad(178+t*130);return [C[0]+R*Math.cos(a),C[1]+R*Math.sin(a)]},0,1,8),{t:12,r:3.4,skip:(x,y)=>[212,224,236,249,262,274].some(d=>{const q=pt(R,d);return Math.hypot(x-q[0],y-q[1])<22})})}
    ${cyto}${er}
    <circle cx="${C[0]}" cy="${C[1]}" r="248" fill="none" stroke="#8d7bd6" stroke-width=".8" opacity=".6"/>
    <circle cx="${C[0]}" cy="${C[1]}" r="240" fill="#1b1934" stroke="#8d7bd6" stroke-width="1.4"/>${chrom}${pores}
@@ -48,16 +47,16 @@ function idea(n){
   const svg=`<svg viewBox="0 0 900 320" class="s1 s2 s3 s4" data-cur="0" role="img" aria-label="Señal, receptor, transducción y respuesta en una célula diana">
    <rect class="halo h1" x="10" y="10" width="282" height="300" rx="2"/><rect class="halo h2" x="248" y="10" width="148" height="300" rx="2"/><rect class="halo h3" x="398" y="10" width="368" height="300" rx="2"/><rect class="halo h4" x="770" y="10" width="124" height="300" rx="2"/>
    ${S.t(16,34,'EXTERIOR','cap','start')}${S.t(356,34,'CITOSOL','cap','start')}${S.t(888,34,'NÚCLEO','cap','end')}
-   ${S.memV(300,0,320,36)}
+   ${B.bilayer(B.vline(318,0,320,8),{t:14})}
    <circle class="nucf" cx="1010" cy="170" r="230"/>
-   <g class="k k4"><line class="st-mu" x1="808" y1="206" x2="900" y2="206" stroke-width="2"/><line class="st-mu" x1="808" y1="214" x2="900" y2="214" stroke-width="2"/><rect class="f-rsl st-rs" x="826" y="198" width="54" height="24" rx="2"/>${S.t(853,240,'gen','c-rs')}
+   <g class="k k4">${B.dna(796,900,212,{a:5,per:18,hl:[828,878]})}${S.t(853,240,'gen','c-rs')}
      <path class="mrna st-rs" d="M842 196 q8 -10 16 0 t16 0 t16 0" fill="none" stroke-width="2.2"/>${S.t(868,176,'ARNm','c-rs')}${S.arrow(860,150,860,92,'rs')}${S.t(860,82,'respuesta','c-rs b')}</g>
    <g class="k k3"><path class="link st-td" pathLength="1" d="M376 160 C 410 160 420 120 450 120 S 520 200 560 205 S 640 128 670 125 S 750 150 790 170" fill="none" stroke-width="2"/>
-     ${S.prot(450,120,24,17,'td','GTP',12)}${S.prot(560,205,24,17,'td')}${S.P(574,191)}${S.prot(670,125,24,17,'td')}${S.P(684,111)}
-     ${[[500,262],[528,282],[556,258],[590,290],[618,264],[470,288]].map(([x,y],i)=>`<g class="msg" style="transition-delay:${(.6+i*.08).toFixed(2)}s">${S.lig(x,y,6,'td')}</g>`).join('')}${S.t(545,312,'segundos mensajeros','c-td')}
+     ${B.blob(450,120,24,17,'td',{seed:401})}${B.gnuc(438,121,3,{s:1.1})}${B.blob(560,205,24,17,'td',{seed:403})}${B.phos(578,190,6)}${B.blob(670,125,24,17,'td',{seed:405})}${B.phos(688,110,6)}
+     ${[[500,262],[528,282],[556,258],[590,290],[618,264],[470,288]].map(([x,y],i)=>`<g class="msg" style="transition-delay:${(.6+i*.08).toFixed(2)}s">${B.mol('camp',x,y,1.35)}</g>`).join('')}${S.t(545,312,'segundos mensajeros','c-td')}
      ${S.t(450,92,'interruptor','c-td')}${S.t(620,240,'cinasas','c-td')}</g>
-   <g class="k k2"><ellipse class="f-rcl st-rc" cx="292" cy="160" rx="13" ry="26"/><rect class="f-rc" x="312" y="150" width="12" height="20" rx="2"/><g class="rin"><ellipse class="f-rcl st-rc" cx="352" cy="160" rx="16" ry="26"/></g>${S.t(318,214,'receptor','c-rc b')}</g>
-   <g class="k k1"><g class="lig">${S.lig(272,160,11)}</g>${S.t(120,252,'molécula señalizadora','c-sg b')}</g>
+   <g class="k k2"><g transform="rotate(90 318 160)">${B.tm7(282,122,{h:76})}</g>${S.t(318,226,'receptor','c-rc b')}</g>
+   <g class="k k1"><g class="lig">${B.mol('amine',268,158,1.5)}</g>${S.t(120,252,'molécula señalizadora','c-sg b')}</g>
   </svg>`;
   const body=`<div class="stg" role="tablist" aria-label="Etapas">${STAGES.map(([c,nm],i)=>`<button type="button" role="tab" data-c="${c}" data-i="${i+1}" aria-selected="false">0${i+1}<span>${nm}</span></button>`).join('')}</div>
    <div class="ex-plate ex-scroll">${svg}</div><div class="stg-txt" aria-live="polite">Toca una etapa, o deja que la animación recorra las cuatro.</div>
@@ -80,8 +79,8 @@ X.ideaCSS=`
 .ed #ex-idea svg:not(.s1) .k1 .tx,.ed #ex-idea svg:not(.s2) .k2,.ed #ex-idea svg:not(.s3) .k3,.ed #ex-idea svg:not(.s4) .k4{opacity:.2}
 .ed #ex-idea .lig{transition:transform 1.2s cubic-bezier(.3,.7,.2,1)}
 .ed #ex-idea svg:not(.s1) .lig{transform:translate(-170px,-80px)}
-.ed #ex-idea .rin{transform-box:fill-box;transform-origin:50% 50%;transition:transform .7s cubic-bezier(.3,.7,.2,1)}
-.ed #ex-idea svg.s2 .rin{transform:rotate(-16deg) translate(3px,-2px) scale(1.06,1)}
+.ed #ex-idea .tm6{transform-box:fill-box;transform-origin:50% 0;transition:transform 1.1s cubic-bezier(.4,0,.2,1) .5s}
+.ed #ex-idea svg.s2 .tm6{transform:rotate(-13deg)}
 .ed #ex-idea .link{stroke-dasharray:1;stroke-dashoffset:0;transition:stroke-dashoffset 1.3s ease}
 .ed #ex-idea svg:not(.s3) .link{stroke-dashoffset:1}
 .ed #ex-idea .msg{transition:transform .8s ease,opacity .6s;transform-box:fill-box}
@@ -96,9 +95,10 @@ const MODES=[
  {id:'para',n:'Paracrina',d:3,how:'Mediadores locales secretados al líquido extracelular.',reach:'Corto: células cercanas',ex:'Factores de crecimiento, mediadores de la inflamación'},
  {id:'sina',n:'Sináptica',d:4,how:'Neurotransmisor liberado en la sinapsis. Es rápida y precisa: recorre una distancia minúscula y se elimina enseguida.',reach:'Muy corto, pero la neurona llega lejos con su axón',ex:'Acetilcolina en la unión neuromuscular'},
  {id:'endo',n:'Endocrina',d:5,how:'Hormona secretada a la sangre. Es lenta (debe viajar y diluirse) y usa concentraciones muy bajas, por eso sus receptores tienen gran afinidad.',reach:'Todo el cuerpo',ex:'Insulina, adrenalina, cortisol'}];
-function cell(x,y,r,cls='',nuc=true){return `<ellipse class="cell ${cls}" cx="${x}" cy="${y}" rx="${r}" ry="${(r*.8).toFixed(1)}"/>${nuc?`<ellipse class="cell-n" cx="${x+r*.12}" cy="${y+r*.08}" rx="${(r*.3).toFixed(1)}" ry="${(r*.26).toFixed(1)}"/>`:''}`}
+function cell(x,y,r,cls='',nuc=true){const ry=r*.8,nx=x+r*.12,ny=y+r*.08;let ch='';if(nuc)for(let i=0;i<12;i++){const a=i*2.4,q=Math.sqrt((i+1)/12)*.8;ch+=`<circle cx="${(nx+Math.cos(a)*r*.3*q).toFixed(1)}" cy="${(ny+Math.sin(a)*r*.26*q).toFixed(1)}" r="${(r*.022+1).toFixed(1)}"/>`}
+  return `<g class="cellg ${cls}"><ellipse class="cell ${cls}" cx="${x}" cy="${y}" rx="${r}" ry="${ry.toFixed(1)}"/><ellipse class="cellm" cx="${x}" cy="${y}" rx="${r}" ry="${ry.toFixed(1)}"/>${nuc?`<ellipse class="cell-n" cx="${nx}" cy="${ny}" rx="${(r*.3).toFixed(1)}" ry="${(r*.26).toFixed(1)}"/><g class="chr">${ch}</g>`:''}</g>`}
 function rmark(x,y,ang){return `<g transform="translate(${x} ${y}) rotate(${ang})"><path class="st-rc" d="M0 0 V-9 M0 -9 l-4 -5 M0 -9 l4 -5" stroke-width="2" fill="none"/></g>`}
-function particles(path,n,dur,cls='sg',r=4.2,rep=3){let o=`<path d="${path}" class="trail" fill="none"/>`;for(let i=0;i<n;i++){const b=(i*dur/n).toFixed(2);o+=`<g opacity="0"><polygon class="f-${cls}" points="0,${-r} ${r},0 0,${r} ${-r},0"/><animateMotion dur="${dur}s" begin="${b}s" repeatCount="${rep}" path="${path}" fill="freeze"/><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.12;.85;1" dur="${dur}s" begin="${b}s" repeatCount="${rep}" fill="freeze"/></g>`}return o}
+function particles(path,n,dur,cls='sg',r=4.2,rep=3){let o=`<path d="${path}" class="trail" fill="none"/>`;for(let i=0;i<n;i++){const b=(i*dur/n).toFixed(2);o+=`<g opacity="0"><circle r="${r}" fill="url(#bv-${cls})"/><animateMotion dur="${dur}s" begin="${b}s" repeatCount="${rep}" path="${path}" fill="freeze"/><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.12;.85;1" dur="${dur}s" begin="${b}s" repeatCount="${rep}" fill="freeze"/></g>`}return o}
 function scene(id){
   switch(id){
   case 'auto':return cell(450,175,95)+rmark(523,124,40)+rmark(538,142,58)+particles('M452 100 C 440 20 600 30 528 116',5,2.6)+S.t(450,300,'la señal vuelve a la misma célula','c-mu');
@@ -128,6 +128,7 @@ function wireComm(fig){
   let seen=false;onView(fig,(v,e)=>{if(v&&!seen&&e.intersectionRatio>=.35){seen=true;show(fig.querySelector('.cm-t.on').dataset.m)}});
 }
 X.commCSS=`
+.ed #ex-com .cell{stroke:var(--e-lh)!important;stroke-width:4.5!important}.ed #ex-com .cellm{fill:none;stroke:var(--e-core);stroke-width:1.4}.ed #ex-com .cellg.far{opacity:.4}.ed #ex-com .chr circle{fill:var(--e-rc);opacity:.35}
 .ed #ex-com .trail{stroke:var(--e-mu);stroke-width:1.2;stroke-dasharray:2 6;opacity:.7}
 .ed #ex-com .ex-tab .dist{display:block;height:3px;width:var(--w);background:var(--e-sg);margin-bottom:6px;opacity:.85}
 .ed #ex-com .ex-side{min-height:240px}

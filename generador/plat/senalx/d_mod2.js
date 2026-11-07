@@ -11,71 +11,24 @@ const RT=[
   ph:['Llega el factor de crecimiento','La señal une dos receptores','Dímero: autofosforilación cruzada de tirosinas','Las tirosinas fosforiladas anclan proteínas con dominio SH2']},
  {id:'nuc',n:'Intracelular (nuclear)',how:'La señal, pequeña e hidrofóbica, cruza la membrana. El receptor es a la vez receptor y regulador de la transcripción.',ex:'Cortisol, estradiol, testosterona, hormonas tiroideas, vitamina D, retinoides',
   ph:['La hormona cruza la membrana','Se une a su receptor (en el citosol, unido a Hsp90)','Se libera de Hsp90 y entra al núcleo','Se une al HRE y activa la transcripción']}];
-function recScene(id){
-  const lab=(x,y,s,c)=>S.t(x,y,s,c);
-  switch(id){
-  case 'canal':return S.memH(0,640,130,40)+S.t(16,116,'EXTERIOR','cap','start')+S.t(16,200,'CITOSOL','cap','start')+
-   `<g class="anim chL"><rect class="f-rcl st-rc" x="290" y="110" width="28" height="80" rx="6"/></g><g class="anim chR"><rect class="f-rcl st-rc" x="320" y="110" width="28" height="80" rx="6"/><path class="st-rc" d="M334 110 v-8" stroke-width="3"/></g>`+
-   [[300,62],[318,48],[336,70],[352,54],[286,48]].map(([x,y],i)=>`<g class="anim ion" style="--x:${319-x}px;--y:${250+i*8-y}px;transition-delay:${(i*.12).toFixed(2)}s">${S.dot(x,y,5,'td')}</g>`).join('')+lab(400,58,'iones','c-td')+
-   `<g class="anim lg">${S.lig(334,94,10)}</g>`+lab(334,236,'receptor nicotínico de acetilcolina','c-rc')+`<g class="p4o">${lab(470,286,'cambia el potencial de membrana','c-td b')}</g>`;
-  case 'gpcr':return S.memH(0,640,120,40)+S.t(16,106,'EXTERIOR','cap','start')+S.t(16,190,'CITOSOL','cap','start')+
-   `<g>${Array.from({length:7},(_,i)=>`<rect class="hx f-rcl st-rc${i===5?' anim h6':''}" x="${248+i*13}" y="104" width="9" height="72" rx="4"/>`).join('')}</g>`+lab(290,96,'','')+
-   `<rect class="f-sgl st-sg" x="452" y="114" width="44" height="52" rx="10"/>`+lab(474,98,'enzima o canal','c-mu')+
-   `<g class="anim ga"><ellipse class="f-tdl st-td" cx="300" cy="206" rx="24" ry="17"/><text class="tx b c-td gdp" x="300" y="210.5" text-anchor="middle">GDP</text><text class="tx b c-of gtp" x="300" y="210.5" text-anchor="middle">GTP</text></g>`+
-   `<ellipse class="f-rsl st-rs" cx="338" cy="210" rx="14" ry="13"/>${S.t(338,214,'βγ','c-rs b')}${S.t(300,250,'proteína G αβγ','c-td')}`+
-   `<g class="anim lg">${S.lig(292,92,10)}</g>`+lab(290,300,'receptor acoplado a proteína G (7 hélices)','c-rc')+`<g class="p4o">${lab(474,232,'α-GTP regula la enzima','c-td b')}</g>`;
-  case 'rtk':{const mono=(x,c)=>`<g class="anim ${c}"><ellipse class="f-rcl st-rc" cx="${x}" cy="84" rx="18" ry="24"/><rect class="f-rc" x="${x-3}" y="108" width="6" height="44"/><rect class="f-rcl st-rc" x="${x-17}" y="152" width="34" height="64" rx="6"/>${S.t(x,190,'Tyr','c-mu')}<g class="pp">${S.P(x,170,8)}${S.P(x,200,8)}</g></g>`;
-   return S.memH(0,640,110,40)+S.t(16,98,'EXTERIOR','cap','start')+S.t(16,180,'CITOSOL','cap','start')+mono(250,'m1')+mono(410,'m2')+
-   `<g class="anim lg"><ellipse class="f-sg" cx="318" cy="48" rx="12" ry="12"/><ellipse class="f-sg" cx="342" cy="48" rx="12" ry="12"/></g>`+
-   `<g class="anim sh2"><ellipse class="f-tdl st-td" cx="520" cy="282" rx="40" ry="19"/>${S.t(520,286,'Grb2 · SH2','c-td b')}</g>`+lab(330,316,'receptor tirosina cinasa','c-rc')}
-  case 'nuc':return S.memH(0,640,46,36)+S.t(16,36,'EXTERIOR','cap','start')+S.t(16,108,'CITOSOL','cap','start')+
-   `<ellipse class="nucf" cx="470" cy="250" rx="170" ry="80"/>${S.t(600,196,'NÚCLEO','cap c-rc')}<path class="st-mu" d="M320 272 H620 M320 279 H620" stroke-width="2"/><rect class="f-sgl st-sg" x="422" y="266" width="52" height="19" rx="2"/>${S.t(448,304,'HRE','c-sg b')}`+
-   `<g class="anim hsp"><ellipse class="f-mul st-mu" cx="206" cy="222" rx="20" ry="13"/>${S.t(206,226,'Hsp90','c-mu')}</g>`+
-   `<g class="anim nr"><ellipse class="f-rcl st-rc" cx="180" cy="196" rx="24" ry="18"/>${S.t(180,200,'receptor','c-rc b')}</g>`+
-   `<g class="anim lg">${S.lig(160,180,9)}</g>`+`<g class="p4o"><path class="st-rs" d="M480 262 q8 -10 16 0 t16 0 t16 0 t16 0" fill="none" stroke-width="2.4"/>${S.t(560,240,'ARNm','c-rs b')}</g>`;
-  }
-}
 function rec(n){
-  const body=`<div class="ex-ctl" role="tablist" aria-label="Tipo de receptor">${RT.map((r,i)=>`<button type="button" class="ex-tab rc-t${i===1?' on':''}" data-r="${r.id}" role="tab" aria-selected="${i===1}">${r.n}</button>`).join('')}<span class="sep"></span><button type="button" class="act" data-a="replay">Repetir</button></div>
-   <ol class="rph"></ol><div class="ex-plate ex-scroll"><svg viewBox="0 0 640 330" role="img" aria-label="Animación del receptor"></svg></div>
+  const body=`<div class="ex-ctl" role="tablist" aria-label="Tipo de receptor">${RT.map((r,i)=>`<button type="button" class="ex-tab rc-t${i===1?' on':''}" data-r="${r.id}" role="tab" aria-selected="${i===1}">${r.n}</button>`).join('')}</div>
+   <div class="rc-host"></div>
    <div class="tw"><table class="cmp rtab"><tr><th>Receptor</th><th>Cómo funciona</th><th>Ejemplo</th></tr>${RT.map(r=>`<tr data-r="${r.id}"><td><b>${r.n}</b></td><td>${r.how}</td><td>${r.ex}</td></tr>`).join('')}</table></div>`;
-  return frame('rec',n,'Cuatro maneras de recibir una señal',body,'Cada receptor recorre la misma secuencia: ligando → unión → cambio de forma → señal dentro de la célula. Lo que cambia es qué hace el receptor al cambiar de forma.',['A','L']);
+  return frame('rec',n,'Cuatro maneras de recibir una señal',body,'Cada receptor recorre la misma secuencia: ligando → unión → cambio de forma → señal dentro de la célula. Lo que cambia es qué hace el receptor al cambiar de forma. Toca una fase para verla, o reproduce la secuencia completa. Estructuras dibujadas a partir de modelos atómicos publicados (PDB 3SN6, 2BG9), simplificadas.',['A','L']);
 }
 function wireRec(fig){
-  let timers=[];
-  const setP=(svg,p,r)=>{svg.setAttribute('class','t-'+r.id+' '+[1,2,3,4].filter(i=>i<=p).map(i=>'p'+i).join(' '));fig.querySelectorAll('.rph li').forEach((li,i)=>{li.classList.toggle('on',i<p);li.classList.toggle('cur',i===p-1)})};
-  const show=(id,anim=true)=>{timers.forEach(clearTimeout);timers=[];const r=RT.find(x=>x.id===id);const old=fig.querySelector('.ex-plate svg');const ns=old.cloneNode(false);ns.innerHTML=recScene(id);old.replaceWith(ns);
-    fig.querySelector('.rph').innerHTML=r.ph.map((p,i)=>`<li><span>0${i+1}</span>${p}</li>`).join('');
+  const host=fig.querySelector('.rc-host');let pl=null,seen=false,vis=false;
+  const show=(id,auto)=>{if(pl){pl.pause();pl.obs&&pl.obs.disconnect()}pl=X.SC.mount(host,X.SC[id]());
     fig.querySelectorAll('.rc-t').forEach(b=>{const on=b.dataset.r===id;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});fig.querySelectorAll('.rtab tr[data-r]').forEach(tr=>tr.classList.toggle('on',tr.dataset.r===id));
-    fig._r=id;
-    if(!anim||RM()){setP(ns,4,r);return}
-    setP(ns,0,r);void ns.getBoundingClientRect();[1,2,3,4].forEach((p,i)=>timers.push(setTimeout(()=>setP(ns,p,r),250+i*1250)))};
-  fig.querySelectorAll('.rc-t').forEach(b=>b.onclick=()=>show(b.dataset.r));
-  fig.querySelector('[data-a=replay]').onclick=()=>show(fig._r);
+    fig._r=id;if(auto)pl.play(0)};
+  fig.querySelectorAll('.rc-t').forEach(b=>b.onclick=()=>show(b.dataset.r,true));
   show('gpcr',false);
-  let seen=false;onView(fig,(v,e)=>{if(v&&!seen&&e.intersectionRatio>=.35){seen=true;show(fig._r)}});
+  X.B.seen(fig,(v,e)=>{if(v&&!seen&&e&&e.intersectionRatio>=.35){seen=true;pl.play(0)}});
 }
 X.recCSS=`
-.ed #ex-rec .rph{list-style:none;padding:0;margin:0 0 10px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--e-rule)}
-.ed #ex-rec .rph li{padding:10px 12px 10px 0;font-size:14.5px;line-height:1.4;color:var(--e-mut);border-top:3px solid transparent;margin:-2px 0 0;transition:color .3s,border-color .3s}
-.ed #ex-rec .rph li::before{display:none}.ed #ex-rec .rph li span{display:block;font:500 11px var(--e-mono);letter-spacing:.12em;margin-bottom:4px}
-.ed #ex-rec .rph li.on{color:var(--e-ink)}.ed #ex-rec .rph li.cur{border-color:var(--e-rc)}
-@media (max-width:640px){.ed #ex-rec .rph{grid-template-columns:1fr 1fr}}
 .ed #ex-rec .rtab tr.on td{background:var(--e-rcl)}
-.ed #ex-rec svg .p4o{opacity:0;transition:opacity .6s}.ed #ex-rec svg.p4 .p4o{opacity:1}
-.ed #ex-rec svg:not(.p2) .lg{transform:translate(-170px,-40px)}.ed #ex-rec svg:not(.p1) .lg{opacity:.25}
-.ed #ex-rec svg.t-canal.p3 .chL{transform:translate(-12px,0)}.ed #ex-rec svg.t-canal.p3 .chR{transform:translate(12px,0)}
-.ed #ex-rec svg.t-canal.p4 .ion{transform:translate(var(--x),var(--y))}
-.ed #ex-rec svg.t-gpcr .h6{transform-box:fill-box;transform-origin:50% 100%}.ed #ex-rec svg.t-gpcr.p3 .h6{transform:rotate(14deg)}
-.ed #ex-rec svg .gtp{opacity:0;transition:opacity .4s}.ed #ex-rec svg.p3 .gtp{opacity:1}.ed #ex-rec svg.p3 .gdp{opacity:0}.ed #ex-rec svg .gdp{transition:opacity .4s}
-.ed #ex-rec svg.t-gpcr.p4 .ga{transform:translate(174px,-20px)}
-.ed #ex-rec svg.t-rtk.p3 .m1{transform:translate(55px,0)}.ed #ex-rec svg.t-rtk.p3 .m2{transform:translate(-55px,0)}
-.ed #ex-rec svg.t-rtk .pp{opacity:0;transition:opacity .5s .2s}.ed #ex-rec svg.t-rtk.p3 .pp{opacity:1}
-.ed #ex-rec svg.t-rtk:not(.p2) .lg{transform:translate(-160px,-30px)}
-.ed #ex-rec svg.t-rtk.p4 .sh2{transform:translate(-128px,-50px)}
-.ed #ex-rec svg.t-nuc:not(.p1) .lg{transform:translate(-60px,-170px)}.ed #ex-rec svg.t-nuc.p1:not(.p2) .lg{transform:translate(-40px,-60px)}
-.ed #ex-rec svg.t-nuc.p3 .hsp{transform:translate(30px,70px);opacity:0}
-.ed #ex-rec svg.t-nuc.p3 .nr,.ed #ex-rec svg.t-nuc.p3 .lg{transform:translate(268px,62px)}
+.ed #ex-rec .rc-host{margin-top:6px}
 `;
 // ======================= FIG. 4 · CASCADAS =======================
 const PW={
@@ -118,6 +71,10 @@ const PW={
   ['ak',4,1,'','td','Akt','Se ancla al PIP₃ y es activada por otras cinasas.','pi'],
   ['x2',5,1,'','rs','Supervivencia · crecimiento · GLUT4','Fosforila a Bad, activa mTOR y lleva GLUT4 a la membrana.','ak'],
   ['o',6,1,'','of','Ras-GAP','Acelera la hidrólisis del GTP de Ras: la apaga.','ras','off']]}};
+const LOC={gs:{l:'ex',r:'mem',g:'mem',e:'mem',m:'cyt',k:'cyt',t1:'cyt',t2:'nuc',x1:'cyt',x2:'nuc',o:'cyt'},
+ gq:{l:'ex',r:'mem',g:'mem',e:'mem',s:'mem',m1:'cyt',m2:'mem',c:'er',ca:'cyt',pkc:'cyt',cam:'cyt',ck:'cyt',o:'er'},
+ rtk:{l:'ex',r:'mem',p:'mem',a:'cyt',s:'cyt',ras:'mem',k1:'cyt',x:'nuc',pi:'mem',ak:'cyt',x2:'cyt',o:'cyt'}};
+const LOCN={ex:'Exterior',mem:'Membrana',cyt:'Citosol',nuc:'Núcleo',er:'Retículo'};
 function casSVG(pid){
   const P=PW[pid],cx=[214,446],rowH=62,top=34;const pos={};P.nodes.forEach(nd=>pos[nd[0]]={x:cx[nd[2]],y:top+nd[1]*rowH});
   const H=top+Math.max(...P.nodes.map(n=>n[1]))*rowH+44;
@@ -131,18 +88,27 @@ function casSVG(pid){
     const g=c==='sg'?S.lig(x,y,11):c==='of'?`<rect class="nb" x="${x-12}" y="${y-12}" width="24" height="24" rx="3"/>`:`<circle class="nb" cx="${x}" cy="${y}" r="13"/>`;
     nodes+=`<g class="cn c-${c}${off?' off':''}" data-i="${i}" tabindex="0" role="button" aria-label="${esc(label)}">${g}<text class="tx b nl" x="${x+22}" y="${y+4.5}" text-anchor="start">${esc(label)}</text></g>`});
   (P.extra||[]).forEach(([a,b])=>edges+=edge(a,b,false,P.nodes.findIndex(n=>n[0]===b)));
-  return {svg:`<svg viewBox="0 0 640 ${H}" role="img" aria-label="Cascada ${esc(P.n)}"><line class="rl" x1="150" y1="10" x2="150" y2="${H-10}"/>${roles}${edges}${nodes}</svg>`,H};
+  // riel de ubicación: dónde ocurre cada paso (según el nodo de la columna izquierda de cada fila)
+  const L=LOC[pid]||{};const rowLoc={};P.nodes.forEach(nd=>{if(nd[2]===0)rowLoc[nd[1]]=L[nd[0]]||'cyt'});
+  let rail='',prev=null,segs=[];Object.keys(rowLoc).map(Number).sort((a,b)=>a-b).forEach(r=>{const lc=rowLoc[r];if(lc!==prev){segs.push([lc,r,r]);prev=lc}else segs[segs.length-1][2]=r});
+  segs.forEach(([lc,a,b])=>{const y0=top+a*rowH-rowH/2+4,y1=top+b*rowH+rowH/2-4;rail+=`<rect class="loc l-${lc}" x="146" y="${y0}" width="8" height="${y1-y0}" rx="4"/><title>${LOCN[lc]}</title>`});
+  // fondo del núcleo para los nodos de la columna derecha que ocurren allí
+  let nucbg='';P.nodes.forEach(nd=>{if(L[nd[0]]==='nuc'&&nd[2]===1){const {x,y}=pos[nd[0]];nucbg+=`<rect class="nucbg" x="${x-24}" y="${y-22}" width="${Math.min(176,lw[nd[0]]+40)}" height="44" rx="14"/>`}});
+  return {svg:`<svg viewBox="0 0 640 ${H}" role="img" aria-label="Cascada ${esc(P.n)}">${nucbg}${rail}${roles}${edges}${nodes}<circle class="pulse" r="7" cx="-20" cy="-20" fill="url(#bg-glowtd)"/><circle class="pulsec" r="3.4" cx="-20" cy="-20"/></svg>`,H};
 }
 function cas(n){
   const body=`<div class="ex-ctl" role="tablist" aria-label="Vía">${Object.entries(PW).map(([k,p],i)=>`<button type="button" class="ex-tab cs-t${i?'':' on'}" data-p="${k}" role="tab" aria-selected="${!i}">${p.n}</button>`).join('')}<span class="sep"></span>
    <button type="button" class="act" data-a="play">Reproducir</button><button type="button" data-a="pause">Pausa</button><button type="button" data-a="reset">Reiniciar</button></div>
-   <div class="ex-plate cs-plate"></div><div class="ex-readout" aria-live="polite"></div>`;
+   <div class="ex-plate cs-plate"></div><div class="cs-leg"><span>Dónde ocurre:</span>${Object.entries(LOCN).map(([k,v])=>`<span><i class="l-${k}"></i>${v}</span>`).join('')}</div><div class="ex-readout" aria-live="polite"></div>`;
   return frame('cas',n,'La cascada, molécula por molécula',body,'Baja con el scroll y cada componente se activa al cruzar la mitad de la pantalla; también puedes reproducirla sola, pausarla o reiniciarla. Toca cualquier molécula para ver qué hace. En rojo, lo que apaga la vía.',['A','L']);
 }
 function wireCas(fig){
   let pid='gs',k=-1,mode='scroll',timer=null,raf=0,live=false;const plate=fig.querySelector('.cs-plate'),ro=fig.querySelector('.ex-readout');
   const order=()=>PW[pid].nodes;
-  const paint=()=>{const N=order();fig.querySelectorAll('.cn').forEach(g=>{const i=+g.dataset.i;g.classList.toggle('on',i<=k);g.classList.toggle('cur',i===k)});
+  let praf=0;const pulse=i=>{const svg=plate.querySelector('svg');if(!svg||X.RM())return;const e=svg.querySelector(`.cl[data-i="${i}"]`);const p=svg.querySelector('.pulse'),c=svg.querySelector('.pulsec');if(!e||!p)return;cancelAnimationFrame(praf);const L=e.getTotalLength(),t0=performance.now();
+    const st=now=>{const u=Math.min(1,(now-t0)/650);const q=e.getPointAtLength(L*X.B.ease(u));[p,c].forEach(n=>{n.setAttribute('cx',q.x);n.setAttribute('cy',q.y)});if(u<1)praf=requestAnimationFrame(st);else[p,c].forEach(n=>n.setAttribute('cx',-20))};praf=requestAnimationFrame(st)};
+  let lastK=-1;
+  const paint=()=>{const N=order();if(k>lastK&&k>0)pulse(k);lastK=k;fig.querySelectorAll('.cn').forEach(g=>{const i=+g.dataset.i;g.classList.toggle('on',i<=k);g.classList.toggle('cur',i===k)});
     fig.querySelectorAll('.cl').forEach(p=>p.classList.toggle('on',+p.dataset.i<=k));
     const nd=N[Math.max(0,Math.min(k,N.length-1))];ro.innerHTML=k<0?'Baja para ver la cascada activarse, o pulsa Reproducir.':`<b>Ahora actúa: ${esc(nd[5])}</b> · ${esc(nd[6])}`};
   const load=p=>{pid=p;const {svg}=casSVG(p);plate.innerHTML=svg;fig.querySelectorAll('.cs-t').forEach(b=>{const on=b.dataset.p===p;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});
@@ -163,7 +129,11 @@ function wireCas(fig){
   fig._cleanup=()=>removeEventListener('scroll',onScroll);
 }
 X.casCSS=`
-.ed #ex-cas .rl{stroke:var(--e-rule);stroke-width:1}
+.ed #ex-cas .loc{opacity:.85}.ed #ex-cas .l-ex{fill:var(--e-exo);stroke:var(--e-rule)}.ed #ex-cas .l-mem{fill:var(--e-lh)}.ed #ex-cas .l-cyt{fill:var(--e-plate2);stroke:var(--e-rule)}.ed #ex-cas .l-nuc{fill:var(--e-rc);opacity:.55}.ed #ex-cas .l-er{fill:var(--e-rs);opacity:.55}
+.ed #ex-cas .cs-leg{display:flex;flex-wrap:wrap;gap:4px 16px;padding:8px 14px;background:var(--e-plate);font:500 11px var(--e-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--e-mut)}
+.ed #ex-cas .cs-leg i{display:inline-block;width:8px;height:14px;border-radius:4px;vertical-align:-3px;margin-right:6px}.ed #ex-cas .cs-leg i.l-ex{background:var(--e-exo);border:1px solid var(--e-rule)}.ed #ex-cas .cs-leg i.l-mem{background:var(--e-lh)}.ed #ex-cas .cs-leg i.l-cyt{background:var(--e-plate2);border:1px solid var(--e-rule)}.ed #ex-cas .cs-leg i.l-nuc{background:var(--e-rc);opacity:.55}.ed #ex-cas .cs-leg i.l-er{background:var(--e-rs);opacity:.55}
+.ed #ex-cas .nucbg{fill:var(--e-nuc);stroke:var(--e-rc);stroke-width:.8;stroke-dasharray:3 3}
+.ed #ex-cas .pulsec{fill:var(--e-td);stroke:var(--e-paper);stroke-width:1.2}
 .ed #ex-cas .cl{fill:none;stroke:var(--e-rule);stroke-width:2;stroke-dasharray:1;stroke-dashoffset:0}
 .ed #ex-cas .cl.off{stroke-dasharray:.03 .03}
 .ed #ex-cas .cl.on{stroke:var(--e-td);animation:edDraw .7s ease both}
@@ -179,26 +149,27 @@ X.casCSS=`
 .ed #ex-cas .cn.cur .nb,.ed #ex-cas .cn.cur polygon{stroke-width:4;filter:drop-shadow(0 0 6px var(--e-tdl))}
 .ed #ex-cas .cn:focus-visible .nb{stroke:var(--e-ink);stroke-width:3}
 .ed #ex-cas .tx.cap{font-size:10.5px}
+.ed #ex-cas .cn.on.c-td .nb{fill:url(#bv-td)}.ed #ex-cas .cn.on.c-rc .nb{fill:url(#bv-rc)}.ed #ex-cas .cn.on.c-rs .nb{fill:url(#bv-rs)}.ed #ex-cas .cn.on.c-mu .nb{fill:url(#bv-mu)}
 @media (max-width:640px){.ed #ex-cas .cn .nl{font-size:24px}.ed #ex-cas .tx.cap,.ed #ex-cas .rl{display:none}.ed #ex-cas .cn .nb{r:15px}}
 `;
 // ======================= FIG. 5 · SEGUNDOS MENSAJEROS =======================
 const MSG=[
  {id:'ampc',n:'AMPc',shape:'dia',from:'Adenilil ciclasa, activada por Gαs, a partir de ATP',act:'PKA: se une a sus subunidades R y libera a las C',eff:'Fosforilación de enzimas (degradación del glucógeno) y de CREB (genes)',off:'AMPc fosfodiesterasa: AMPc → AMP',src:[200,92],dst:[470,214]},
  {id:'ip3',n:'IP₃',shape:'tri',from:'Fosfolipasa C-β: corta el PIP₂ de la membrana',act:'Canales de Ca²⁺ del retículo endoplásmico',eff:'El Ca²⁺ sale al citosol',src:[320,96],dst:[176,232]},
- {id:'dag',n:'DAG',shape:'lip',from:'Fosfolipasa C-β: la otra mitad del PIP₂; queda en la membrana',act:'Proteína cinasa C (PKC), junto con el Ca²⁺',eff:'La PKC fosforila otras proteínas',src:[340,78],dst:[452,78]},
+ {id:'dag',n:'DAG',shape:'lip',from:'Fosfolipasa C-β: la otra mitad del PIP₂; queda en la membrana',act:'Proteína cinasa C (PKC), junto con el Ca²⁺',eff:'La PKC fosforila otras proteínas',src:[340,90],dst:[440,90]},
  {id:'ca',n:'Ca²⁺',shape:'cir',from:'Retículo endoplásmico (y exterior), donde está miles de veces más concentrado que en el citosol (≈10⁻⁷ M)',act:'Calmodulina (4 sitios de unión) → CaM-cinasas; con DAG, la PKC',eff:'Fosforilación de muchas dianas; en el músculo, se une a la troponina',off:'Bombas que gastan ATP mantienen bajo el Ca²⁺ citosólico',src:[176,240],dst:[478,214]},
  {id:'gmpc',n:'GMPc',shape:'sq',from:'Guanilil ciclasa, activada por el óxido nítrico',act:'PKG',eff:'Baja el Ca²⁺ y el músculo liso se relaja: el vaso se dilata',src:[300,186],dst:[478,214]}];
-function msgShape(sh,x,y,c){const r=5.5;return sh==='dia'?`<polygon class="f-${c}" points="${x},${y-r} ${x+r},${y} ${x},${y+r} ${x-r},${y}"/>`:sh==='tri'?`<polygon class="f-${c}" points="${x},${y-r} ${x+r},${y+r*.8} ${x-r},${y+r*.8}"/>`:sh==='lip'?`<g class="st-${c}" stroke-width="2.4"><path d="M${x-2} ${y-8} V${y+4} M${x+2} ${y-8} V${y+4}"/></g><circle class="f-${c}" cx="${x}" cy="${y+6}" r="3.6"/>`:sh==='sq'?`<rect class="f-${c}" x="${x-4.5}" y="${y-4.5}" width="9" height="9" rx="1.5"/>`:`<circle class="f-${c}" cx="${x}" cy="${y}" r="${r-1}"/>`}
+function msgShape(sh,x,y,c){const B=X.B;const k={dia:'camp',tri:'ip3',lip:'dag',cir:'ca',sq:'gmpc'}[sh];if(k)return B.mol(k,x,y,k==='ca'?1.3:1.25);const r=5.5;return sh==='dia'?`<polygon class="f-${c}" points="${x},${y-r} ${x+r},${y} ${x},${y+r} ${x-r},${y}"/>`:sh==='tri'?`<polygon class="f-${c}" points="${x},${y-r} ${x+r},${y+r*.8} ${x-r},${y+r*.8}"/>`:sh==='lip'?`<g class="st-${c}" stroke-width="2.4"><path d="M${x-2} ${y-8} V${y+4} M${x+2} ${y-8} V${y+4}"/></g><circle class="f-${c}" cx="${x}" cy="${y+6}" r="3.6"/>`:sh==='sq'?`<rect class="f-${c}" x="${x-4.5}" y="${y-4.5}" width="9" height="9" rx="1.5"/>`:`<circle class="f-${c}" cx="${x}" cy="${y}" r="${r-1}"/>`}
 function msgBase(){
-  return S.memH(0,640,60,36)+S.t(14,48,'EXTERIOR','cap','start')+S.t(14,122,'CITOSOL','cap','start')+
+  const B=X.B;return `<rect class="b-exo" width="640" height="60"/>`+B.bilayer(B.line(0,640,78,8),{t:13,skip:x=>(x>176&&x<224)})+S.t(14,40,'EXTERIOR','cap','start')+S.t(14,122,'CITOSOL','cap','start')+
    `<path class="er" d="M30 330 V264 Q30 232 62 232 H250 Q282 232 282 264 V330"/>${S.t(46,316,'RETÍCULO ENDOPLÁSMICO','cap c-rs','start')}`+
-   `<g class="src s-ampc"><rect class="f-sgl st-sg" x="182" y="56" width="36" height="44" rx="8"/>${S.t(200,130,'adenilil ciclasa','c-mu')}</g>`+
-   `<g class="src s-ip3 s-dag"><rect class="f-sgl st-sg" x="296" y="96" width="50" height="22" rx="8"/>${S.t(321,111,'PLC-β','c-sg b')}</g>`+
-   `<g class="src s-ca"><rect class="f-rsl st-rs" x="164" y="226" width="12" height="20" rx="2"/><rect class="f-rsl st-rs" x="180" y="226" width="12" height="20" rx="2"/>${S.t(186,268,'canal de Ca²⁺','c-rs')}</g>`+
-   `<g class="src s-gmpc"><ellipse class="f-tdl st-td" cx="300" cy="186" rx="40" ry="16"/>${S.t(300,190,'guanilil ciclasa','c-td')}</g>`+
-   `<g class="tgt t-ampc"><ellipse class="f-ofl st-of" cx="470" cy="214" rx="34" ry="20"/>${S.t(470,218,'PKA','c-of b')}</g>`+
-   `<g class="tgt t-ca t-gmpc"><ellipse class="f-rsl st-rs" cx="478" cy="214" rx="44" ry="20"/>${S.t(478,218,'','')}</g>`+
-   `<g class="tgt t-dag"><ellipse class="f-ofl st-of" cx="452" cy="112" rx="30" ry="16"/>${S.t(452,116,'PKC','c-of b')}</g>`;
+   `<g class="src s-ampc"><g transform="translate(182 56) scale(.5)">${B.acyc(0,0,{h:44})}</g>${S.t(200,130,'adenilil ciclasa','c-mu')}</g>`+
+   `<g class="src s-ip3 s-dag">${B.blob(321,107,26,12,'sg',{seed:421})}${S.t(321,111,'PLC-β','c-sg b')}</g>`+
+   `<g class="src s-ca">${B.helix(166,224,8,24,'rs',{step:4})}${B.helix(182,224,8,24,'rs',{step:4})}${S.t(186,268,'canal de Ca²⁺','c-rs')}</g>`+
+   `<g class="src s-gmpc">${B.blob(300,186,40,16,'td',{seed:423})}${S.t(300,190,'guanilil ciclasa','c-td')}</g>`+
+   `<g class="tgt t-ampc">${B.blob(470,214,34,20,'of',{seed:425})}${S.t(470,218,'PKA','c-of b')}</g>`+
+   `<g class="tgt t-ca t-gmpc">${B.blob(478,214,44,20,'rs',{seed:427})}${S.t(478,218,'','')}</g>`+
+   `<g class="tgt t-dag">${B.blob(452,112,30,16,'of',{seed:429})}${S.t(452,116,'PKC','c-of b')}</g>`;
 }
 function msg(n){
   const body=`<div class="ex-ctl" role="tablist" aria-label="Segundo mensajero">${MSG.map((m,i)=>`<button type="button" class="ex-tab ms-t${i?'':' on'}" data-m="${m.id}" role="tab" aria-selected="${!i}">${m.n}</button>`).join('')}</div>
@@ -222,7 +193,7 @@ function wireMsg(fig){
   let seen=false;onView(fig,(v,e)=>{if(v&&!seen&&e.intersectionRatio>=.35){seen=true;show(svg.dataset.m)}});
 }
 X.msgCSS=`
-.ed #ex-msg .er{fill:var(--e-rsl);stroke:var(--e-rs);stroke-width:1.4}
+.ed #ex-msg .er{fill:var(--e-rsl);stroke:color-mix(in srgb,var(--e-lh) 80%,#000);stroke-width:3.4}
 .ed #ex-msg .src,.ed #ex-msg .tgt{opacity:.28;transition:opacity .4s}
 .ed #ex-msg svg[data-m=ampc] .s-ampc,.ed #ex-msg svg[data-m=ampc] .t-ampc,.ed #ex-msg svg[data-m=ip3] .s-ip3,.ed #ex-msg svg[data-m=ip3] .s-ca,.ed #ex-msg svg[data-m=dag] .s-dag,.ed #ex-msg svg[data-m=dag] .t-dag,.ed #ex-msg svg[data-m=ca] .s-ca,.ed #ex-msg svg[data-m=ca] .t-ca,.ed #ex-msg svg[data-m=gmpc] .s-gmpc,.ed #ex-msg svg[data-m=gmpc] .t-gmpc{opacity:1}
 .ed #ex-msg .mp{transform:translate(var(--x),var(--y))}
