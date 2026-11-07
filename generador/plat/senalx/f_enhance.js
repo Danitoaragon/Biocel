@@ -13,7 +13,7 @@ function enhance(art,ctx){
   if(!art||art.dataset.ed)return;art.dataset.ed='1';
   cleanups.forEach(f=>{try{f()}catch(e){}});cleanups=[];
   if(!document.getElementById('ed-fonts')){const l=document.createElement('link');l.id='ed-fonts';l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=IBM+Plex+Mono:wght@400;500;600&display=swap';document.head.appendChild(l)}
-  if(!document.getElementById('ed-css')){const s=document.createElement('style');s.id='ed-css';s.textContent=X.css+X.bioCSS+X.scCSS+X.escCSS+X.ideaCSS+X.commCSS+X.recCSS+X.casCSS+X.msgCSS+X.ampCSS+X.termCSS+X.cellCSS+X.sumCSS;document.head.appendChild(s)}
+  if(!document.getElementById('ed-css')){const s=document.createElement('style');s.id='ed-css';s.textContent=X.css+X.bioCSS+X.scCSS+X.escCSS+X.c3CSS+X.ideaCSS+X.commCSS+X.recCSS+X.casCSS+X.msgCSS+X.ampCSS+X.termCSS+X.cellCSS+X.sumCSS;document.head.appendChild(s)}
   art.classList.add('ed');
   if(!art.querySelector(':scope>.b-defs'))art.insertAdjacentHTML('afterbegin',X.B.defs());const rd=art.closest('.reader');if(rd)rd.classList.add('ed-r');
   // ---- portada ----

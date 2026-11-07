@@ -14,41 +14,6 @@ const LV=[
  {n:'Mecanismo',q:'¿Qué cambia?',a:'Reproduce el mecanismo: ligando → unión → cambio de forma → activación de la proteína G → transducción.'}];
 const myM=x=>250+26*Math.sin((x-80)/260);
 const FOC=[[478,172],[452,myM(452)],[0,0]];// foco de cada escala (se calcula para la bicapa)
-// ---------- escala 1: tejido con la célula diana y un capilar ----------
-function lvCell(){
-  const R=B.rng(5);let cells='';
-  const cl=[[250,120,120,96,1],[640,96,150,90,2],[800,330,120,140,3],[150,390,110,100,4],[560,300,170,140,0]];
-  cl.forEach(([x,y,rx,ry,s],i)=>{const tgt=i===4;const d=B.blobPath(x,y,rx,ry,30+s,.07,14);
-    let chrom='';for(let k=0;k<26;k++){const a=R()*Math.PI*2,r=Math.sqrt(R())*.28;chrom+=`<circle cx="${f1(x+rx*.12+Math.cos(a)*rx*r)}" cy="${f1(y+Math.sin(a)*ry*r)}" r="${f1(1+R()*2.2)}"/>`}
-    cells+=`<g class="sc-cell${tgt?' tgt':''}"><path class="sc-cyt" d="${d}"/><path class="sc-pm" d="${d}"/>${tgt?`<path class="sc-pm2" d="${d}"/>`:''}
-      <ellipse class="sc-nuc" cx="${x+rx*.12}" cy="${y}" rx="${f1(rx*.34)}" ry="${f1(ry*.32)}"/><g class="sc-chr">${chrom}</g><circle class="sc-nl" cx="${f1(x+rx*.2)}" cy="${f1(y-ry*.06)}" r="${f1(rx*.06)}"/>
-      ${tgt?`<g class="sc-org">${[0,1,2,3].map(k=>`<ellipse cx="${f1(x-rx*.55+k*18)}" cy="${f1(y+ry*.45-k*6)}" rx="14" ry="5.5" transform="rotate(${-20+k*12} ${f1(x-rx*.55+k*18)} ${f1(y+ry*.45-k*6)})"/>`).join('')}</g>`:''}</g>`});
-  let rbc='';[[60,250],[110,226],[40,206],[160,214]].forEach(([x,y],i)=>rbc+=`<g class="sc-rbc"><ellipse cx="${x}" cy="${y}" rx="15" ry="9"/><ellipse class="in" cx="${x}" cy="${y}" rx="7" ry="3.6"/></g>`);
-  let hor='';for(let i=0;i<14;i++){const t=i/13;hor+=`<circle class="sc-h" cx="${f1(200+t*240+R()*30)}" cy="${f1(236-t*60+R()*30)}" r="2.6"/>`}
-  return `<rect class="sc-ecm" width="${W}" height="${H}"/>
-   <path class="sc-cap" d="M-20 178 C 120 168 210 200 240 260 L 220 280 C 180 222 110 254 -20 264 Z"/>${rbc}${cells}${hor}
-   <text class="b-zone" x="24" y="${H-18}">Tejido · célula diana</text><text class="b-tag" x="30" y="160">capilar</text><text class="b-tag" x="560" y="470" text-anchor="middle">célula diana</text>
-   <g class="sc-foc" data-go="1" role="button" tabindex="0" aria-label="Acercarse a la membrana"><circle cx="${FOC[0][0]}" cy="${FOC[0][1]}" r="28"/><text class="b-tag" x="${FOC[0][0]+34}" y="${FOC[0][1]-30}">membrana plasmática</text></g>`;
-}
-// ---------- escala 2: un tramo de membrana con sus proteínas ----------
-function lvMem(){
-  const my=myM;
-  const prot=[[150,'b'],[262,'r'],[452,'r'],[600,'c'],[760,'b']];
-  const skip=(x)=>prot.some(([px,k])=>Math.abs(x-px)<(k==='r'?36:k==='c'?26:22));
-  const pts=B.sample(t=>[t,my(t)],-20,W+20,9);
-  let p='';prot.forEach(([x,k],i)=>{const y=my(x);if(k==='r')p+=`<g transform="translate(${x-34} ${y-38}) scale(1)">${B.tm7(0,0,{h:76,gap:9.5,w:8})}</g>`;
-    else if(k==='c')p+=`${B.blob(x-12,y,13,30,'rs',{seed:101})}${B.blob(x+12,y,13,30,'rs',{seed:103})}`;
-    else p+=B.blob(x,y,20,34,'mu',{seed:105+i,rough:.1})});
-  const per=`${B.blob(330,my(330)+30,20,12,'td',{seed:111})}${B.blob(690,my(690)+28,17,11,'of',{seed:113})}`;
-  let act='';for(let k=0;k<4;k++){let d='';for(let x=-20;x<W+20;x+=7){const y=my(x)+52+k*20+Math.sin(x/40+k)*6;d+=`<circle cx="${x}" cy="${f1(y)}" r="2.6"/>`}act+=`<g class="sc-act">${d}</g>`}
-  let ligs='';[[120,90],[300,60],[520,110],[700,70],[840,120]].forEach(([x,y],i)=>ligs+=B.mol(i%2?'amine':'gf',x,y,1.2));
-  return `<rect class="b-exo" width="${W}" height="${H}"/><path class="b-cyto" d="M-20 ${my(-20)} ${Array.from({length:50},(_,i)=>{const x=-20+i*19;return `L${x} ${f1(my(x))}`}).join(' ')} L${W+20} ${H} L-20 ${H}Z"/>
-   ${act}${B.bilayer(pts,{t:14,r:3.8,skip})}${p}${per}${ligs}
-   <text class="b-zone" x="24" y="30">Exterior</text><text class="b-zone" x="24" y="${H-18}">Citoplasma</text>
-   <text class="b-tag" x="150" y="${f1(my(150)-46)}" text-anchor="middle">proteína integral</text><text class="b-tag" x="330" y="${f1(my(330)+60)}" text-anchor="middle">proteína periférica</text>
-   <text class="b-tag" x="${W-24}" y="420" text-anchor="end">filamentos del citoesqueleto</text>
-   <g class="sc-foc" data-go="2" role="button" tabindex="0" aria-label="Acercarse a la bicapa y al receptor"><circle cx="${FOC[1][0]}" cy="${FOC[1][1]}" r="44"/><text class="b-tag" x="${FOC[1][0]}" y="${FOC[1][1]-54}" text-anchor="middle">receptor en la bicapa</text></g>`;
-}
 // ---------- escala 3: bloque de bicapa en proyección isométrica ----------
 const BW=120,BD=84,BH=26,HR=2.7,GAP=6.2;
 const RC=[60,42];// receptor (siete cilindros en anillo)
@@ -100,7 +65,7 @@ function scale(n){
   const rail=LV.map((l,i)=>`<li><button type="button" data-lv="${i}" aria-pressed="false"><span class="nn">${i+1}</span><span class="nm">${l.n}</span><span class="qq">${l.q}</span></button></li>`).join('');
   const body=`<div class="sc-wrap"><ol class="sc-rail" aria-label="Escala">${rail}</ol>
     <div class="sc-main"><div class="ex-plate sc-plate" tabindex="0" role="group" aria-label="Figura con cinco escalas. Usa las teclas más y menos, o las flechas, para acercarte o alejarte."><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Acercamiento progresivo de la célula diana a la molécula receptora">
-      <defs><radialGradient id="sc-vg" r=".75"><stop class="a" offset=".4" stop-color="#fff"/><stop class="b" offset=".62" stop-color="#000"/></radialGradient><mask id="sc-mk" maskContentUnits="userSpaceOnUse"><rect width="${W}" height="${H}" fill="url(#sc-vg)"/></mask></defs><g data-l="0">${lvCell()}</g><g data-l="1">${lvMem()}</g><g data-l="2"></g><g data-l="3"></g></svg>
+      <defs><radialGradient id="sc-vg" r=".75"><stop class="a" offset=".4" stop-color="#fff"/><stop class="b" offset=".62" stop-color="#000"/></radialGradient><mask id="sc-mk" maskContentUnits="userSpaceOnUse"><rect width="${W}" height="${H}" fill="url(#sc-vg)"/></mask></defs><g data-l="0"></g><g data-l="1"></g><g data-l="2"></g><g data-l="3"></g></svg>
 </div><div class="sc-zoom"><button type="button" data-z="-1" aria-label="Alejar">−</button><span class="sc-lv" aria-hidden="true"></span><button type="button" data-z="1" aria-label="Acercar">+</button><span class="sc-tip">Toca la zona resaltada o pellizca para acercarte</span></div>
     <div class="sc-sig" hidden><span class="lbl">Elige una señal</span>${Object.entries(SIG).map(([k,s])=>`<button type="button" data-s="${k}"><b>${s.n}</b> <i>${s.t}</i></button>`).join('')}</div>
     <div class="sc-mech" hidden></div>
@@ -110,6 +75,14 @@ function scale(n){
 function wireScale(fig){
   const svg=fig.querySelector('svg'),vg=[...fig.querySelectorAll('#sc-vg stop')],plate=fig.querySelector('.sc-plate'),L=[...svg.querySelectorAll('[data-l]')];
   const qa=fig.querySelector('.sc-qa'),sigBox=fig.querySelector('.sc-sig'),mech=fig.querySelector('.sc-mech'),lvl=fig.querySelector('.sc-lv');
+  // escalas 1-2: el mismo modelo isométrico de la célula; la 2 es un acercamiento (misma orientación) a la membrana
+  {const E=X.cellDefs();const mk=(pf,lab)=>X.cell3D.build(E,{idp:pf,labels:lab,els:(order)=>order.map(id=>`<g class="ce3" data-id="${id}">${E[id].g(E[id].x,E[id].y)}</g>`).join('')}).svg;
+    const s0=Math.min(W/1000,H/700),ox=(W-1000*s0)/2,oy=(H-700*s0)/2;const g=E.gsr;
+    L[0].innerHTML=`<rect class="b-exo" width="${W}" height="${H}"/>`+mk('e0',true).replace('<svg ',`<svg x="${f1(ox)}" y="${f1(oy)}" width="${f1(1000*s0)}" height="${f1(700*s0)}" `)+`<g class="sc-foc" data-go="1" role="button" tabindex="0" aria-label="Acercarse a la membrana"><circle cx="${f1(ox+g.x*s0)}" cy="${f1(oy+g.y*s0)}" r="26"/><text class="b-tag halo" x="${f1(ox+g.x*s0)}" y="${f1(oy+g.y*s0-34)}" text-anchor="middle">membrana plasmática</text></g>`;
+    FOC[0]=[ox+g.x*s0,oy+g.y*s0];
+    const z1=F*s0/(W/1000),vw=1000/z1,vh=vw*H/W;
+    L[1].innerHTML=`<rect class="b-exo" width="${W}" height="${H}"/>`+mk('e1',false).replace(/<svg viewBox="[^"]*"/,`<svg x="0" y="0" width="${W}" height="${H}" viewBox="${f1(g.x-vw/2)} ${f1(g.y-vh/2)} ${f1(vw)} ${f1(vh)}"`)+`<g class="sc-foc" data-go="2" role="button" tabindex="0" aria-label="Acercarse a la bicapa y al receptor"><circle cx="${W/2}" cy="${H/2}" r="60"/><text class="b-tag halo" x="${W/2}" y="${H/2-70}" text-anchor="middle">receptor en la bicapa</text></g>`;
+    FOC[1]=[W/2,H/2]}
   // escala 4-5: la escena del GPCR, escalada para llenar la lámina
   const sc=SC.gpcr();const s3=Math.min(W/sc.W,H/sc.H)*.98;
   L[3].innerHTML=`<rect class="b-cyto" width="${W}" height="${H}"/><g transform="translate(${f1((W-sc.W*s3)/2)} ${f1((H-sc.H*s3)/2)}) scale(${s3.toFixed(4)})">${sc.svg}</g>`;
@@ -187,6 +160,8 @@ X.escCSS=`
 .ed #ex-esc .sc-ecm{fill:color-mix(in srgb,var(--e-exo) 70%,var(--e-sgl))}
 .ed #ex-esc .sc-cap{fill:var(--e-ofl);stroke:var(--e-of);stroke-width:1.2}
 .ed #ex-esc .sc-rbc ellipse{fill:color-mix(in srgb,var(--e-of) 70%,var(--e-paper));stroke:var(--e-of);stroke-width:.8}.ed #ex-esc .sc-rbc .in{fill:color-mix(in srgb,var(--e-of) 45%,var(--e-paper));stroke:none}
+.ed #ex-esc [data-l="0"] .ce-l:not(.z){display:none}.ed #ex-esc .ce-l{font:600 11px var(--e-mono);fill:#141a2f;pointer-events:none}.ed #ex-esc .ce-l.z{font:500 12px var(--e-mono);letter-spacing:.16em;fill:var(--e-mut)}.ed #ex-esc [data-l="1"] .ce-l{font-size:9px}.ed #ex-esc [data-l="1"] .ce-l.lod{display:none}
+.ed #ex-esc .route,.ed #ex-esc .sigp,.ed #ex-esc .sigc{display:none}.ed #ex-esc .exo{fill:var(--e-exo)}
 .ed #ex-esc .sc-cell{opacity:.55}.ed #ex-esc .sc-cell.tgt{opacity:1}
 .ed #ex-esc .sc-cyt{fill:var(--e-cyt)}.ed #ex-esc .sc-pm{fill:none;stroke:var(--e-lh);stroke-width:3.2}.ed #ex-esc .sc-pm2{fill:none;stroke:var(--e-core);stroke-width:1}
 .ed #ex-esc .sc-nuc{fill:var(--e-nuc);stroke:var(--e-rc);stroke-width:1.2}.ed #ex-esc .sc-chr circle{fill:var(--e-rc);opacity:.28}.ed #ex-esc .sc-nl{fill:var(--e-rc);opacity:.45}

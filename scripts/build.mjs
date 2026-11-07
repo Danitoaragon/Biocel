@@ -33,7 +33,7 @@ run(py, 'build_plat.py', join(GEN, 'plat'));
 run(py, 'gen_hub.py', GEN);
 
 const SX = join(GEN, 'plat', 'senalx');
-const parts = ['a_core.js', 'a2_bio.js', 'a3_scenes.js', 'b_css.js', 'c_mod1.js', 'd_mod2.js', 'e_mod3.js', 'e2_scale.js', 'f_enhance.js'];
+const parts = ['a_core.js', 'a2_bio.js', 'a3_scenes.js', 'b_css.js', 'c_mod1.js', 'd_mod2.js', 'e_mod3.js', 'e2_scale.js', 'e3_cell3d.js', 'f_enhance.js'];
 writeFileSync(join(ROOT, 'hub', 'datos', 'senal-exp.js'), parts.map((p) => readFileSync(join(SX, p), 'utf8')).join(''));
 console.log('\n> senal-exp.js: ' + parts.length + ' módulos unidos');
 

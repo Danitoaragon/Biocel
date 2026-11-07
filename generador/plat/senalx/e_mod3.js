@@ -171,6 +171,13 @@ const ROUTES={
  nuc:{n:'Receptor nuclear',steps:[['Señal','est','La hormona esteroidea cruza la membrana.'],['Receptor','nr','Se une a su receptor, que estaba con Hsp90 en el citosol.'],['Transducción','hre','El receptor entra al núcleo y se une al HRE.'],['Respuesta','mrna','Transcripción de genes diana: respuesta lenta (horas).']]},
  no:{n:'Óxido nítrico',steps:[['Señal','no','El NO, un gas, cruza la membrana.'],['Receptor','gc','Se une a la guanilil ciclasa, que produce GMPc.'],['Respuesta','pkg','El GMPc activa a la PKG: baja el Ca²⁺ y el músculo liso se relaja.']]}};
 const STG=['Señal','Receptor','Transducción','Amplificación','Respuesta','Terminación'];
+// recorrido: la cámara se acerca sin cambiar la orientación isométrica
+const TOUR=[['Célula completa',null,'La célula vista en tres cuartos, con una esquina retirada: arriba la membrana plasmática con sus receptores; en el corte, el citosol, el retículo endoplásmico, las mitocondrias y el núcleo.'],
+ ['Membrana',['ch','gsr','ac','gqr','adr','sq','ach'],'La membrana plasmática en el borde del corte: la bicapa (cabezas polares y colas) con proteínas transmembrana. Las señales hidrosolubles se quedan afuera y se unen a receptores de superficie.'],
+ ['Receptor',['gsr','adr','gsa'],'Un receptor acoplado a proteína G: siete hélices que cruzan la membrana. Por fuera une la adrenalina; por dentro activa a la proteína G.'],
+ ['Moléculas',['gsa','ac','camp','pka','pde'],'La transducción en la cara citosólica: Gαs-GTP, la adenilil ciclasa, el AMPc que se multiplica y la PKA que libera sus subunidades C.'],
+ ['Mecanismo','ampc','Sigue la vía completa paso a paso: señal → receptor → proteína G → enzima → segundo mensajero → cinasa → respuesta → terminación.'],
+ ['Núcleo y respuesta',['creb','erkn','hre','mrna'],'Las respuestas lentas ocurren en el núcleo: CREB, ERK y los receptores nucleares actúan sobre el ADN y se transcribe ARNm.']];
 function cellSVG(E){
   const B=B_();
   // contorno de la membrana: lado izquierdo, borde superior ondulado y lado derecho
@@ -204,19 +211,22 @@ function cellSVG(E){
 function cellFig(n){
   const body=`<div class="ex-ctl"><button type="button" class="ex-tab on" data-md="exp">Explorar la célula</button><button type="button" class="ex-tab" data-md="route">Seguir una ruta</button></div>
    <div class="ce-routes ex-ctl" hidden>${Object.entries(ROUTES).map(([k,r],i)=>`<button type="button" class="ex-tab ce-r${i===1?' on':''}" data-r="${k}">${r.n}</button>`).join('')}<span class="sep"></span><button type="button" data-a="prev">Anterior</button><button type="button" class="act" data-a="play">Reproducir</button><button type="button" data-a="next">Siguiente</button><button type="button" data-a="reset">Reiniciar</button></div>
+   <div class="ce-tour" role="group" aria-label="Recorrido guiado por escalas"><span class="lbl">Recorrido</span>${TOUR.map((t,i)=>`<button type="button" data-tour="${i}"><span>${i+1}</span>${t[0]}</button>`).join('')}</div>
    <ol class="ce-stg">${STG.map(s=>`<li data-s="${s}">${s}</li>`).join('')}</ol>
    <div class="ce-row"><div class="ce-pw"><div class="ex-plate ce-plate" tabindex="0" role="group" aria-label="Célula explorable. Más y menos para acercar o alejar, flechas para desplazarte, cero para ver la célula completa."></div><div class="ce-zoom"><button type="button" data-zm="-1" aria-label="Alejar">−</button><span class="ce-sc" aria-live="polite"></span><button type="button" data-zm="1" aria-label="Acercar">+</button><button type="button" data-zm="0" class="ce-fit">Célula completa</button><span class="ce-tip">Toca una estructura · pellizca o usa + y − para acercarte</span></div></div>
    <aside class="ex-side ce-side" aria-live="polite"><h4>Toca cualquier estructura</h4><p>Verás su nombre, qué hace, dónde actúa y qué ocurre después. Acércate con + y −, pellizcando o con Ctrl + rueda; arrastra para desplazarte. Con «Seguir una ruta» recorres el camino completo de una señal dentro de esta misma célula.</p></aside></div>`;
-  return frame('cel',n,'La célula completa',body,'Resumen visual del capítulo: cada vía se dibuja sobre la misma célula, de la señal externa a la respuesta. Esquema propio, simplificado y no a escala; la vía del NO ocurre en el músculo liso vecino al endotelio.',['A','L']);
+  return frame('cel',n,'La célula completa',body,'Resumen visual del capítulo en un modelo tridimensional: cada vía se coloca en su sitio dentro de la misma célula, de la señal externa a la respuesta. La cámara se mantiene en tres cuartos; al acercarte conservas la orientación. Esquema propio, simplificado y no a escala; la vía del NO ocurre en el músculo liso vecino al endotelio.',['A','L']);
 }
 function wireCell(fig){
-  const B=B_();const E=cellDefs();const plate=fig.querySelector('.ce-plate');plate.insertAdjacentHTML('afterbegin',cellSVG(E));const svg=plate.querySelector('svg'),side=fig.querySelector('.ce-side'),route=svg.querySelector('.route'),sigp=svg.querySelector('.sigp'),sigc=svg.querySelector('.sigc'),scl=fig.querySelector('.ce-sc');
+  const B=B_();const E=cellDefs();const plate=fig.querySelector('.ce-plate');
+  const C3=X.cell3D.build(E,{els:(order,memb)=>order.map(id=>{const e=E[id];return `<g class="ce${memb.has(id)?' mem':''}" data-id="${id}" tabindex="0" role="button" aria-label="${esc(e.n)}"><g class="lift">${e.g(e.x,e.y)}</g></g>`}).join('')});
+  plate.insertAdjacentHTML('afterbegin',C3.svg);const svg=plate.querySelector('svg'),side=fig.querySelector('.ce-side'),route=svg.querySelector('.route'),sigp=svg.querySelector('.sigp'),sigc=svg.querySelector('.sigc'),scl=fig.querySelector('.ce-sc');
   svg.querySelectorAll('.ce').forEach(g=>{try{const b=g.getBBox();const r=document.createElementNS('http://www.w3.org/2000/svg','rect');r.setAttribute('x',b.x-6);r.setAttribute('y',b.y-6);r.setAttribute('width',b.width+12);r.setAttribute('height',b.height+12);r.setAttribute('class','hit');g.insertBefore(r,g.firstChild)}catch(e){}});
   const inRoutes=id=>Object.entries(ROUTES).filter(([k,r])=>r.steps.some(s=>s[1]===id));
   // ---------- cámara (viewBox) ----------
-  const VW=1000,VH=680,ZMAX=5;let cam={x:500,y:340,w:1000},tgt={...cam},raf=0,last=0,visible=true;
+  const VW=1000,VH=700,ZMAX=6;let cam={x:500,y:350,w:1000},tgt={...cam},raf=0,last=0,visible=true;
   const clampCam=c=>{c.w=Math.max(VW/ZMAX,Math.min(VW,c.w));const h=c.w*VH/VW;c.x=Math.max(c.w/2,Math.min(VW-c.w/2,c.x));c.y=Math.max(h/2,Math.min(VH-h/2,c.y));return c};
-  const scaleName=z=>z<1.4?'Célula':z<2.6?'Membrana y citoplasma':'Complejo molecular';
+  const scaleName=z=>z<1.4?'Célula':z<2.6?'Membrana y citoplasma':z<4?'Receptores y proteínas':'Complejo molecular';
   const apply=()=>{const h=cam.w*VH/VW;svg.setAttribute('viewBox',`${(cam.x-cam.w/2).toFixed(2)} ${(cam.y-h/2).toFixed(2)} ${cam.w.toFixed(2)} ${h.toFixed(2)}`);const z=VW/cam.w;svg.classList.toggle('z2',z>=1.35);svg.classList.toggle('z3',z>=2.4);plate.classList.toggle('zin',z>1.03);scl.textContent=`${scaleName(z)} · ×${z.toFixed(1)}`};
   const tick=now=>{const dt=last?Math.min((now-last)/1000,1/30):1/60;last=now;const k=X.RM()?1:1-Math.exp(-dt/.22);let busy=false;
     ['x','y','w'].forEach(p=>{cam[p]+=(tgt[p]-cam[p])*k;if(Math.abs(tgt[p]-cam[p])>.05)busy=true;else cam[p]=tgt[p]});apply();
@@ -226,10 +236,10 @@ function wireCell(fig){
   const zoomTo=(w,cx,cy)=>{tgt=clampCam({x:cx??tgt.x,y:cy??tgt.y,w});kick()};
   const toSvg=(cx,cy,c=cam)=>{const r=svg.getBoundingClientRect();const h=c.w*VH/VW;return [c.x-c.w/2+(cx-r.left)/r.width*c.w,c.y-h/2+(cy-r.top)/r.height*h]};
   const zoomAt=(f,cx,cy)=>{const p=toSvg(cx,cy,tgt);const w=Math.max(VW/ZMAX,Math.min(VW,tgt.w/f));const k=w/tgt.w;tgt=clampCam({x:p[0]+(tgt.x-p[0])*k,y:p[1]+(tgt.y-p[1])*k,w});kick()};
-  const fitIds=ids=>{const P=ids.map(i=>E[i]);const xs=P.map(p=>p.x),ys=P.map(p=>p.y);const x0=Math.min(...xs)-70,x1=Math.max(...xs)+70,y0=Math.min(...ys)-60,y1=Math.max(...ys)+60;zoomTo(Math.max(x1-x0,(y1-y0)*VW/VH),(x0+x1)/2,(y0+y1)/2)};
-  fig.querySelectorAll('[data-zm]').forEach(b=>b.onclick=()=>{const v=+b.dataset.zm;if(!v)zoomTo(VW,500,340);else zoomTo(tgt.w/(v>0?1.6:1/1.6))});
+  const fitIds=ids=>{const P=ids.map(i=>E[i]);const xs=P.map(p=>p.x),ys=P.map(p=>p.y);const x0=Math.min(...xs)-60,x1=Math.max(...xs)+60,y0=Math.min(...ys)-55,y1=Math.max(...ys)+55;zoomTo(Math.max(x1-x0,(y1-y0)*VW/VH),(x0+x1)/2,(y0+y1)/2)};
+  fig.querySelectorAll('[data-zm]').forEach(b=>b.onclick=()=>{const v=+b.dataset.zm;if(!v)zoomTo(VW,500,350);else zoomTo(tgt.w/(v>0?1.6:1/1.6))});
   plate.addEventListener('keydown',e=>{if(e.target!==plate)return;const st=tgt.w*.12;const m={ArrowLeft:[-st,0],ArrowRight:[st,0],ArrowUp:[0,-st],ArrowDown:[0,st]}[e.key];
-    if(m){e.preventDefault();tgt=clampCam({...tgt,x:tgt.x+m[0],y:tgt.y+m[1]});kick()}else if(e.key==='+'||e.key==='='){e.preventDefault();zoomTo(tgt.w/1.6)}else if(e.key==='-'){e.preventDefault();zoomTo(tgt.w*1.6)}else if(e.key==='0'){e.preventDefault();zoomTo(VW,500,340)}});
+    if(m){e.preventDefault();tgt=clampCam({...tgt,x:tgt.x+m[0],y:tgt.y+m[1]});kick()}else if(e.key==='+'||e.key==='='){e.preventDefault();zoomTo(tgt.w/1.6)}else if(e.key==='-'){e.preventDefault();zoomTo(tgt.w*1.6)}else if(e.key==='0'){e.preventDefault();zoomTo(VW,500,350)}});
   plate.addEventListener('wheel',e=>{if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();zoomAt(Math.exp(-e.deltaY*.006),e.clientX,e.clientY)},{passive:false});
   plate.addEventListener('dblclick',e=>{if(e.target.closest('button'))return;e.preventDefault();zoomAt(1.8,e.clientX,e.clientY)});
   // arrastre con un dedo (cuando hay acercamiento) y pellizco con dos
@@ -269,11 +279,24 @@ function wireCell(fig){
   const pick=id=>{if(mode==='route'){const R=inRoutes(id);if(R.length){stop();if(R[0][0]!==rk)pickRoute(R[0][0]);go(ROUTES[rk].steps.findIndex(s=>s[1]===id))}}else{hl([id]);info(id);const e=E[id];if(VW/tgt.w<2.2)zoomTo(VW/2.4,e.x,e.y);else zoomTo(tgt.w,e.x,e.y)}};
   svg.querySelectorAll('.ce').forEach(g=>{const id=g.dataset.id;g.addEventListener('mouseenter',()=>{if(mode==='exp'&&!svg.classList.contains('hl'))g.classList.add('hov')});g.addEventListener('mouseleave',()=>g.classList.remove('hov'));
     g.addEventListener('click',()=>pick(id));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(id)}})});
+  const tourBtns=[...fig.querySelectorAll('[data-tour]')];
+  tourBtns.forEach(b=>b.onclick=()=>{const i=+b.dataset.tour,t=TOUR[i];tourBtns.forEach(x=>x.classList.toggle('on',x===b));
+    if(t[1]==='ampc'){setMode('route');pickRoute('ampc');go(0);playBtn.onclick();return}
+    if(mode!=='exp')setMode('exp');if(!t[1]){hl(null);zoomTo(VW,500,350)}else{hl(t[1]);fitIds(t[1])}
+    side.innerHTML=`<h4>${i+1}. ${t[0]}</h4><p>${t[2]}</p><p class="muted">Toca cualquier estructura para ver qué hace.</p>`});
   B.seen(fig,v=>{visible=v;if(!v)stop();else kick()});
   apply();
 }
 X.cellCSS=`
 .ed #ex-cel .exo{fill:var(--e-exo)}.ed #ex-cel .cyt{fill:var(--e-cyt)}
+.ed #ex-cel .ce .lift{transition:transform .45s cubic-bezier(.3,.7,.2,1)}.ed #ex-cel .ce.on:not(.mem) .lift,.ed #ex-cel .ce.cur:not(.mem) .lift{transform:translateY(-5px)}
+.ed #ex-cel .ce-tour{display:flex;flex-wrap:wrap;align-items:center;gap:6px 6px;margin:0 0 10px}
+.ed #ex-cel .ce-tour .lbl{font:500 11px var(--e-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--e-mut);margin-right:6px}
+.ed #ex-cel .ce-tour button{background:none;border:1px solid var(--e-rule);border-radius:999px;padding:7px 13px 7px 8px;font:400 14.5px var(--e-body);color:var(--e-ink);cursor:pointer;min-height:38px}
+.ed #ex-cel .ce-tour button span{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--e-plate2);font:500 11px var(--e-mono);margin-right:7px}
+.ed #ex-cel .ce-tour button.on{border-color:var(--e-td);background:var(--e-tdl)}.ed #ex-cel .ce-tour button.on span{background:var(--e-td);color:#fff}
+.ed #ex-cel .ce-tour button:focus-visible{outline:2px solid var(--e-td);outline-offset:2px}
+@media (max-width:640px){.ed #ex-cel .ce-tour{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.ed #ex-cel .ce-tour button{white-space:nowrap;flex:none}}
 .ed #ex-cel .ce-plate{position:relative;overflow:hidden;touch-action:pan-y;outline:none;user-select:none;-webkit-user-select:none}
 .ed #ex-cel .ce-plate.zin{touch-action:none;cursor:grab}
 .ed #ex-cel .ce-plate svg{display:block;width:100%;height:auto}
@@ -300,11 +323,12 @@ X.cellCSS=`
 .ed #ex-cel .ce-stg>li{font:500 11px/1 var(--e-mono)!important;letter-spacing:.12em;text-transform:uppercase;color:var(--e-mut);padding:8px 14px 8px 0!important;margin:0!important;position:relative}
 .ed #ex-cel .ce-stg>li::before{display:none!important}.ed #ex-cel .ce-stg li:not(:last-child)::after{content:"→";margin-left:14px;color:var(--e-rule)}
 .ed #ex-cel .ce-stg li.on{color:var(--e-ink);text-decoration:underline;text-decoration-color:var(--e-sg);text-decoration-thickness:3px;text-underline-offset:6px}
-.ed #ex-cel .ce-row{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:0;align-items:stretch}
-.ed #ex-cel .ce-side{border-left:1px solid var(--e-rule);min-height:0}
+.ed #ex-cel .ce-row{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+.ed #ex-cel .ce-side{border-left:0;border-top:1px solid var(--e-rule);min-height:132px}.ed #ex-cel .ce-side dl{display:grid;grid-template-columns:170px minmax(0,1fr);gap:8px 22px;align-items:baseline}.ed #ex-cel .ce-side dl dt{margin:0!important}.ed #ex-cel .ce-side dl dd{margin:0!important}
+@media (max-width:640px){.ed #ex-cel .ce-side dl{grid-template-columns:1fr;gap:2px}.ed #ex-cel .ce-side dl dt{margin-top:10px!important}}
 .ed #ex-cel .ce-side dt{margin-top:14px}
 .ed #ex-cel .ce-side .muted{color:var(--e-mut)}
-@media (max-width:1100px){.ed #ex-cel .ce-row{grid-template-columns:1fr}.ed #ex-cel .ce-side{border-left:0;border-top:1px solid var(--e-rule)}.ed #ex-cel .ce-side dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0 24px}}
+
 .ed #ex-cel .ce-routes[hidden]{display:none}
 .ed #ex-cel svg>:not(.ce){pointer-events:none}.ed #ex-cel .hit{fill:transparent}
 .ed #ex-cel .lnk{background:none;border:0;padding:4px 0;color:var(--e-td);font:inherit;cursor:pointer;text-decoration:underline}
@@ -351,5 +375,5 @@ X.sumCSS=`
 function refs(){return `<section class="ed-refs ed-wide" id="ed-refs" data-blk="keep"><h3>Referencias</h3><ol><li id="ed-ref-A"><span>[1]</span>${REF.A.apa} Capítulo 15, «Cell Signaling».</li><li id="ed-ref-L"><span>[2]</span>${REF.L.apa}</li></ol><p>El texto de este capítulo sigue al Alberts [1], con apoyo del Lodish [2] para las vías de los receptores. Las figuras interactivas son esquemas propios, simplificados y no a escala, construidos a partir del texto de cada sección.</p>
    <h3 class="vref">Referencias visuales</h3><p>Consultadas sólo para dibujar la forma y la disposición de las moléculas; no son fuente del texto.</p><ol class="vref"><li><span>[V1]</span>Rasmussen, S. G. F., et al. (2011). Crystal structure of the β<sub>2</sub> adrenergic receptor–Gs protein complex. <i>Nature, 477</i>, 549–555. Estructura PDB 3SN6 (receptor de 7 hélices con la proteína G).</li><li><span>[V2]</span>Unwin, N. (2005). Refined structure of the nicotinic acetylcholine receptor at 4 Å resolution. <i>Journal of Molecular Biology, 346</i>(4), 967–989. Estructura PDB 2BG9 (canal iónico activado por ligando).</li><li><span>[V3]</span>Zhang, X., Gureasko, J., Shen, K., Cole, P. A., &amp; Kuriyan, J. (2006). An allosteric mechanism for activation of the kinase domain of epidermal growth factor receptor. <i>Cell, 125</i>(6), 1137–1149 (dímero de dominios cinasa de un RTK).</li><li><span>[V4]</span>Clark, M. A., Douglas, M., &amp; Choi, J. (2018). <i>Biology 2e</i>, cap. 9, «Cell Communication». OpenStax.</li></ol>
    <p>Proyección isométrica de la bicapa y principios de movimiento adaptados de <i>Anatomy</i> (wheresryan22/anatomy, licencia MIT).</p></section>`}
-Object.assign(X,{amp,wireAmp,term,wireTerm,cellFig,wireCell,summary,refs});
+Object.assign(X,{amp,wireAmp,term,wireTerm,cellFig,wireCell,summary,refs,cellDefs});
 })();

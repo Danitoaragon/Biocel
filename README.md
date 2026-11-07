@@ -92,7 +92,7 @@ biologia-celular-uaem/
 │       ├── viejo.json           preguntas de la versión anterior (se fusionan en el banco)
 │       ├── dash.html, dash.css  tablero de la portada (se incrusta en index.html)
 │       ├── nuevo.js             histórico: ya está integrado dentro de estudio.html
-│       └── senalx/              módulos de la lectura editorial de Señalización (a_core, a2_bio, a3_scenes, b_css, c_mod1, d_mod2, e_mod3, e2_scale, f_enhance)
+│       └── senalx/              módulos de la lectura editorial de Señalización (a_core, a2_bio, a3_scenes, b_css, c_mod1, d_mod2, e_mod3, e2_scale, e3_cell3d, f_enhance)
 ├── scripts/
 │   ├── serve.mjs                servidor local sin dependencias
 │   ├── build.mjs                build (llama a Python en el orden correcto)
@@ -129,7 +129,8 @@ Rutas de la plataforma (`estudio.html#…`): `#libro`, `#libro-<tema>`, `#libro-
 | `a2_bio.js` | Dibujo biológico: bicapa lipídica (cabezas y colas), hélices transmembrana, proteínas globulares con volumen, proteína G αβγ con GDP/GTP, adenilil ciclasa, moléculas pequeñas (AMPc, IP₃, DAG, Ca²⁺, esteroide, NO…), ADN y ARNm; reproductor de escenas (reproducir, pausa, reiniciar, fases) y proyección isométrica de *Anatomy* (MIT). |
 | `a3_scenes.js` | Escenas animadas de los receptores: GPCR + proteína G + enzima, canal nicotínico, RTK y receptor nuclear. |
 | `e2_scale.js` | Figura de escalas: célula → membrana → bicapa (bloque isométrico que se gira) → receptor → mecanismo. |
-| `e_mod3.js` | Amplificación, terminación y la célula final explorable (zoom, desplazamiento, pellizco, rutas). |
+| `e3_cell3d.js` | Modelo isométrico 3D de la célula (cámara fija en tres cuartos, esquina cortada): membrana con textura en su plano, paredes del corte con la bicapa seccionada, núcleo cortado con ADN, retículo endoplásmico, mitocondrias, sombras; posición 3D de cada estructura (`P3`). Lo usan la célula final y las escalas 1-2. |
+| `e_mod3.js` | Amplificación, terminación y la célula final explorable (zoom que conserva la orientación, desplazamiento, pellizco, recorrido guiado, rutas). |
 
 Cada escena es una función pura `render(t)`: el tiempo decide la posición de cada molécula, así que pausar, reiniciar o saltar a una fase es sólo cambiar `t`. Todo se detiene fuera de pantalla y respeta «reducir movimiento».
 

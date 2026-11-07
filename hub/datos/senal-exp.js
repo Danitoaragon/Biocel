@@ -1102,6 +1102,13 @@ const ROUTES={
  nuc:{n:'Receptor nuclear',steps:[['Señal','est','La hormona esteroidea cruza la membrana.'],['Receptor','nr','Se une a su receptor, que estaba con Hsp90 en el citosol.'],['Transducción','hre','El receptor entra al núcleo y se une al HRE.'],['Respuesta','mrna','Transcripción de genes diana: respuesta lenta (horas).']]},
  no:{n:'Óxido nítrico',steps:[['Señal','no','El NO, un gas, cruza la membrana.'],['Receptor','gc','Se une a la guanilil ciclasa, que produce GMPc.'],['Respuesta','pkg','El GMPc activa a la PKG: baja el Ca²⁺ y el músculo liso se relaja.']]}};
 const STG=['Señal','Receptor','Transducción','Amplificación','Respuesta','Terminación'];
+// recorrido: la cámara se acerca sin cambiar la orientación isométrica
+const TOUR=[['Célula completa',null,'La célula vista en tres cuartos, con una esquina retirada: arriba la membrana plasmática con sus receptores; en el corte, el citosol, el retículo endoplásmico, las mitocondrias y el núcleo.'],
+ ['Membrana',['ch','gsr','ac','gqr','adr','sq','ach'],'La membrana plasmática en el borde del corte: la bicapa (cabezas polares y colas) con proteínas transmembrana. Las señales hidrosolubles se quedan afuera y se unen a receptores de superficie.'],
+ ['Receptor',['gsr','adr','gsa'],'Un receptor acoplado a proteína G: siete hélices que cruzan la membrana. Por fuera une la adrenalina; por dentro activa a la proteína G.'],
+ ['Moléculas',['gsa','ac','camp','pka','pde'],'La transducción en la cara citosólica: Gαs-GTP, la adenilil ciclasa, el AMPc que se multiplica y la PKA que libera sus subunidades C.'],
+ ['Mecanismo','ampc','Sigue la vía completa paso a paso: señal → receptor → proteína G → enzima → segundo mensajero → cinasa → respuesta → terminación.'],
+ ['Núcleo y respuesta',['creb','erkn','hre','mrna'],'Las respuestas lentas ocurren en el núcleo: CREB, ERK y los receptores nucleares actúan sobre el ADN y se transcribe ARNm.']];
 function cellSVG(E){
   const B=B_();
   // contorno de la membrana: lado izquierdo, borde superior ondulado y lado derecho
@@ -1135,19 +1142,22 @@ function cellSVG(E){
 function cellFig(n){
   const body=`<div class="ex-ctl"><button type="button" class="ex-tab on" data-md="exp">Explorar la célula</button><button type="button" class="ex-tab" data-md="route">Seguir una ruta</button></div>
    <div class="ce-routes ex-ctl" hidden>${Object.entries(ROUTES).map(([k,r],i)=>`<button type="button" class="ex-tab ce-r${i===1?' on':''}" data-r="${k}">${r.n}</button>`).join('')}<span class="sep"></span><button type="button" data-a="prev">Anterior</button><button type="button" class="act" data-a="play">Reproducir</button><button type="button" data-a="next">Siguiente</button><button type="button" data-a="reset">Reiniciar</button></div>
+   <div class="ce-tour" role="group" aria-label="Recorrido guiado por escalas"><span class="lbl">Recorrido</span>${TOUR.map((t,i)=>`<button type="button" data-tour="${i}"><span>${i+1}</span>${t[0]}</button>`).join('')}</div>
    <ol class="ce-stg">${STG.map(s=>`<li data-s="${s}">${s}</li>`).join('')}</ol>
    <div class="ce-row"><div class="ce-pw"><div class="ex-plate ce-plate" tabindex="0" role="group" aria-label="Célula explorable. Más y menos para acercar o alejar, flechas para desplazarte, cero para ver la célula completa."></div><div class="ce-zoom"><button type="button" data-zm="-1" aria-label="Alejar">−</button><span class="ce-sc" aria-live="polite"></span><button type="button" data-zm="1" aria-label="Acercar">+</button><button type="button" data-zm="0" class="ce-fit">Célula completa</button><span class="ce-tip">Toca una estructura · pellizca o usa + y − para acercarte</span></div></div>
    <aside class="ex-side ce-side" aria-live="polite"><h4>Toca cualquier estructura</h4><p>Verás su nombre, qué hace, dónde actúa y qué ocurre después. Acércate con + y −, pellizcando o con Ctrl + rueda; arrastra para desplazarte. Con «Seguir una ruta» recorres el camino completo de una señal dentro de esta misma célula.</p></aside></div>`;
-  return frame('cel',n,'La célula completa',body,'Resumen visual del capítulo: cada vía se dibuja sobre la misma célula, de la señal externa a la respuesta. Esquema propio, simplificado y no a escala; la vía del NO ocurre en el músculo liso vecino al endotelio.',['A','L']);
+  return frame('cel',n,'La célula completa',body,'Resumen visual del capítulo en un modelo tridimensional: cada vía se coloca en su sitio dentro de la misma célula, de la señal externa a la respuesta. La cámara se mantiene en tres cuartos; al acercarte conservas la orientación. Esquema propio, simplificado y no a escala; la vía del NO ocurre en el músculo liso vecino al endotelio.',['A','L']);
 }
 function wireCell(fig){
-  const B=B_();const E=cellDefs();const plate=fig.querySelector('.ce-plate');plate.insertAdjacentHTML('afterbegin',cellSVG(E));const svg=plate.querySelector('svg'),side=fig.querySelector('.ce-side'),route=svg.querySelector('.route'),sigp=svg.querySelector('.sigp'),sigc=svg.querySelector('.sigc'),scl=fig.querySelector('.ce-sc');
+  const B=B_();const E=cellDefs();const plate=fig.querySelector('.ce-plate');
+  const C3=X.cell3D.build(E,{els:(order,memb)=>order.map(id=>{const e=E[id];return `<g class="ce${memb.has(id)?' mem':''}" data-id="${id}" tabindex="0" role="button" aria-label="${esc(e.n)}"><g class="lift">${e.g(e.x,e.y)}</g></g>`}).join('')});
+  plate.insertAdjacentHTML('afterbegin',C3.svg);const svg=plate.querySelector('svg'),side=fig.querySelector('.ce-side'),route=svg.querySelector('.route'),sigp=svg.querySelector('.sigp'),sigc=svg.querySelector('.sigc'),scl=fig.querySelector('.ce-sc');
   svg.querySelectorAll('.ce').forEach(g=>{try{const b=g.getBBox();const r=document.createElementNS('http://www.w3.org/2000/svg','rect');r.setAttribute('x',b.x-6);r.setAttribute('y',b.y-6);r.setAttribute('width',b.width+12);r.setAttribute('height',b.height+12);r.setAttribute('class','hit');g.insertBefore(r,g.firstChild)}catch(e){}});
   const inRoutes=id=>Object.entries(ROUTES).filter(([k,r])=>r.steps.some(s=>s[1]===id));
   // ---------- cámara (viewBox) ----------
-  const VW=1000,VH=680,ZMAX=5;let cam={x:500,y:340,w:1000},tgt={...cam},raf=0,last=0,visible=true;
+  const VW=1000,VH=700,ZMAX=6;let cam={x:500,y:350,w:1000},tgt={...cam},raf=0,last=0,visible=true;
   const clampCam=c=>{c.w=Math.max(VW/ZMAX,Math.min(VW,c.w));const h=c.w*VH/VW;c.x=Math.max(c.w/2,Math.min(VW-c.w/2,c.x));c.y=Math.max(h/2,Math.min(VH-h/2,c.y));return c};
-  const scaleName=z=>z<1.4?'Célula':z<2.6?'Membrana y citoplasma':'Complejo molecular';
+  const scaleName=z=>z<1.4?'Célula':z<2.6?'Membrana y citoplasma':z<4?'Receptores y proteínas':'Complejo molecular';
   const apply=()=>{const h=cam.w*VH/VW;svg.setAttribute('viewBox',`${(cam.x-cam.w/2).toFixed(2)} ${(cam.y-h/2).toFixed(2)} ${cam.w.toFixed(2)} ${h.toFixed(2)}`);const z=VW/cam.w;svg.classList.toggle('z2',z>=1.35);svg.classList.toggle('z3',z>=2.4);plate.classList.toggle('zin',z>1.03);scl.textContent=`${scaleName(z)} · ×${z.toFixed(1)}`};
   const tick=now=>{const dt=last?Math.min((now-last)/1000,1/30):1/60;last=now;const k=X.RM()?1:1-Math.exp(-dt/.22);let busy=false;
     ['x','y','w'].forEach(p=>{cam[p]+=(tgt[p]-cam[p])*k;if(Math.abs(tgt[p]-cam[p])>.05)busy=true;else cam[p]=tgt[p]});apply();
@@ -1157,10 +1167,10 @@ function wireCell(fig){
   const zoomTo=(w,cx,cy)=>{tgt=clampCam({x:cx??tgt.x,y:cy??tgt.y,w});kick()};
   const toSvg=(cx,cy,c=cam)=>{const r=svg.getBoundingClientRect();const h=c.w*VH/VW;return [c.x-c.w/2+(cx-r.left)/r.width*c.w,c.y-h/2+(cy-r.top)/r.height*h]};
   const zoomAt=(f,cx,cy)=>{const p=toSvg(cx,cy,tgt);const w=Math.max(VW/ZMAX,Math.min(VW,tgt.w/f));const k=w/tgt.w;tgt=clampCam({x:p[0]+(tgt.x-p[0])*k,y:p[1]+(tgt.y-p[1])*k,w});kick()};
-  const fitIds=ids=>{const P=ids.map(i=>E[i]);const xs=P.map(p=>p.x),ys=P.map(p=>p.y);const x0=Math.min(...xs)-70,x1=Math.max(...xs)+70,y0=Math.min(...ys)-60,y1=Math.max(...ys)+60;zoomTo(Math.max(x1-x0,(y1-y0)*VW/VH),(x0+x1)/2,(y0+y1)/2)};
-  fig.querySelectorAll('[data-zm]').forEach(b=>b.onclick=()=>{const v=+b.dataset.zm;if(!v)zoomTo(VW,500,340);else zoomTo(tgt.w/(v>0?1.6:1/1.6))});
+  const fitIds=ids=>{const P=ids.map(i=>E[i]);const xs=P.map(p=>p.x),ys=P.map(p=>p.y);const x0=Math.min(...xs)-60,x1=Math.max(...xs)+60,y0=Math.min(...ys)-55,y1=Math.max(...ys)+55;zoomTo(Math.max(x1-x0,(y1-y0)*VW/VH),(x0+x1)/2,(y0+y1)/2)};
+  fig.querySelectorAll('[data-zm]').forEach(b=>b.onclick=()=>{const v=+b.dataset.zm;if(!v)zoomTo(VW,500,350);else zoomTo(tgt.w/(v>0?1.6:1/1.6))});
   plate.addEventListener('keydown',e=>{if(e.target!==plate)return;const st=tgt.w*.12;const m={ArrowLeft:[-st,0],ArrowRight:[st,0],ArrowUp:[0,-st],ArrowDown:[0,st]}[e.key];
-    if(m){e.preventDefault();tgt=clampCam({...tgt,x:tgt.x+m[0],y:tgt.y+m[1]});kick()}else if(e.key==='+'||e.key==='='){e.preventDefault();zoomTo(tgt.w/1.6)}else if(e.key==='-'){e.preventDefault();zoomTo(tgt.w*1.6)}else if(e.key==='0'){e.preventDefault();zoomTo(VW,500,340)}});
+    if(m){e.preventDefault();tgt=clampCam({...tgt,x:tgt.x+m[0],y:tgt.y+m[1]});kick()}else if(e.key==='+'||e.key==='='){e.preventDefault();zoomTo(tgt.w/1.6)}else if(e.key==='-'){e.preventDefault();zoomTo(tgt.w*1.6)}else if(e.key==='0'){e.preventDefault();zoomTo(VW,500,350)}});
   plate.addEventListener('wheel',e=>{if(!e.ctrlKey&&!e.metaKey)return;e.preventDefault();zoomAt(Math.exp(-e.deltaY*.006),e.clientX,e.clientY)},{passive:false});
   plate.addEventListener('dblclick',e=>{if(e.target.closest('button'))return;e.preventDefault();zoomAt(1.8,e.clientX,e.clientY)});
   // arrastre con un dedo (cuando hay acercamiento) y pellizco con dos
@@ -1200,11 +1210,24 @@ function wireCell(fig){
   const pick=id=>{if(mode==='route'){const R=inRoutes(id);if(R.length){stop();if(R[0][0]!==rk)pickRoute(R[0][0]);go(ROUTES[rk].steps.findIndex(s=>s[1]===id))}}else{hl([id]);info(id);const e=E[id];if(VW/tgt.w<2.2)zoomTo(VW/2.4,e.x,e.y);else zoomTo(tgt.w,e.x,e.y)}};
   svg.querySelectorAll('.ce').forEach(g=>{const id=g.dataset.id;g.addEventListener('mouseenter',()=>{if(mode==='exp'&&!svg.classList.contains('hl'))g.classList.add('hov')});g.addEventListener('mouseleave',()=>g.classList.remove('hov'));
     g.addEventListener('click',()=>pick(id));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(id)}})});
+  const tourBtns=[...fig.querySelectorAll('[data-tour]')];
+  tourBtns.forEach(b=>b.onclick=()=>{const i=+b.dataset.tour,t=TOUR[i];tourBtns.forEach(x=>x.classList.toggle('on',x===b));
+    if(t[1]==='ampc'){setMode('route');pickRoute('ampc');go(0);playBtn.onclick();return}
+    if(mode!=='exp')setMode('exp');if(!t[1]){hl(null);zoomTo(VW,500,350)}else{hl(t[1]);fitIds(t[1])}
+    side.innerHTML=`<h4>${i+1}. ${t[0]}</h4><p>${t[2]}</p><p class="muted">Toca cualquier estructura para ver qué hace.</p>`});
   B.seen(fig,v=>{visible=v;if(!v)stop();else kick()});
   apply();
 }
 X.cellCSS=`
 .ed #ex-cel .exo{fill:var(--e-exo)}.ed #ex-cel .cyt{fill:var(--e-cyt)}
+.ed #ex-cel .ce .lift{transition:transform .45s cubic-bezier(.3,.7,.2,1)}.ed #ex-cel .ce.on:not(.mem) .lift,.ed #ex-cel .ce.cur:not(.mem) .lift{transform:translateY(-5px)}
+.ed #ex-cel .ce-tour{display:flex;flex-wrap:wrap;align-items:center;gap:6px 6px;margin:0 0 10px}
+.ed #ex-cel .ce-tour .lbl{font:500 11px var(--e-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--e-mut);margin-right:6px}
+.ed #ex-cel .ce-tour button{background:none;border:1px solid var(--e-rule);border-radius:999px;padding:7px 13px 7px 8px;font:400 14.5px var(--e-body);color:var(--e-ink);cursor:pointer;min-height:38px}
+.ed #ex-cel .ce-tour button span{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--e-plate2);font:500 11px var(--e-mono);margin-right:7px}
+.ed #ex-cel .ce-tour button.on{border-color:var(--e-td);background:var(--e-tdl)}.ed #ex-cel .ce-tour button.on span{background:var(--e-td);color:#fff}
+.ed #ex-cel .ce-tour button:focus-visible{outline:2px solid var(--e-td);outline-offset:2px}
+@media (max-width:640px){.ed #ex-cel .ce-tour{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.ed #ex-cel .ce-tour button{white-space:nowrap;flex:none}}
 .ed #ex-cel .ce-plate{position:relative;overflow:hidden;touch-action:pan-y;outline:none;user-select:none;-webkit-user-select:none}
 .ed #ex-cel .ce-plate.zin{touch-action:none;cursor:grab}
 .ed #ex-cel .ce-plate svg{display:block;width:100%;height:auto}
@@ -1231,11 +1254,12 @@ X.cellCSS=`
 .ed #ex-cel .ce-stg>li{font:500 11px/1 var(--e-mono)!important;letter-spacing:.12em;text-transform:uppercase;color:var(--e-mut);padding:8px 14px 8px 0!important;margin:0!important;position:relative}
 .ed #ex-cel .ce-stg>li::before{display:none!important}.ed #ex-cel .ce-stg li:not(:last-child)::after{content:"→";margin-left:14px;color:var(--e-rule)}
 .ed #ex-cel .ce-stg li.on{color:var(--e-ink);text-decoration:underline;text-decoration-color:var(--e-sg);text-decoration-thickness:3px;text-underline-offset:6px}
-.ed #ex-cel .ce-row{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:0;align-items:stretch}
-.ed #ex-cel .ce-side{border-left:1px solid var(--e-rule);min-height:0}
+.ed #ex-cel .ce-row{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+.ed #ex-cel .ce-side{border-left:0;border-top:1px solid var(--e-rule);min-height:132px}.ed #ex-cel .ce-side dl{display:grid;grid-template-columns:170px minmax(0,1fr);gap:8px 22px;align-items:baseline}.ed #ex-cel .ce-side dl dt{margin:0!important}.ed #ex-cel .ce-side dl dd{margin:0!important}
+@media (max-width:640px){.ed #ex-cel .ce-side dl{grid-template-columns:1fr;gap:2px}.ed #ex-cel .ce-side dl dt{margin-top:10px!important}}
 .ed #ex-cel .ce-side dt{margin-top:14px}
 .ed #ex-cel .ce-side .muted{color:var(--e-mut)}
-@media (max-width:1100px){.ed #ex-cel .ce-row{grid-template-columns:1fr}.ed #ex-cel .ce-side{border-left:0;border-top:1px solid var(--e-rule)}.ed #ex-cel .ce-side dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0 24px}}
+
 .ed #ex-cel .ce-routes[hidden]{display:none}
 .ed #ex-cel svg>:not(.ce){pointer-events:none}.ed #ex-cel .hit{fill:transparent}
 .ed #ex-cel .lnk{background:none;border:0;padding:4px 0;color:var(--e-td);font:inherit;cursor:pointer;text-decoration:underline}
@@ -1282,7 +1306,7 @@ X.sumCSS=`
 function refs(){return `<section class="ed-refs ed-wide" id="ed-refs" data-blk="keep"><h3>Referencias</h3><ol><li id="ed-ref-A"><span>[1]</span>${REF.A.apa} Capítulo 15, «Cell Signaling».</li><li id="ed-ref-L"><span>[2]</span>${REF.L.apa}</li></ol><p>El texto de este capítulo sigue al Alberts [1], con apoyo del Lodish [2] para las vías de los receptores. Las figuras interactivas son esquemas propios, simplificados y no a escala, construidos a partir del texto de cada sección.</p>
    <h3 class="vref">Referencias visuales</h3><p>Consultadas sólo para dibujar la forma y la disposición de las moléculas; no son fuente del texto.</p><ol class="vref"><li><span>[V1]</span>Rasmussen, S. G. F., et al. (2011). Crystal structure of the β<sub>2</sub> adrenergic receptor–Gs protein complex. <i>Nature, 477</i>, 549–555. Estructura PDB 3SN6 (receptor de 7 hélices con la proteína G).</li><li><span>[V2]</span>Unwin, N. (2005). Refined structure of the nicotinic acetylcholine receptor at 4 Å resolution. <i>Journal of Molecular Biology, 346</i>(4), 967–989. Estructura PDB 2BG9 (canal iónico activado por ligando).</li><li><span>[V3]</span>Zhang, X., Gureasko, J., Shen, K., Cole, P. A., &amp; Kuriyan, J. (2006). An allosteric mechanism for activation of the kinase domain of epidermal growth factor receptor. <i>Cell, 125</i>(6), 1137–1149 (dímero de dominios cinasa de un RTK).</li><li><span>[V4]</span>Clark, M. A., Douglas, M., &amp; Choi, J. (2018). <i>Biology 2e</i>, cap. 9, «Cell Communication». OpenStax.</li></ol>
    <p>Proyección isométrica de la bicapa y principios de movimiento adaptados de <i>Anatomy</i> (wheresryan22/anatomy, licencia MIT).</p></section>`}
-Object.assign(X,{amp,wireAmp,term,wireTerm,cellFig,wireCell,summary,refs});
+Object.assign(X,{amp,wireAmp,term,wireTerm,cellFig,wireCell,summary,refs,cellDefs});
 })();
 /* Figura de escalas: de la célula diana a la molécula.
    Cada escala responde una pregunta del texto («¿Dónde ocurre?», «¿Qué molécula recibe la señal?»…).
@@ -1300,41 +1324,6 @@ const LV=[
  {n:'Mecanismo',q:'¿Qué cambia?',a:'Reproduce el mecanismo: ligando → unión → cambio de forma → activación de la proteína G → transducción.'}];
 const myM=x=>250+26*Math.sin((x-80)/260);
 const FOC=[[478,172],[452,myM(452)],[0,0]];// foco de cada escala (se calcula para la bicapa)
-// ---------- escala 1: tejido con la célula diana y un capilar ----------
-function lvCell(){
-  const R=B.rng(5);let cells='';
-  const cl=[[250,120,120,96,1],[640,96,150,90,2],[800,330,120,140,3],[150,390,110,100,4],[560,300,170,140,0]];
-  cl.forEach(([x,y,rx,ry,s],i)=>{const tgt=i===4;const d=B.blobPath(x,y,rx,ry,30+s,.07,14);
-    let chrom='';for(let k=0;k<26;k++){const a=R()*Math.PI*2,r=Math.sqrt(R())*.28;chrom+=`<circle cx="${f1(x+rx*.12+Math.cos(a)*rx*r)}" cy="${f1(y+Math.sin(a)*ry*r)}" r="${f1(1+R()*2.2)}"/>`}
-    cells+=`<g class="sc-cell${tgt?' tgt':''}"><path class="sc-cyt" d="${d}"/><path class="sc-pm" d="${d}"/>${tgt?`<path class="sc-pm2" d="${d}"/>`:''}
-      <ellipse class="sc-nuc" cx="${x+rx*.12}" cy="${y}" rx="${f1(rx*.34)}" ry="${f1(ry*.32)}"/><g class="sc-chr">${chrom}</g><circle class="sc-nl" cx="${f1(x+rx*.2)}" cy="${f1(y-ry*.06)}" r="${f1(rx*.06)}"/>
-      ${tgt?`<g class="sc-org">${[0,1,2,3].map(k=>`<ellipse cx="${f1(x-rx*.55+k*18)}" cy="${f1(y+ry*.45-k*6)}" rx="14" ry="5.5" transform="rotate(${-20+k*12} ${f1(x-rx*.55+k*18)} ${f1(y+ry*.45-k*6)})"/>`).join('')}</g>`:''}</g>`});
-  let rbc='';[[60,250],[110,226],[40,206],[160,214]].forEach(([x,y],i)=>rbc+=`<g class="sc-rbc"><ellipse cx="${x}" cy="${y}" rx="15" ry="9"/><ellipse class="in" cx="${x}" cy="${y}" rx="7" ry="3.6"/></g>`);
-  let hor='';for(let i=0;i<14;i++){const t=i/13;hor+=`<circle class="sc-h" cx="${f1(200+t*240+R()*30)}" cy="${f1(236-t*60+R()*30)}" r="2.6"/>`}
-  return `<rect class="sc-ecm" width="${W}" height="${H}"/>
-   <path class="sc-cap" d="M-20 178 C 120 168 210 200 240 260 L 220 280 C 180 222 110 254 -20 264 Z"/>${rbc}${cells}${hor}
-   <text class="b-zone" x="24" y="${H-18}">Tejido · célula diana</text><text class="b-tag" x="30" y="160">capilar</text><text class="b-tag" x="560" y="470" text-anchor="middle">célula diana</text>
-   <g class="sc-foc" data-go="1" role="button" tabindex="0" aria-label="Acercarse a la membrana"><circle cx="${FOC[0][0]}" cy="${FOC[0][1]}" r="28"/><text class="b-tag" x="${FOC[0][0]+34}" y="${FOC[0][1]-30}">membrana plasmática</text></g>`;
-}
-// ---------- escala 2: un tramo de membrana con sus proteínas ----------
-function lvMem(){
-  const my=myM;
-  const prot=[[150,'b'],[262,'r'],[452,'r'],[600,'c'],[760,'b']];
-  const skip=(x)=>prot.some(([px,k])=>Math.abs(x-px)<(k==='r'?36:k==='c'?26:22));
-  const pts=B.sample(t=>[t,my(t)],-20,W+20,9);
-  let p='';prot.forEach(([x,k],i)=>{const y=my(x);if(k==='r')p+=`<g transform="translate(${x-34} ${y-38}) scale(1)">${B.tm7(0,0,{h:76,gap:9.5,w:8})}</g>`;
-    else if(k==='c')p+=`${B.blob(x-12,y,13,30,'rs',{seed:101})}${B.blob(x+12,y,13,30,'rs',{seed:103})}`;
-    else p+=B.blob(x,y,20,34,'mu',{seed:105+i,rough:.1})});
-  const per=`${B.blob(330,my(330)+30,20,12,'td',{seed:111})}${B.blob(690,my(690)+28,17,11,'of',{seed:113})}`;
-  let act='';for(let k=0;k<4;k++){let d='';for(let x=-20;x<W+20;x+=7){const y=my(x)+52+k*20+Math.sin(x/40+k)*6;d+=`<circle cx="${x}" cy="${f1(y)}" r="2.6"/>`}act+=`<g class="sc-act">${d}</g>`}
-  let ligs='';[[120,90],[300,60],[520,110],[700,70],[840,120]].forEach(([x,y],i)=>ligs+=B.mol(i%2?'amine':'gf',x,y,1.2));
-  return `<rect class="b-exo" width="${W}" height="${H}"/><path class="b-cyto" d="M-20 ${my(-20)} ${Array.from({length:50},(_,i)=>{const x=-20+i*19;return `L${x} ${f1(my(x))}`}).join(' ')} L${W+20} ${H} L-20 ${H}Z"/>
-   ${act}${B.bilayer(pts,{t:14,r:3.8,skip})}${p}${per}${ligs}
-   <text class="b-zone" x="24" y="30">Exterior</text><text class="b-zone" x="24" y="${H-18}">Citoplasma</text>
-   <text class="b-tag" x="150" y="${f1(my(150)-46)}" text-anchor="middle">proteína integral</text><text class="b-tag" x="330" y="${f1(my(330)+60)}" text-anchor="middle">proteína periférica</text>
-   <text class="b-tag" x="${W-24}" y="420" text-anchor="end">filamentos del citoesqueleto</text>
-   <g class="sc-foc" data-go="2" role="button" tabindex="0" aria-label="Acercarse a la bicapa y al receptor"><circle cx="${FOC[1][0]}" cy="${FOC[1][1]}" r="44"/><text class="b-tag" x="${FOC[1][0]}" y="${FOC[1][1]-54}" text-anchor="middle">receptor en la bicapa</text></g>`;
-}
 // ---------- escala 3: bloque de bicapa en proyección isométrica ----------
 const BW=120,BD=84,BH=26,HR=2.7,GAP=6.2;
 const RC=[60,42];// receptor (siete cilindros en anillo)
@@ -1386,7 +1375,7 @@ function scale(n){
   const rail=LV.map((l,i)=>`<li><button type="button" data-lv="${i}" aria-pressed="false"><span class="nn">${i+1}</span><span class="nm">${l.n}</span><span class="qq">${l.q}</span></button></li>`).join('');
   const body=`<div class="sc-wrap"><ol class="sc-rail" aria-label="Escala">${rail}</ol>
     <div class="sc-main"><div class="ex-plate sc-plate" tabindex="0" role="group" aria-label="Figura con cinco escalas. Usa las teclas más y menos, o las flechas, para acercarte o alejarte."><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Acercamiento progresivo de la célula diana a la molécula receptora">
-      <defs><radialGradient id="sc-vg" r=".75"><stop class="a" offset=".4" stop-color="#fff"/><stop class="b" offset=".62" stop-color="#000"/></radialGradient><mask id="sc-mk" maskContentUnits="userSpaceOnUse"><rect width="${W}" height="${H}" fill="url(#sc-vg)"/></mask></defs><g data-l="0">${lvCell()}</g><g data-l="1">${lvMem()}</g><g data-l="2"></g><g data-l="3"></g></svg>
+      <defs><radialGradient id="sc-vg" r=".75"><stop class="a" offset=".4" stop-color="#fff"/><stop class="b" offset=".62" stop-color="#000"/></radialGradient><mask id="sc-mk" maskContentUnits="userSpaceOnUse"><rect width="${W}" height="${H}" fill="url(#sc-vg)"/></mask></defs><g data-l="0"></g><g data-l="1"></g><g data-l="2"></g><g data-l="3"></g></svg>
 </div><div class="sc-zoom"><button type="button" data-z="-1" aria-label="Alejar">−</button><span class="sc-lv" aria-hidden="true"></span><button type="button" data-z="1" aria-label="Acercar">+</button><span class="sc-tip">Toca la zona resaltada o pellizca para acercarte</span></div>
     <div class="sc-sig" hidden><span class="lbl">Elige una señal</span>${Object.entries(SIG).map(([k,s])=>`<button type="button" data-s="${k}"><b>${s.n}</b> <i>${s.t}</i></button>`).join('')}</div>
     <div class="sc-mech" hidden></div>
@@ -1396,6 +1385,14 @@ function scale(n){
 function wireScale(fig){
   const svg=fig.querySelector('svg'),vg=[...fig.querySelectorAll('#sc-vg stop')],plate=fig.querySelector('.sc-plate'),L=[...svg.querySelectorAll('[data-l]')];
   const qa=fig.querySelector('.sc-qa'),sigBox=fig.querySelector('.sc-sig'),mech=fig.querySelector('.sc-mech'),lvl=fig.querySelector('.sc-lv');
+  // escalas 1-2: el mismo modelo isométrico de la célula; la 2 es un acercamiento (misma orientación) a la membrana
+  {const E=X.cellDefs();const mk=(pf,lab)=>X.cell3D.build(E,{idp:pf,labels:lab,els:(order)=>order.map(id=>`<g class="ce3" data-id="${id}">${E[id].g(E[id].x,E[id].y)}</g>`).join('')}).svg;
+    const s0=Math.min(W/1000,H/700),ox=(W-1000*s0)/2,oy=(H-700*s0)/2;const g=E.gsr;
+    L[0].innerHTML=`<rect class="b-exo" width="${W}" height="${H}"/>`+mk('e0',true).replace('<svg ',`<svg x="${f1(ox)}" y="${f1(oy)}" width="${f1(1000*s0)}" height="${f1(700*s0)}" `)+`<g class="sc-foc" data-go="1" role="button" tabindex="0" aria-label="Acercarse a la membrana"><circle cx="${f1(ox+g.x*s0)}" cy="${f1(oy+g.y*s0)}" r="26"/><text class="b-tag halo" x="${f1(ox+g.x*s0)}" y="${f1(oy+g.y*s0-34)}" text-anchor="middle">membrana plasmática</text></g>`;
+    FOC[0]=[ox+g.x*s0,oy+g.y*s0];
+    const z1=F*s0/(W/1000),vw=1000/z1,vh=vw*H/W;
+    L[1].innerHTML=`<rect class="b-exo" width="${W}" height="${H}"/>`+mk('e1',false).replace(/<svg viewBox="[^"]*"/,`<svg x="0" y="0" width="${W}" height="${H}" viewBox="${f1(g.x-vw/2)} ${f1(g.y-vh/2)} ${f1(vw)} ${f1(vh)}"`)+`<g class="sc-foc" data-go="2" role="button" tabindex="0" aria-label="Acercarse a la bicapa y al receptor"><circle cx="${W/2}" cy="${H/2}" r="60"/><text class="b-tag halo" x="${W/2}" y="${H/2-70}" text-anchor="middle">receptor en la bicapa</text></g>`;
+    FOC[1]=[W/2,H/2]}
   // escala 4-5: la escena del GPCR, escalada para llenar la lámina
   const sc=SC.gpcr();const s3=Math.min(W/sc.W,H/sc.H)*.98;
   L[3].innerHTML=`<rect class="b-cyto" width="${W}" height="${H}"/><g transform="translate(${f1((W-sc.W*s3)/2)} ${f1((H-sc.H*s3)/2)}) scale(${s3.toFixed(4)})">${sc.svg}</g>`;
@@ -1473,6 +1470,8 @@ X.escCSS=`
 .ed #ex-esc .sc-ecm{fill:color-mix(in srgb,var(--e-exo) 70%,var(--e-sgl))}
 .ed #ex-esc .sc-cap{fill:var(--e-ofl);stroke:var(--e-of);stroke-width:1.2}
 .ed #ex-esc .sc-rbc ellipse{fill:color-mix(in srgb,var(--e-of) 70%,var(--e-paper));stroke:var(--e-of);stroke-width:.8}.ed #ex-esc .sc-rbc .in{fill:color-mix(in srgb,var(--e-of) 45%,var(--e-paper));stroke:none}
+.ed #ex-esc [data-l="0"] .ce-l:not(.z){display:none}.ed #ex-esc .ce-l{font:600 11px var(--e-mono);fill:#141a2f;pointer-events:none}.ed #ex-esc .ce-l.z{font:500 12px var(--e-mono);letter-spacing:.16em;fill:var(--e-mut)}.ed #ex-esc [data-l="1"] .ce-l{font-size:9px}.ed #ex-esc [data-l="1"] .ce-l.lod{display:none}
+.ed #ex-esc .route,.ed #ex-esc .sigp,.ed #ex-esc .sigc{display:none}.ed #ex-esc .exo{fill:var(--e-exo)}
 .ed #ex-esc .sc-cell{opacity:.55}.ed #ex-esc .sc-cell.tgt{opacity:1}
 .ed #ex-esc .sc-cyt{fill:var(--e-cyt)}.ed #ex-esc .sc-pm{fill:none;stroke:var(--e-lh);stroke-width:3.2}.ed #ex-esc .sc-pm2{fill:none;stroke:var(--e-core);stroke-width:1}
 .ed #ex-esc .sc-nuc{fill:var(--e-nuc);stroke:var(--e-rc);stroke-width:1.2}.ed #ex-esc .sc-chr circle{fill:var(--e-rc);opacity:.28}.ed #ex-esc .sc-nl{fill:var(--e-rc);opacity:.45}
@@ -1492,6 +1491,148 @@ X.escCSS=`
 `;
 Object.assign(X,{scale,wireScale});
 })();
+/* Modelo isométrico de la célula: un bloque celular visto desde arriba en tres cuartos, con la esquina
+   delantera retirada (corte) para ver el interior. Cámara fija de anatomy (azimut 45°, elevación 30°).
+   · Cara superior: membrana plasmática apical, con la textura de las cabezas polares en su propio plano.
+   · Paredes del corte: citosol en sección, con la bicapa cortada en el borde superior (cabezas + colas).
+   · Dentro del corte: núcleo (también cortado, con la envoltura doble, el nucleolo y el ADN), retículo
+     endoplásmico liso/rugoso en cisternas, mitocondrias con crestas, microtúbulos.
+   · Las moléculas de señalización se colocan en su sitio real: receptores en la membrana del borde del corte,
+     proteínas G y enzimas en la cara citosólica, mensajeros en el citosol, factores de transcripción sobre el ADN.
+   Todo se ordena de atrás hacia adelante (orden del pintor) y proyecta una sombra suave sobre la superficie de abajo. */
+(function(){
+'use strict';
+const X=window.__SX,B=X.B;const {f1}=B;
+const W=520,D=440,H=230,XC=150,YC=130,ZF=26;
+const NUC={c:[300,330,100],r:80};
+const VB=[1000,700];
+// posiciones 3D de cada estructura (x, y, z en el mundo; z hacia arriba)
+const P3={
+ ach:[250,YC-30,H+40],adr:[312,YC-34,H+48],sq:[422,YC-32,H+46],gf:[XC-40,212,H+48],est:[XC-42,292,H+46],no:[XC-42,382,H+40],
+ ch:[250,YC,H-7],gsr:[312,YC,H-7],ac:[362,YC,H-7],gqr:[422,YC,H-7],plc:[466,YC+10,H-20],dag:[490,YC+4,H-4],
+ rtk:[XC,212,H-7],ras:[XC+10,254,H-22],
+ gsa:[315,YC+20,H-34],camp:[365,YC+28,H-66],pka:[352,YC+46,H-106],glu:[262,YC+44,H-146],pde:[282,YC+18,H-72],
+ gqa:[428,YC+20,H-34],pkc:[498,YC+26,H-46],ip3:[452,YC+40,H-86],erch:[440,222,94],ca:[460,214,128],cam:[492,216,152],camk:[506,238,120],pump:[410,272,86],
+ grb:[XC+14,234,H-40],mapk:[XC+28,240,H-92],rgap:[XC+16,196,H-64],akt:[XC+22,286,H-36],
+ nr:[XC+12,392,H-26],gc:[XC+14,426,H-66],pkg:[XC+28,430,118],ions:[252,YC+14,H-46],
+ creb:[318,346,NUC.c[2]],erkn:[352,364,NUC.c[2]],hre:[328,390,NUC.c[2]],mrna:[292,318,NUC.c[2]+NUC.r+12]};
+const ONNUC=new Set(['creb','erkn','hre']);
+function proj(){const pts=[[0,0,0],[W,0,0],[0,D,0],[W,D,0],[0,0,H+56],[W,0,H+56],[0,D,H+56],[W,D,H+56]];return B.fit(pts,VB[0],VB[1],{pad:18,azimuth:45,elevation:30})}
+function build(E,o={}){
+  const Pj=proj(),I=q=>B.iso(q,Pj),Dp=q=>B.depth(q,Pj),k=Pj.scale*Math.sqrt(1.6);const pp=q=>{const v=I(q);return f1(v[0])+' '+f1(v[1])};
+  const poly=(pts,cls,extra='')=>`<path class="${cls}" d="M${pts.map(pp).join('L')}Z"${extra}/>`;
+  // matriz afín de un plano: u→eje1, v→eje2, origen o (para texturas y secciones dibujadas en el plano)
+  const m=(o3,u3,v3)=>{const a=I(o3),b=I(u3),c=I(v3);return [b[0]-a[0],b[1]-a[1],c[0]-a[0],c[1]-a[1],a[0],a[1]].map(v=>v.toFixed(4)).join(' ')};
+  const defs=`<defs>
+   <pattern id="c3-heads" patternUnits="userSpaceOnUse" width="6.4" height="5.6" patternTransform="matrix(${m([0,0,H],[1,0,H],[0,1,H])})"><rect width="6.4" height="5.6" class="c3-pbg"/><circle cx="1.6" cy="1.4" r="2.25" class="c3-ph"/><circle cx="4.8" cy="4.2" r="2.25" class="c3-ph"/></pattern>
+   <pattern id="c3-hx" patternUnits="userSpaceOnUse" width="6.4" height="5.6" patternTransform="matrix(${m([W,0,H],[W,1,H],[W,0,H-1])})"><rect width="6.4" height="5.6" class="c3-pbg2"/><circle cx="1.6" cy="1.4" r="2.25" class="c3-ph"/><circle cx="4.8" cy="4.2" r="2.25" class="c3-ph"/></pattern>
+   <pattern id="c3-hy" patternUnits="userSpaceOnUse" width="6.4" height="5.6" patternTransform="matrix(${m([0,D,H],[1,D,H],[0,D,H-1])})"><rect width="6.4" height="5.6" class="c3-pbg3"/><circle cx="1.6" cy="1.4" r="2.25" class="c3-ph"/><circle cx="4.8" cy="4.2" r="2.25" class="c3-ph"/></pattern>
+   ${['A','B'].map(f=>{const mm=f==='A'?m([XC,YC,H],[XC,YC+1,H],[XC,YC,H-1]):m([XC,YC,H],[XC+1,YC,H],[XC,YC,H-1]);
+     return `<pattern id="c3-bl${f}" patternUnits="userSpaceOnUse" width="5" height="13" patternTransform="matrix(${mm})"><rect width="5" height="13" class="c3-core"/><path class="c3-tl" d="M1.6 3.4L1.9 6.2M3.2 3.4L3 6.2M1.7 9.6L1.9 6.8M3.1 9.6L3.4 6.8"/><circle cx="2.5" cy="1.9" r="1.9" class="c3-ph"/><circle cx="2.5" cy="11.1" r="1.9" class="c3-ph"/></pattern>`}).join('')}
+   <linearGradient id="c3-cyA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="c3-s1"/><stop offset="1" class="c3-s2"/></linearGradient>
+   <radialGradient id="c3-nuc" cx=".38" cy=".3" r=".8"><stop offset="0" class="c3-n0"/><stop offset=".7" class="c3-n1"/><stop offset="1" class="c3-n2"/></radialGradient>
+   <linearGradient id="c3-topg" gradientUnits="userSpaceOnUse" x1="${f1(I([0,0,H])[0])}" y1="${f1(I([0,0,H])[1])}" x2="${f1(I([W,D,H])[0])}" y2="${f1(I([W,D,H])[1])}"><stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset=".55" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#1a1408" stop-opacity=".16"/></linearGradient>
+   <radialGradient id="c3-sh" r=".5"><stop offset="0" stop-color="#0b1020" stop-opacity=".28"/><stop offset="1" stop-color="#0b1020" stop-opacity="0"/></radialGradient>
+   <filter id="c3-dof" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation=".6"/></filter></defs>`;
+  // ---------- cuerpo de la célula ----------
+  const sh=`<ellipse class="c3-ground" cx="${pp([W/2,D/2,0]).split(' ')[0]}" cy="${f1(I([W/2,D/2,0])[1]+18)}" rx="${f1(W*k*.62)}" ry="${f1(D*k*.2)}" fill="url(#c3-sh)"/>`;
+  const outerX=poly([[W,0,0],[W,YC,0],[W,YC,H],[W,0,H]],'c3-wx')+poly([[W,YC,0],[W,D,0],[W,D,ZF],[W,YC,ZF]],'c3-wx');
+  const outerY=poly([[0,D,0],[XC,D,0],[XC,D,H],[0,D,H]],'c3-wy')+poly([[XC,D,0],[W,D,0],[W,D,ZF],[XC,D,ZF]],'c3-wy');
+  const texX=poly([[W,0,0],[W,YC,0],[W,YC,H],[W,0,H]],'c3-tex',' fill="url(#c3-hx)"')+poly([[W,YC,0],[W,D,0],[W,D,ZF],[W,YC,ZF]],'c3-tex',' fill="url(#c3-hx)"');
+  const texY=poly([[0,D,0],[XC,D,0],[XC,D,H],[0,D,H]],'c3-tex',' fill="url(#c3-hy)"')+poly([[XC,D,0],[W,D,0],[W,D,ZF],[XC,D,ZF]],'c3-tex',' fill="url(#c3-hy)"');
+  const top=poly([[0,0,H],[W,0,H],[W,YC,H],[XC,YC,H],[XC,D,H],[0,D,H]],'c3-top',' fill="url(#c3-heads)"');
+  const topShade=poly([[0,0,H],[W,0,H],[W,YC,H],[XC,YC,H],[XC,D,H],[0,D,H]],'c3-topsh');
+  // paredes del corte (citosol en sección) y piso del corte
+  const faceA=poly([[XC,YC,ZF],[XC,D,ZF],[XC,D,H],[XC,YC,H]],'c3-cA');
+  const faceB=poly([[XC,YC,ZF],[W,YC,ZF],[W,YC,H],[XC,YC,H]],'c3-cB');
+  const floor=poly([[XC,YC,ZF],[W,YC,ZF],[W,D,ZF],[XC,D,ZF]],'c3-fl');
+  const stripA=poly([[XC,YC,H-13],[XC,D,H-13],[XC,D,H],[XC,YC,H]],'c3-strip',' fill="url(#c3-blA)"');
+  const stripB=poly([[XC,YC,H-13],[W,YC,H-13],[W,YC,H],[XC,YC,H]],'c3-strip',' fill="url(#c3-blB)"');
+  const stripBot=poly([[XC,D,0],[W,D,0],[W,D,ZF],[XC,D,ZF]],'c3-strip2')+poly([[W,YC,0],[W,D,0],[W,D,ZF],[W,YC,ZF]],'c3-strip2');
+  // secciones de orgánulos dibujadas en el plano de cada pared
+  const inPlane=(mm,body)=>`<g transform="matrix(${mm})">${body}</g>`;
+  const mitoS=(x,y,rx,ry,rot)=>`<g transform="rotate(${rot} ${x} ${y})"><ellipse class="c3-mo" cx="${x}" cy="${y}" rx="${rx}" ry="${ry}"/><path class="c3-mi" d="M${x-rx*.7} ${y+ry*.5}c${rx*.12}-${ry*1.1} ${rx*.24}-${ry*1.1} ${rx*.28} 0s${rx*.16} ${ry*1.1} ${rx*.28} 0 ${rx*.16}-${ry*1.1} ${rx*.28} 0 ${rx*.16} ${ry*1.1} ${rx*.28} 0"/></g>`;
+  const erS=(x,y,w,n)=>Array.from({length:n},(_,i)=>`<path class="c3-erS" d="M${x} ${y+i*7}q${w/4}-4 ${w/2} 0t${w/2} 0"/>`).join('');
+  // pared A: coordenadas (u = y − YC, v = H − z) → u hacia adelante, v hacia abajo
+  const secA=inPlane(m([XC,YC,H],[XC,YC+1,H],[XC,YC,H-1]),`${mitoS(150,150,18,8,-12)}${erS(60,120,60,3)}${mitoS(40,175,14,7,20)}<path class="c3-mt" d="M10 40 C 80 70 140 60 260 120 M30 190 C 90 150 160 170 250 150"/>`);
+  const secB=inPlane(m([XC,YC,H],[XC+1,YC,H],[XC,YC,H-1]),`${mitoS(70,165,18,8,8)}${erS(170,170,80,3)}${mitoS(280,120,15,7,-14)}<path class="c3-mt" d="M20 60 C 120 40 200 90 310 70 M10 140 C 100 120 220 150 315 130"/>`);
+  // ---------- objetos dentro del corte ----------
+  const items=[];// [profundidad, svg]
+  // núcleo con su propio corte (octante delantero retirado)
+  const [nx,ny,nz]=NUC.c,nr=NUC.r;const nC=I(NUC.c);const R=nr*k;
+  let nuc=`<g class="c3-nucg"><ellipse cx="${f1(I([nx,ny,ZF])[0])}" cy="${f1(I([nx,ny,ZF])[1])}" rx="${f1(R*1.05)}" ry="${f1(R*.5)}" fill="url(#c3-sh)"/>
+    <circle class="c3-nenv" cx="${f1(nC[0])}" cy="${f1(nC[1])}" r="${f1(R+2.5)}"/><circle class="c3-nsur" cx="${f1(nC[0])}" cy="${f1(nC[1])}" r="${f1(R)}" fill="url(#c3-nuc)"/>`;
+  // poros nucleares en la superficie visible
+  for(let i=0;i<46;i++){const th=Math.acos(1-2*((i+.5)/46)),ph=i*2.399;const q=[nx+nr*Math.sin(th)*Math.cos(ph),ny+nr*Math.sin(th)*Math.sin(ph),nz+nr*Math.cos(th)];
+    const nrm=[q[0]-nx,q[1]-ny,q[2]-nz];if(nrm[0]*.61+nrm[1]*.61+nrm[2]*.5<8)continue;if(q[0]>nx&&q[1]>ny&&q[2]>nz)continue;const v=I(q);nuc+=`<circle class="c3-pore" cx="${f1(v[0])}" cy="${f1(v[1])}" r="2.1"/>`}
+  // tres caras del corte del núcleo (cuartos de disco)
+  const qd=(mmA,mmB,lbl)=>{let d='M0 0';for(let i=0;i<=24;i++){const a=i/24*Math.PI/2;d+=`L${f1(Math.cos(a)*nr)} ${f1(Math.sin(a)*nr)}`}return `<path class="c3-nface ${lbl}" d="${d}Z" transform="matrix(${m(NUC.c,mmA,mmB)})"/>`};
+  const nf=qd([nx+1,ny,nz],[nx,ny,nz+1],'fy')+qd([nx,ny+1,nz],[nx,ny,nz+1],'fx')+qd([nx+1,ny,nz],[nx,ny+1,nz],'fz');
+  // contenido del núcleo en el corte: envoltura doble en el borde, cromatina, nucleolo y ADN sobre la cara horizontal
+  let chrom='';const rr=B.rng(17);for(let i=0;i<70;i++){const a=rr()*Math.PI/2,r=Math.sqrt(rr())*nr*.9;chrom+=`<circle cx="${f1(Math.cos(a)*r)}" cy="${f1(Math.sin(a)*r)}" r="${f1(1+rr()*2.4)}"/>`}
+  const arcEnv=`<path class="c3-nedge" d="M${nr} 0 A${nr} ${nr} 0 0 1 0 ${nr}"/><path class="c3-nedge2" d="M${nr-4} 0 A${nr-4} ${nr-4} 0 0 1 0 ${nr-4}"/>`;
+  const inN=`<g class="c3-chr" transform="matrix(${m(NUC.c,[nx+1,ny,nz],[nx,ny,nz+1])})">${chrom}${arcEnv}<circle class="c3-nl" cx="${f1(nr*.4)}" cy="${f1(nr*.42)}" r="${f1(nr*.17)}"/></g>
+    <g class="c3-chr" transform="matrix(${m(NUC.c,[nx,ny+1,nz],[nx,ny,nz+1])})">${chrom}${arcEnv}</g>
+    <g transform="matrix(${m(NUC.c,[nx+1,ny,nz],[nx,ny+1,nz])})"><g class="c3-chr">${chrom}</g>${arcEnv}${B.dna(4,nr*.92,nr*.42,{a:4,per:16}).replace('<g class="b-dna">','<g class="b-dna" transform="rotate(32) translate(0 -8)">')}</g>`;
+  nuc+=nf+inN+`</g>`;
+  items.push([Dp(NUC.c),nuc]);
+  // retículo endoplásmico: cisternas apiladas (rugoso: ribosomas en la cara citosólica)
+  const er=(x0,y0,z0,len,wd,n)=>{let s='';for(let j=0;j<n;j++){const z=z0+j*12;const pts=[];for(let i=0;i<=20;i++){const t=i/20;pts.push([x0+t*len,y0+Math.sin(t*Math.PI*2+j)*10,z+Math.sin(t*Math.PI*3+j)*3])}
+      const up=pts.map(p=>I([p[0],p[1]-wd/2,p[2]])),dn=pts.map(p=>I([p[0],p[1]+wd/2,p[2]]));
+      s+=`<path class="c3-er" d="M${up.map(v=>f1(v[0])+' '+f1(v[1])).join('L')}L${dn.reverse().map(v=>f1(v[0])+' '+f1(v[1])).join('L')}Z"/>`;
+      if(j===n-1)pts.forEach((p,i)=>{if(i%2)return;const v=I([p[0],p[1]-wd/2,p[2]+2]);s+=`<circle class="c3-ribo" cx="${f1(v[0])}" cy="${f1(v[1])}" r="1.6"/>`})}return s};
+  items.push([Dp([450,250,60])-30,`<g class="c3-erg">${er(396,222,44,118,56,4)}</g>`]);
+  // mitocondrias apoyadas en el piso del corte
+  const mito=(c,ax,len,r)=>{const a=I([c[0]-ax[0]*len/2,c[1]-ax[1]*len/2,c[2]]),b=I([c[0]+ax[0]*len/2,c[1]+ax[1]*len/2,c[2]]);const cx=(a[0]+b[0])/2,cy=(a[1]+b[1])/2,ang=Math.atan2(b[1]-a[1],b[0]-a[0])*180/Math.PI,L=Math.hypot(b[0]-a[0],b[1]-a[1]);
+    const rx=L/2+r*k,ry=r*k*.92;let cr='';for(let i=-3;i<=3;i++)cr+=`M${f1(cx+i*rx*.24)} ${f1(cy-ry*.6)}q${f1(rx*.06)} ${f1(ry*.6)} 0 ${f1(ry*1.2)}`;
+    const s=I([c[0],c[1],ZF]);return `<ellipse cx="${f1(s[0])}" cy="${f1(s[1]+3)}" rx="${f1(rx)}" ry="${f1(ry*.55)}" fill="url(#c3-sh)" transform="rotate(${f1(ang*.3)} ${f1(s[0])} ${f1(s[1])})"/><g transform="rotate(${f1(ang)} ${f1(cx)} ${f1(cy)})"><ellipse class="c3-mito" cx="${f1(cx)}" cy="${f1(cy)}" rx="${f1(rx)}" ry="${f1(ry)}" fill="url(#bv-of)"/><path class="c3-cr" d="${cr}" transform="rotate(${f1(-ang)} ${f1(cx)} ${f1(cy)}) rotate(${f1(ang)} ${f1(cx)} ${f1(cy)})"/><ellipse class="c3-mhl" cx="${f1(cx-rx*.25)}" cy="${f1(cy-ry*.45)}" rx="${f1(rx*.45)}" ry="${f1(ry*.18)}"/></g>`};
+  [[[470,350,ZF+12],[0,1,0],70,12],[[205,175,ZF+11],[1,0,0],50,11],[[420,395,ZF+11],[1,.2,0],50,11]].forEach(a=>items.push([Dp(a[0]),mito(...a)]));
+  // microtúbulos que salen de la zona del núcleo
+  let mt='';[[[300,330,60],[505,180,ZF+4]],[[250,290,90],[170,150,H-30]],[[340,280,150],[500,150,H-24]]].forEach(([a,b])=>{const p=[];for(let i=0;i<=12;i++){const t=i/12;p.push(I([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t+Math.sin(t*Math.PI)*14]))}mt+=`<path class="c3-mt3" d="M${p.map(v=>f1(v[0])+' '+f1(v[1])).join('L')}"/>`});
+  // ---------- estructuras de señalización ----------
+  const shadows=[];
+  Object.entries(E).forEach(([id,e])=>{const q=P3[id];if(!q)return;const v=I(q);e.x=v[0];e.y=v[1];e.p3=q;
+    // sombra sobre la superficie inferior: la membrana apical (ligandos) o el piso del corte (citosol)
+    if(ONNUC.has(id)||id==='mrna')return;let floorZ=null;if(q[2]>H)floorZ=H;else if(q[0]>XC&&q[1]>YC&&q[2]<H-14)floorZ=ZF;
+    if(floorZ!=null){const s=I([q[0],q[1],floorZ]);const hgt=q[2]-floorZ;const op=Math.max(.15,1-hgt/220);shadows.push(`<ellipse class="c3-csh" cx="${f1(s[0])}" cy="${f1(s[1])}" rx="${f1(16+hgt*.04)}" ry="${f1(6+hgt*.015)}" fill="url(#c3-sh)" style="opacity:${op.toFixed(2)}"/>`)}});
+  const order=Object.keys(E).filter(id=>P3[id]).map(id=>[ONNUC.has(id)?1e6+Dp(P3[id]):Dp(P3[id]),id]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+  const membraneIds=new Set(['ch','gsr','ac','gqr','rtk','dag']);
+  const svg=`<svg viewBox="0 0 ${VB[0]} ${VB[1]}" role="img" aria-label="Modelo tridimensional de una célula con un corte que muestra el citoplasma, el núcleo y las vías de señalización">${defs}
+   <rect class="exo" x="-2000" y="-2000" width="5000" height="5000"/>${sh}
+   <g class="c3-body">${outerX}${outerY}${texX}${texY}${stripBot}${top}${topShade}${floor}${faceB}${faceA}${secA}${secB}${stripB}${stripA}</g>
+   <g class="c3-shadows">${shadows.join('')}</g>${mt}
+   <g class="c3-in">${items.sort((a,b)=>a[0]-b[0]).map(x=>x[1]).join('')}</g>
+   ${o.labels!==false?`<g class="zl">${lab3([40,30,H+4],'Membrana plasmática')}${lab3([W-20,20,H+40],'Exterior','end')}${lab3([XC+40,D-14,ZF+4],'Citosol')}${lab3([nx-nr*1.05,ny-nr*.5,nz+nr*.95],'Núcleo','end')}${lab3([W-6,310,ZF+6],'Retículo endoplásmico','end')}</g>`:''}
+   <path class="route" d=""/>${o.els?o.els(order,membraneIds):''}<circle class="sigp" r="8" cx="-50" cy="-50" fill="url(#bg-glow)"/><circle class="sigc" r="3.4" cx="-50" cy="-50"/></svg>`;
+  function lab3(q,s,a='start'){const v=I(q);return `<text class="ce-l z" x="${f1(v[0])}" y="${f1(v[1])}" text-anchor="${a}">${s.toUpperCase()}</text>`}
+  const pf=o.idp||'c3';const out=pf==='c3'?svg:svg.replace(/(id="|url\(#)c3-/g,'$1'+pf+'-');
+  return {svg:out,VB,P3};
+}
+X.cell3D={build,P3,VB,dims:{W,D,H,XC,YC,ZF,NUC}};
+X.c3CSS=`
+.ed .c3-ground{opacity:.9}
+.ed .c3-wx{fill:color-mix(in srgb,var(--e-lh) 55%,#5a4626)}.ed .c3-wy{fill:color-mix(in srgb,var(--e-lh) 72%,#6a5530)}
+.ed .c3-tex{opacity:.55}
+.ed .c3-pbg{fill:color-mix(in srgb,var(--e-lh) 70%,var(--e-core))}.ed .c3-pbg2{fill:color-mix(in srgb,var(--e-lh) 55%,#4a3a20)}.ed .c3-pbg3{fill:color-mix(in srgb,var(--e-lh) 70%,#5a4626)}
+.ed .c3-ph{fill:url(#bv-lh)}
+.ed .c3-topsh{fill:url(#c3-topg);pointer-events:none}
+.ed .c3-cA{fill:color-mix(in srgb,var(--e-cyt) 82%,var(--e-lh))}.ed .c3-cB{fill:color-mix(in srgb,var(--e-cyt) 92%,var(--e-lh))}.ed .c3-fl{fill:color-mix(in srgb,var(--e-cyt) 72%,var(--e-lh))}
+.ed .c3-core{fill:var(--e-core)}.ed .c3-tl{fill:none;stroke:var(--e-lt);stroke-width:.55}
+.ed .c3-strip{stroke:color-mix(in srgb,var(--e-lh) 60%,#000);stroke-width:.5}.ed .c3-strip2{fill:color-mix(in srgb,var(--e-lh) 60%,#4a3a20)}
+.ed .c3-mo{fill:color-mix(in srgb,var(--e-of) 30%,var(--e-cyt));stroke:var(--e-of);stroke-width:1.2}.ed .c3-mi{fill:none;stroke:var(--e-of);stroke-width:.9;opacity:.7}
+.ed .c3-erS{fill:none;stroke:color-mix(in srgb,var(--e-rs) 70%,var(--e-lh));stroke-width:2.4;opacity:.65}
+.ed .c3-mt{fill:none;stroke:var(--e-td);stroke-width:1;opacity:.14}.ed .c3-mt3{fill:none;stroke:var(--e-td);stroke-width:1.6;opacity:.2;stroke-linecap:round}
+.ed .c3-n0{stop-color:color-mix(in srgb,var(--e-rc) 10%,#fff)}.ed .c3-n1{stop-color:color-mix(in srgb,var(--e-rc) 30%,var(--e-nuc))}.ed .c3-n2{stop-color:color-mix(in srgb,var(--e-rc) 62%,#000)}
+.ed .c3-nenv{fill:none;stroke:color-mix(in srgb,var(--e-rc) 55%,var(--e-lh));stroke-width:2.2;opacity:.8}
+.ed .c3-pore{fill:color-mix(in srgb,var(--e-rc) 70%,#000);opacity:.55}
+.ed .c3-nface{stroke:color-mix(in srgb,var(--e-rc) 60%,#000);stroke-width:.8}.ed .c3-nface.fy{fill:color-mix(in srgb,var(--e-nuc) 88%,var(--e-rc))}.ed .c3-nface.fx{fill:color-mix(in srgb,var(--e-nuc) 80%,var(--e-rc))}.ed .c3-nface.fz{fill:var(--e-nuc)}
+.ed .c3-chr circle{fill:var(--e-rc);opacity:.2}.ed .c3-nl{fill:var(--e-rc);opacity:.35!important}
+.ed .c3-nedge{fill:none;stroke:color-mix(in srgb,var(--e-lh) 80%,#000);stroke-width:1.6}.ed .c3-nedge2{fill:none;stroke:color-mix(in srgb,var(--e-lh) 80%,#000);stroke-width:1;opacity:.7}
+.ed .c3-er{fill:color-mix(in srgb,var(--e-rs) 35%,var(--e-cyt));stroke:color-mix(in srgb,var(--e-lh) 70%,#3a3020);stroke-width:1.1;stroke-linejoin:round}
+.ed .c3-ribo{fill:color-mix(in srgb,var(--e-rc) 60%,var(--e-paper))}
+.ed .c3-mito{stroke:color-mix(in srgb,var(--e-of) 75%,#000);stroke-width:1}.ed .c3-cr{fill:none;stroke:color-mix(in srgb,var(--e-of) 60%,#000);stroke-width:1;opacity:.55}.ed .c3-mhl{fill:#fff;opacity:.18}
+`;
+})();
 (function(){
 'use strict';
 const X=window.__SX;
@@ -1507,7 +1648,7 @@ function enhance(art,ctx){
   if(!art||art.dataset.ed)return;art.dataset.ed='1';
   cleanups.forEach(f=>{try{f()}catch(e){}});cleanups=[];
   if(!document.getElementById('ed-fonts')){const l=document.createElement('link');l.id='ed-fonts';l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=IBM+Plex+Mono:wght@400;500;600&display=swap';document.head.appendChild(l)}
-  if(!document.getElementById('ed-css')){const s=document.createElement('style');s.id='ed-css';s.textContent=X.css+X.bioCSS+X.scCSS+X.escCSS+X.ideaCSS+X.commCSS+X.recCSS+X.casCSS+X.msgCSS+X.ampCSS+X.termCSS+X.cellCSS+X.sumCSS;document.head.appendChild(s)}
+  if(!document.getElementById('ed-css')){const s=document.createElement('style');s.id='ed-css';s.textContent=X.css+X.bioCSS+X.scCSS+X.escCSS+X.c3CSS+X.ideaCSS+X.commCSS+X.recCSS+X.casCSS+X.msgCSS+X.ampCSS+X.termCSS+X.cellCSS+X.sumCSS;document.head.appendChild(s)}
   art.classList.add('ed');
   if(!art.querySelector(':scope>.b-defs'))art.insertAdjacentHTML('afterbegin',X.B.defs());const rd=art.closest('.reader');if(rd)rd.classList.add('ed-r');
   // ---- portada ----
