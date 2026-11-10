@@ -5,7 +5,7 @@ Plataforma de estudio de Biología Celular (Medicina, UAEM, 1er semestre). Sitio
 ## Comandos
 - `npm run dev` — sirve `hub/` en http://localhost:5173/
 - `npm run build` — regenera los archivos generados de `hub/` desde `generador/` (orden: `plat/build_plat.py` → `gen_hub.py` → unión de `plat/senalx/*.js`)
-- `npm run verificar` — prueba de humo con Playwright (45 comprobaciones)
+- `npm run verificar` — prueba de humo con Playwright (56 comprobaciones)
 
 ## Qué se edita dónde
 - Generados (NO editar en `hub/`, editar la fuente y hacer build): `hub/index.html`, las 5 presentaciones `hub/*.html`, `hub/datos/{libro,banco,meta,diapos,senal-exp}.js`.

@@ -188,7 +188,8 @@ figure.fig foreignObject .tb td:first-child{font-weight:700;color:var(--acc2)}
 .empty{background:var(--card);border:2px dashed var(--line);border-radius:14px;padding:26px;text-align:center;color:var(--mut)}
 .tbl2{width:100%;border-collapse:collapse;font-size:15px}.tbl2 th,.tbl2 td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line)}
 @media (max-width:900px){.reader{grid-template-columns:minmax(0,1fr)}.toc{display:none}details.toc-m{display:block}article.book{font-size:17.5px}}
-.toc-bk{display:none}.toc-x{display:none}
+.toc-bk{display:none}
+body.lect-fs .top,body.lect-fs #pbar{display:none!important}body.lect-fs .readbar{top:0!important}body.lect-fs .reader .toc{top:58px;max-height:calc(100vh - 70px)}#rt-fs[aria-pressed="true"]{color:var(--acc)}.toc-x{display:none}
 @media (max-width:900px){.reader.drawer>.toc{display:block;position:fixed;z-index:60;left:0;top:0;bottom:0;width:min(330px,86vw);max-height:none;border-radius:0 14px 14px 0;padding:18px 14px 24px 8px;box-shadow:0 10px 40px rgba(0,0,0,.28);overscroll-behavior:contain;-webkit-overflow-scrolling:touch;animation:tocIn .22s ease-out}
 .reader.drawer>.toc li{font-size:15px;margin:6px 0}.reader.drawer>.toc ul li{font-size:13.5px}.reader.drawer>.toc a{display:inline-block;padding:3px 0}
 .reader.drawer>.toc .toc-x{display:block;margin:0 0 10px auto;background:var(--soft);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:8px 14px;font:600 13px/1 "DM Sans",sans-serif;cursor:pointer;min-height:36px}
@@ -562,13 +563,24 @@ function vRead(t,i,hd0,term){
     return `<section class="bsec" id="s${k}" data-k="${k}"><div class="pk">Parte ${k+1} de ${S.length}</div><h2>${esc(s.titulo)}</h2>${body}</section>`}).join('');
   app.innerHTML=`<div class="reader"><aside class="toc"><h4>${esc(L.titulo)}</h4>${tocList(t)}<div class="row" style="margin-top:12px"><a class="btn sec" href="#libro" style="font-size:13px;padding:7px 10px">Otros capítulos</a></div></aside>
   <div><details class="toc-m"><summary>Índice del tema</summary>${tocList(t)}</details>
-  <div class="readbar"><span id="rb-t"><b>${esc(L.titulo)}</b> · <span id="rb-p"></span></span><span class="rtools"><button id="rt-r" title="Mostrar sólo lo marcado como 🔴 alto rendimiento">🔴 Solo alto rendimiento</button><a id="rt-map" href="#mapa-${t}" title="Mapa conceptual del tema">🗺️ Mapa</a><button id="rt-side" title="Mostrar u ocultar el índice">☰ Índice</button><button id="rt-m" title="Letra más pequeña">A−</button><button id="rt-p" title="Letra más grande">A+</button></span></div>
+  <div class="readbar"><span id="rb-t"><b>${esc(L.titulo)}</b> · <span id="rb-p"></span></span><span class="rtools"><button id="rt-r" title="Mostrar sólo lo marcado como 🔴 alto rendimiento">🔴 Solo alto rendimiento</button><a id="rt-map" href="#mapa-${t}" title="Mapa conceptual del tema">🗺️ Mapa</a><button id="rt-side" title="Mostrar u ocultar el índice">☰ Índice</button><button id="rt-fs" title="Leer en pantalla completa" aria-pressed="false">⛶ Pantalla completa</button><button id="rt-m" title="Letra más pequeña">A−</button><button id="rt-p" title="Letra más grande">A+</button></span></div>
   <article class="book"><div class="crumb">Capítulo · Biología Celular</div><h1 class="ct">${esc(L.titulo)}</h1>${secs}
   <div class="secnav"><button class="btn ghost" id="top">↑ Volver al inicio del capítulo</button><a class="btn" href="#banco-${t}">🧠 Hacer quiz del tema</a></div></article></div></div>`;
   app.querySelectorAll('.box.examen').forEach(b=>{const a=document.createElement('a');a.className='btn';a.href=`#banco-${t}-${b.dataset.sub}`;a.textContent='🧠 Practicar este concepto';b.appendChild(a)});
   app.querySelectorAll('.box.quiz').forEach(b=>{const d=document.createElement('div');d.className='row';d.innerHTML=`<a class="btn" href="#banco-${t}">🧠 Hacer quiz del tema</a><a class="btn sec" href="#examen">📝 Simulador de examen</a>`;b.appendChild(d)});
   const hh=()=>document.querySelector('.top').offsetHeight;
   app.querySelector('.readbar').style.top=hh()+'px';
+  // pantalla completa: usa la API del navegador cuando existe; si no (p. ej. iPhone), un modo de lectura que oculta la barra superior
+  {const fb=$('#rt-fs'),rb=app.querySelector('.readbar');const api=!!(document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen);
+   const on=()=>document.body.classList.contains('lect-fs');
+   const set=v=>{document.body.classList.toggle('lect-fs',v);fb.setAttribute('aria-pressed',String(v));fb.textContent=v?'✕ Salir de pantalla completa':'⛶ Pantalla completa';rb.style.top=(v?0:hh())+'px'};
+   fb.onclick=()=>{const fs=document.fullscreenElement||document.webkitFullscreenElement;
+     if(on()){if(fs)(document.exitFullscreen||document.webkitExitFullscreen).call(document);set(false);return}
+     set(true);if(api){const el=document.documentElement;const r=(el.requestFullscreen||el.webkitRequestFullscreen).call(el);if(r&&r.catch)r.catch(()=>{})}};
+   if(!window.__fsWired){window.__fsWired=1;const sync=()=>{const b=document.getElementById('rt-fs');if(!b)return;if(!(document.fullscreenElement||document.webkitFullscreenElement)&&document.body.classList.contains('lect-fs')){document.body.classList.remove('lect-fs');b.setAttribute('aria-pressed','false');b.textContent='⛶ Pantalla completa';const r=document.querySelector('.readbar');if(r)r.style.top=document.querySelector('.top').offsetHeight+'px'}};
+     document.addEventListener('fullscreenchange',sync);document.addEventListener('webkitfullscreenchange',sync);
+     addEventListener('keydown',e=>{if(e.key==='Escape'&&document.body.classList.contains('lect-fs')&&!(document.fullscreenElement||document.webkitFullscreenElement)){const b=document.getElementById('rt-fs');if(b)b.click()}});
+     addEventListener('hashchange',()=>{if(document.body.classList.contains('lect-fs')&&!document.getElementById('rt-fs')){document.body.classList.remove('lect-fs');if(document.fullscreenElement||document.webkitFullscreenElement)(document.exitFullscreen||document.webkitExitFullscreen).call(document)}})}}
   const jump=(id,smooth)=>{const el=document.getElementById(id);if(el)window.scrollTo({top:el.getBoundingClientRect().top+scrollY-hh()-50,behavior:smooth?'smooth':'auto'})};
   app.querySelectorAll('[data-s]').forEach(a=>a.onclick=e=>{e.preventDefault();const k=a.dataset.s;jump(a.dataset.h!=null?`s${k}h${a.dataset.h}`:`s${k}`,true);const d=app.querySelector('details.toc-m');if(d)d.open=false;try{history.replaceState(null,'','#libro-'+t+'-'+k)}catch(_){}} );
   $('#top').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});

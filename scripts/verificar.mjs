@@ -110,6 +110,13 @@ try {
     check('Señalización: rutas con reproducir/pausa', /^[2-9]\/\d+/.test(st.h) && st.t !== 'Pausa', `${st.h} · botón «${st.t}»`);
     check('Señalización: figuras nuevas sin errores', errs.length === e0, errs.slice(e0).join(' | '));
   }
+  // 4b2. Pantalla completa de la lectura
+  { await pg.goto(B + 'estudio.html#libro-senal-1'); await pg.waitForTimeout(900);
+    await pg.click('#rt-fs'); await pg.waitForTimeout(300);
+    const a = await pg.evaluate(() => ({ on: document.body.classList.contains('lect-fs'), top: getComputedStyle(document.querySelector('.top')).display }));
+    await pg.click('#rt-fs'); await pg.waitForTimeout(300);
+    const b2 = await pg.evaluate(() => document.body.classList.contains('lect-fs'));
+    check('lectura: pantalla completa entra y sale', a.on && a.top === 'none' && !b2, `${a.on ? 'activa' : 'inactiva'} → ${b2 ? 'activa' : 'inactiva'}`); }
   // 4c. Índice lateral: se oculta y se vuelve a abrir (desktop, iPad y móvil)
   for (const [nm, vp] of [['escritorio', { width: 1366, height: 900 }], ['iPad', { width: 1024, height: 1366 }], ['iPad vertical', { width: 820, height: 1180 }], ['móvil', { width: 390, height: 844 }]]) {
     const p2 = await ctx.newPage(); await p2.setViewportSize(vp); p2.on('pageerror', (e) => errs.push(`índice ${nm} :: ${e.message}`));
