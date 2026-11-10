@@ -139,7 +139,7 @@ function cellDefs(){
   add('gqa',{x:500,y:216,n:'Gαq-GTP',z:'Citoplasma (cara interna de la membrana)',d:'Activa a la fosfolipasa C-β.',g:(x,y)=>`${B.blob(x,y,17,13,'td',{seed:260})}${B.gnuc(x-8,y+2,3,{s:.9})}${tg(x+4,y-16,'αq-GTP','lod')}`});
   add('dag',{x:600,y:yy(600)+6,n:'DAG',z:'Membrana',d:'Diacilglicerol: queda en la membrana y, junto con el Ca²⁺, activa a la PKC.',g:(x,y)=>B.mol('dag',x,y,1.3)});
   add('pkc',{x:600,y:238,n:'Proteína cinasa C (PKC)',z:'Citoplasma',d:'DAG + Ca²⁺ la activan en la membrana; fosforila otras proteínas.',g:(x,y)=>B.blob(x,y,22,13,'of',{seed:262})+tg(x,y+4,'PKC')});
-  add('ip3',{x:470,y:330,n:'IP₃',z:'Citoplasma',d:'Hidrosoluble: difunde por el citosol y abre canales de Ca²⁺ del retículo endoplásmico.',g:(x,y)=>[[60,-80],[20,-30],[-30,30],[-90,90]].map(([a,b])=>B.mol('ip3',x+a,y+b,1.1)).join('')});
+  add('ip3',{x:470,y:330,n:'IP₃',z:'Citoplasma',d:'Hidrosoluble: difunde por el citosol y abre canales de Ca²⁺ del retículo endoplásmico.',g:(x,y)=>[[22,-26],[6,-8],[-10,10],[-26,28]].map(([a,b])=>B.mol('ip3',x+a,y+b,1.05)).join('')});
   add('erch',{x:316,y:474,n:'Canal de Ca²⁺ del retículo',z:'Citoplasma (membrana del retículo endoplásmico)',d:'Se abre cuando une IP₃: el Ca²⁺ sale al citosol a favor de su gradiente.',g:(x,y)=>B.helix(x-11,y-13,7,26,'rs',{step:4})+B.helix(x+4,y-13,7,26,'rs',{step:4})});
   add('ca',{x:368,y:446,n:'Ca²⁺',z:'Citoplasma',d:'En el citosol está muy bajo (≈10⁻⁷ M); basta abrir unos canales para que suba rápido.',g:(x,y)=>[[-22,8],[-6,-6],[10,6],[24,-10],[2,18],[-14,-18]].map(([a,b])=>B.mol('ca',x+a,y+b,1.15)).join('')+tg(x+30,y+20,'Ca²⁺','lod')});
   add('cam',{x:458,y:446,n:'Calmodulina',z:'Citoplasma',d:'Proteína con cuatro sitios de unión a Ca²⁺; al unirlo cambia de forma y activa dianas.',g:(x,y)=>`${B.blob(x-16,y,12,10,'rs',{seed:270})}${B.blob(x+16,y,12,10,'rs',{seed:272})}<path class="ce-hl" d="M${x-6} ${y}h12"/>${[[-22,-6],[-12,6],[12,-6],[22,6]].map(([a,b])=>B.mol('ca',x+a,y+b,.7)).join('')}${tg(x,y+24,'CaM')}`});
@@ -172,7 +172,7 @@ const ROUTES={
  no:{n:'Óxido nítrico',steps:[['Señal','no','El NO, un gas, cruza la membrana.'],['Receptor','gc','Se une a la guanilil ciclasa, que produce GMPc.'],['Respuesta','pkg','El GMPc activa a la PKG: baja el Ca²⁺ y el músculo liso se relaja.']]}};
 const STG=['Señal','Receptor','Transducción','Amplificación','Respuesta','Terminación'];
 // recorrido: la cámara se acerca sin cambiar la orientación isométrica
-const TOUR=[['Célula completa',null,'La célula vista en tres cuartos, con una esquina retirada: arriba la membrana plasmática con sus receptores; en el corte, el citosol, el retículo endoplásmico, las mitocondrias y el núcleo.'],
+const TOUR=[['Célula completa',null,'Una célula animal cortada, vista desde arriba en tres cuartos: en el borde, la membrana plasmática con sus receptores; dentro, el citoplasma, el retículo endoplásmico, las mitocondrias y el núcleo (también cortado).'],
  ['Membrana',['ch','gsr','ac','gqr','adr','sq','ach'],'La membrana plasmática en el borde del corte: la bicapa (cabezas polares y colas) con proteínas transmembrana. Las señales hidrosolubles se quedan afuera y se unen a receptores de superficie.'],
  ['Receptor',['gsr','adr','gsa'],'Un receptor acoplado a proteína G: siete hélices que cruzan la membrana. Por fuera une la adrenalina; por dentro activa a la proteína G.'],
  ['Moléculas',['gsa','ac','camp','pka','pde'],'La transducción en la cara citosólica: Gαs-GTP, la adenilil ciclasa, el AMPc que se multiplica y la PKA que libera sus subunidades C.'],
@@ -212,22 +212,28 @@ function cellFig(n){
   const body=`<div class="ex-ctl"><button type="button" class="ex-tab on" data-md="exp">Explorar la célula</button><button type="button" class="ex-tab" data-md="route">Seguir una ruta</button></div>
    <div class="ce-routes ex-ctl" hidden>${Object.entries(ROUTES).map(([k,r],i)=>`<button type="button" class="ex-tab ce-r${i===1?' on':''}" data-r="${k}">${r.n}</button>`).join('')}<span class="sep"></span><button type="button" data-a="prev">Anterior</button><button type="button" class="act" data-a="play">Reproducir</button><button type="button" data-a="next">Siguiente</button><button type="button" data-a="reset">Reiniciar</button></div>
    <div class="ce-tour" role="group" aria-label="Recorrido guiado por escalas"><span class="lbl">Recorrido</span>${TOUR.map((t,i)=>`<button type="button" data-tour="${i}"><span>${i+1}</span>${t[0]}</button>`).join('')}</div>
-   <ol class="ce-stg">${STG.map(s=>`<li data-s="${s}">${s}</li>`).join('')}</ol>
-   <div class="ce-row"><div class="ce-pw"><div class="ex-plate ce-plate" tabindex="0" role="group" aria-label="Célula explorable. Más y menos para acercar o alejar, flechas para desplazarte, cero para ver la célula completa."></div><div class="ce-zoom"><button type="button" data-zm="-1" aria-label="Alejar">−</button><span class="ce-sc" aria-live="polite"></span><button type="button" data-zm="1" aria-label="Acercar">+</button><button type="button" data-zm="0" class="ce-fit">Célula completa</button><span class="ce-tip">Toca una estructura · pellizca o usa + y − para acercarte</span></div></div>
-   <aside class="ex-side ce-side" aria-live="polite"><h4>Toca cualquier estructura</h4><p>Verás su nombre, qué hace, dónde actúa y qué ocurre después. Acércate con + y −, pellizcando o con Ctrl + rueda; arrastra para desplazarte. Con «Seguir una ruta» recorres el camino completo de una señal dentro de esta misma célula.</p></aside></div>`;
+   <div class="ce-row"><div class="ce-pw"><div class="ce-stage"><div class="ex-plate ce-plate" tabindex="0" role="group" aria-label="Célula explorable. Más y menos para acercar o alejar, flechas para desplazarte, cero para ver la célula completa."></div><aside class="ce-side ce-card" aria-live="polite"><button type="button" class="ce-x" aria-label="Cerrar la información">×</button><div class="ce-body"><h4>Toca cualquier estructura</h4><p>Verás aquí mismo su nombre, qué hace, dónde actúa y qué ocurre después.</p></div></aside></div><div class="ce-zoom"><button type="button" data-zm="-1" aria-label="Alejar">−</button><span class="ce-sc" aria-live="polite"></span><button type="button" data-zm="1" aria-label="Acercar">+</button><button type="button" data-zm="0" class="ce-fit">Célula completa</button><span class="ce-tip">Toca una estructura · pellizca o usa + y − para acercarte</span></div></div>
+   </div>`;
   return frame('cel',n,'La célula completa',body,'Resumen visual del capítulo en un modelo tridimensional: cada vía se coloca en su sitio dentro de la misma célula, de la señal externa a la respuesta. La cámara se mantiene en tres cuartos; al acercarte conservas la orientación. Esquema propio, simplificado y no a escala; la vía del NO ocurre en el músculo liso vecino al endotelio.',['A','L']);
 }
 function wireCell(fig){
   const B=B_();const E=cellDefs();const plate=fig.querySelector('.ce-plate');
-  const C3=X.cell3D.build(E,{els:(order,memb)=>order.map(id=>{const e=E[id];return `<g class="ce${memb.has(id)?' mem':''}" data-id="${id}" tabindex="0" role="button" aria-label="${esc(e.n)}"><g class="lift">${e.g(e.x,e.y)}</g></g>`}).join('')});
-  plate.insertAdjacentHTML('afterbegin',C3.svg);const svg=plate.querySelector('svg'),side=fig.querySelector('.ce-side'),route=svg.querySelector('.route'),sigp=svg.querySelector('.sigp'),sigc=svg.querySelector('.sigc'),scl=fig.querySelector('.ce-sc');
+  const C3=X.cell3D.build(E,{el:(id,e)=>`<g class="ce${X.cell3D.RIM.has(id)?' mem':''}" data-id="${id}" tabindex="0" role="button" aria-label="${esc(e.n)}"><g class="lift"><g${e.rot?` transform="rotate(${e.rot.toFixed(1)} ${e.x.toFixed(1)} ${e.y.toFixed(1)})"`:''}>${e.g(e.x,e.y)}</g></g></g>`});
+  plate.insertAdjacentHTML('afterbegin',C3.svg);const svg=plate.querySelector('svg'),side=fig.querySelector('.ce-body'),card=fig.querySelector('.ce-card'),stage=fig.querySelector('.ce-stage'),route=svg.querySelector('.route'),sigp=svg.querySelector('.sigp'),sigc=svg.querySelector('.sigc'),scl=fig.querySelector('.ce-sc');
   svg.querySelectorAll('.ce').forEach(g=>{try{const b=g.getBBox();const r=document.createElementNS('http://www.w3.org/2000/svg','rect');r.setAttribute('x',b.x-6);r.setAttribute('y',b.y-6);r.setAttribute('width',b.width+12);r.setAttribute('height',b.height+12);r.setAttribute('class','hit');g.insertBefore(r,g.firstChild)}catch(e){}});
   const inRoutes=id=>Object.entries(ROUTES).filter(([k,r])=>r.steps.some(s=>s[1]===id));
   // ---------- cámara (viewBox) ----------
   const VW=1000,VH=700,ZMAX=6;let cam={x:500,y:350,w:1000},tgt={...cam},raf=0,last=0,visible=true;
   const clampCam=c=>{c.w=Math.max(VW/ZMAX,Math.min(VW,c.w));const h=c.w*VH/VW;c.x=Math.max(c.w/2,Math.min(VW-c.w/2,c.x));c.y=Math.max(h/2,Math.min(VH-h/2,c.y));return c};
   const scaleName=z=>z<1.4?'Célula':z<2.6?'Membrana y citoplasma':z<4?'Receptores y proteínas':'Complejo molecular';
-  const apply=()=>{const h=cam.w*VH/VW;svg.setAttribute('viewBox',`${(cam.x-cam.w/2).toFixed(2)} ${(cam.y-h/2).toFixed(2)} ${cam.w.toFixed(2)} ${h.toFixed(2)}`);const z=VW/cam.w;svg.classList.toggle('z2',z>=1.35);svg.classList.toggle('z3',z>=2.4);plate.classList.toggle('zin',z>1.03);scl.textContent=`${scaleName(z)} · ×${z.toFixed(1)}`};
+  const apply=()=>{const h=cam.w*VH/VW;svg.setAttribute('viewBox',`${(cam.x-cam.w/2).toFixed(2)} ${(cam.y-h/2).toFixed(2)} ${cam.w.toFixed(2)} ${h.toFixed(2)}`);const z=VW/cam.w;svg.classList.toggle('z2',z>=1.35);svg.classList.toggle('z3',z>=2.4);plate.classList.toggle('zin',z>1.03);scl.textContent=`${scaleName(z)} · ×${z.toFixed(1)}`;placeCard()};
+  let cardFor=null;
+  const placeCard=()=>{if(!card||innerWidth<700){card.style.left=card.style.top='';return}const r=plate.getBoundingClientRect();const cw=card.offsetWidth,ch=card.offsetHeight;
+    if(!cardFor){card.style.left='14px';card.style.top='14px';card.classList.remove('l','r');return}
+    const e=E[cardFor];const h=cam.w*VH/VW;const px=(e.x-(cam.x-cam.w/2))/cam.w*r.width,py=(e.y-(cam.y-h/2))/h*r.height;
+    const right=px<r.width*.56;let x=right?px+34:px-34-cw;x=Math.max(10,Math.min(r.width-cw-10,x));const y=Math.max(10,Math.min(r.height-ch-10,py-ch/2));
+    card.style.left=x.toFixed(0)+'px';card.style.top=y.toFixed(0)+'px';card.classList.toggle('r',right);card.classList.toggle('l',!right);card.style.setProperty('--ay',Math.max(16,Math.min(ch-16,py-y)).toFixed(0)+'px')};
+  const showCard=(id,html)=>{cardFor=id;side.innerHTML=html;card.hidden=false;card.classList.add('open');requestAnimationFrame(placeCard)};
   const tick=now=>{const dt=last?Math.min((now-last)/1000,1/30):1/60;last=now;const k=X.RM()?1:1-Math.exp(-dt/.22);let busy=false;
     ['x','y','w'].forEach(p=>{cam[p]+=(tgt[p]-cam[p])*k;if(Math.abs(tgt[p]-cam[p])>.05)busy=true;else cam[p]=tgt[p]});apply();
     if(sig.on){sig.t=Math.min(1,sig.t+dt/(X.RM()?.01:1.1));const L=route.getTotalLength();const p0=sig.from*L,p1=L;const pt=route.getPointAtLength(p0+(p1-p0)*B.ease(sig.t));sigp.setAttribute('cx',pt.x);sigp.setAttribute('cy',pt.y);sigc.setAttribute('cx',pt.x);sigc.setAttribute('cy',pt.y);if(sig.t<1)busy=true;else sig.on=false}
@@ -256,34 +262,36 @@ function wireCell(fig){
   let mode='exp',rk='ampc',si=-1,timer=null;const sig={on:false,t:0,from:0};
   const after=id=>{const R=inRoutes(id);if(!R.length)return '';const [k,r]=R[0];const i=r.steps.findIndex(s=>s[1]===id);const nx=r.steps[i+1];
     if(r.steps[i][0]==='Terminación')return 'Apaga la señal: la vía regresa a su estado inactivo.';return nx?`${esc(nx[2])} <span class="muted">(${esc(E[nx[1]].n)})</span>`:'Es la respuesta final de esta ruta.'};
-  const info=id=>{const e=E[id];const R=inRoutes(id);side.innerHTML=`<h4>${esc(e.n)}</h4><dl><dt>Qué hace</dt><dd>${esc(e.d)}</dd><dt>Dónde actúa</dt><dd>${esc(e.z)}</dd>${R.length?`<dt>Qué ocurre después</dt><dd>${after(id)}</dd><dt>Forma parte de</dt><dd>${R.map(([k,r])=>`<button type="button" class="lnk" data-go="${k}">${esc(r.n)}</button>`).join(' · ')}</dd>`:''}</dl>`;
+  const info=id=>{const e=E[id];const R=inRoutes(id);showCard(id,`<h4>${esc(e.n)}</h4><dl><dt>Qué hace</dt><dd>${esc(e.d)}</dd><dt>Dónde actúa</dt><dd>${esc(e.z)}</dd>${R.length?`<dt>Qué ocurre después</dt><dd>${after(id)}</dd><dt>Forma parte de</dt><dd>${R.map(([k,r])=>`<button type="button" class="lnk" data-go="${k}">${esc(r.n)}</button>`).join(' · ')}</dd>`:''}</dl>`);
     side.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{setMode('route');pickRoute(b.dataset.go);go(0)})};
   const hl=ids=>{svg.classList.toggle('hl',!!ids);svg.querySelectorAll('.ce').forEach(g=>g.classList.toggle('on',!!ids&&ids.includes(g.dataset.id)))};
-  const stgOn=s=>fig.querySelectorAll('.ce-stg li').forEach(li=>{li.classList.toggle('on',li.dataset.s===s)});
+  
   const drawRoute=k=>{const st=ROUTES[rk].steps.slice(0,k+1);const P=st.map(s=>E[s[1]]);if(P.length<2){route.setAttribute('d','');sigp.setAttribute('cx',-50);sigc.setAttribute('cx',-50);return}let d=`M${P[0].x} ${P[0].y}`;for(let i=1;i<P.length;i++){const a=P[i-1],b=P[i];d+=` Q${(a.x+b.x)/2+(b.y-a.y)*.15} ${(a.y+b.y)/2-(b.x-a.x)*.15} ${b.x} ${b.y}`}route.setAttribute('d',d);
     // la señal recorre el último tramo
     const L=route.getTotalLength();let Lp=0;if(P.length>2){const tmp=document.createElementNS('http://www.w3.org/2000/svg','path');let d2=`M${P[0].x} ${P[0].y}`;for(let i=1;i<P.length-1;i++){const a=P[i-1],b=P[i];d2+=` Q${(a.x+b.x)/2+(b.y-a.y)*.15} ${(a.y+b.y)/2-(b.x-a.x)*.15} ${b.x} ${b.y}`}tmp.setAttribute('d',d2);svg.appendChild(tmp);Lp=tmp.getTotalLength();tmp.remove()}
     sig.from=L?Lp/L:0;sig.t=0;sig.on=true;kick()};
-  const go=k=>{const S2=ROUTES[rk].steps;si=Math.max(0,Math.min(S2.length-1,k));const s=S2[si];hl(S2.slice(0,si+1).map(x=>x[1]));svg.querySelectorAll('.ce').forEach(g=>g.classList.toggle('cur',g.dataset.id===s[1]));stgOn(s[0]);drawRoute(si);
-    side.innerHTML=`<h4>${esc(ROUTES[rk].n)} · paso ${si+1} de ${S2.length}</h4><p class="stp"><span class="tag">${s[0]}</span> ${esc(s[2])}</p><dl><dt>${esc(E[s[1]].n)}</dt><dd>${esc(E[s[1]].d)}</dd><dt>Dónde actúa</dt><dd>${esc(E[s[1]].z)}</dd>${S2[si+1]?`<dt>Qué ocurre después</dt><dd>${esc(S2[si+1][2])}</dd>`:''}</dl>`;playUI()};
+  const go=k=>{const S2=ROUTES[rk].steps;si=Math.max(0,Math.min(S2.length-1,k));const s=S2[si];hl(S2.slice(0,si+1).map(x=>x[1]));svg.querySelectorAll('.ce').forEach(g=>g.classList.toggle('cur',g.dataset.id===s[1]));drawRoute(si);
+    showCard(s[1],`<p class="ce-rt">${esc(ROUTES[rk].n)}</p><ol class="ce-dots" aria-label="Paso ${si+1} de ${S2.length}">${S2.map((x,i)=>`<li class="${i<si?'d':''}${i===si?' c':''}"></li>`).join('')}</ol><h4><span class="tag">${si+1}/${S2.length} · ${s[0]}</span>${esc(E[s[1]].n)}</h4><p class="stp">${esc(s[2])}</p><dl><dt>Qué hace</dt><dd>${esc(E[s[1]].d)}</dd><dt>Dónde actúa</dt><dd>${esc(E[s[1]].z)}</dd>${S2[si+1]?`<dt>Qué ocurre después</dt><dd>${esc(S2[si+1][2])}</dd>`:''}</dl>`);if(cardFor){const e=E[s[1]],w=Math.min(tgt.w,VW/1.7);zoomTo(w,e.x+(innerWidth>=700?w*.17:0),e.y)}playUI()};
   const playBtn=fig.querySelector('[data-a=play]');const playUI=()=>{playBtn.textContent=timer?'Pausa':(si>=ROUTES[rk].steps.length-1?'Repetir':'Reproducir')};
   const stop=()=>{if(timer){clearInterval(timer);timer=null}playUI()};
   const pickRoute=k=>{rk=k;fig.querySelectorAll('.ce-r').forEach(b=>b.classList.toggle('on',b.dataset.r===k));fitIds(ROUTES[k].steps.map(s=>s[1]))};
   const setMode=m=>{mode=m;stop();fig.querySelectorAll('[data-md]').forEach(b=>b.classList.toggle('on',b.dataset.md===m));fig.querySelector('.ce-routes').hidden=m!=='route';
-    if(m==='exp'){hl(null);svg.querySelectorAll('.ce.cur').forEach(g=>g.classList.remove('cur'));route.setAttribute('d','');sig.on=false;sigp.setAttribute('cx',-50);sigc.setAttribute('cx',-50);stgOn('')}else{fitIds(ROUTES[rk].steps.map(s=>s[1]));go(0)}};
+    if(m==='exp'){hl(null);svg.querySelectorAll('.ce.cur').forEach(g=>g.classList.remove('cur'));route.setAttribute('d','');sig.on=false;sigp.setAttribute('cx',-50);sigc.setAttribute('cx',-50)}else{fitIds(ROUTES[rk].steps.map(s=>s[1]));go(0)}};
   fig.querySelectorAll('[data-md]').forEach(b=>b.onclick=()=>setMode(b.dataset.md));
   fig.querySelectorAll('.ce-r').forEach(b=>b.onclick=()=>{stop();pickRoute(b.dataset.r);go(0)});
   fig.querySelector('[data-a=prev]').onclick=()=>{stop();go(si-1)};fig.querySelector('[data-a=next]').onclick=()=>{stop();go(si+1)};
   fig.querySelector('[data-a=reset]').onclick=()=>{stop();go(0)};
   playBtn.onclick=()=>{if(timer){stop();return}if(si>=ROUTES[rk].steps.length-1)go(0);timer=setInterval(()=>{if(si>=ROUTES[rk].steps.length-1)return stop();go(si+1)},X.RM()?2200:1900);playUI()};
-  const pick=id=>{if(mode==='route'){const R=inRoutes(id);if(R.length){stop();if(R[0][0]!==rk)pickRoute(R[0][0]);go(ROUTES[rk].steps.findIndex(s=>s[1]===id))}}else{hl([id]);info(id);const e=E[id];if(VW/tgt.w<2.2)zoomTo(VW/2.4,e.x,e.y);else zoomTo(tgt.w,e.x,e.y)}};
+  const pick=id=>{if(mode==='route'){const R=inRoutes(id);if(R.length){stop();if(R[0][0]!==rk)pickRoute(R[0][0]);go(ROUTES[rk].steps.findIndex(s=>s[1]===id))}}else{hl([id]);info(id);const e=E[id];const w=VW/tgt.w<2.2?VW/2.4:tgt.w;zoomTo(w,e.x+(innerWidth>=700?w*.17:0),e.y)}};
   svg.querySelectorAll('.ce').forEach(g=>{const id=g.dataset.id;g.addEventListener('mouseenter',()=>{if(mode==='exp'&&!svg.classList.contains('hl'))g.classList.add('hov')});g.addEventListener('mouseleave',()=>g.classList.remove('hov'));
     g.addEventListener('click',()=>pick(id));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(id)}})});
   const tourBtns=[...fig.querySelectorAll('[data-tour]')];
   tourBtns.forEach(b=>b.onclick=()=>{const i=+b.dataset.tour,t=TOUR[i];tourBtns.forEach(x=>x.classList.toggle('on',x===b));
     if(t[1]==='ampc'){setMode('route');pickRoute('ampc');go(0);playBtn.onclick();return}
     if(mode!=='exp')setMode('exp');if(!t[1]){hl(null);zoomTo(VW,500,350)}else{hl(t[1]);fitIds(t[1])}
-    side.innerHTML=`<h4>${i+1}. ${t[0]}</h4><p>${t[2]}</p><p class="muted">Toca cualquier estructura para ver qué hace.</p>`});
+    showCard(t[1]&&t[1].length?t[1][0]:null,`<h4>${i+1}. ${t[0]}</h4><p>${t[2]}</p><p class="muted">Toca cualquier estructura para ver qué hace.</p>`)});
+  fig.querySelector('.ce-x').onclick=()=>{card.classList.remove('open');cardFor=null;if(mode==='exp')hl(null)};
+  addEventListener('resize',()=>placeCard());
   B.seen(fig,v=>{visible=v;if(!v)stop();else kick()});
   apply();
 }
@@ -324,7 +332,19 @@ X.cellCSS=`
 .ed #ex-cel .ce-stg>li::before{display:none!important}.ed #ex-cel .ce-stg li:not(:last-child)::after{content:"→";margin-left:14px;color:var(--e-rule)}
 .ed #ex-cel .ce-stg li.on{color:var(--e-ink);text-decoration:underline;text-decoration-color:var(--e-sg);text-decoration-thickness:3px;text-underline-offset:6px}
 .ed #ex-cel .ce-row{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
-.ed #ex-cel .ce-side{border-left:0;border-top:1px solid var(--e-rule);min-height:132px}.ed #ex-cel .ce-side dl{display:grid;grid-template-columns:170px minmax(0,1fr);gap:8px 22px;align-items:baseline}.ed #ex-cel .ce-side dl dt{margin:0!important}.ed #ex-cel .ce-side dl dd{margin:0!important}
+.ed #ex-cel .ce-stage{position:relative}
+.ed #ex-cel .ce-card{position:absolute;z-index:3;width:min(330px,42%);max-height:calc(100% - 20px);overflow:auto;background:color-mix(in srgb,var(--e-paper) 94%,transparent);backdrop-filter:blur(6px);border:1px solid var(--e-rule);border-radius:14px;padding:16px 18px 14px;box-shadow:0 12px 34px rgba(12,18,40,.18);font-size:15px;line-height:1.5;transition:left .35s cubic-bezier(.3,.7,.2,1),top .35s cubic-bezier(.3,.7,.2,1),opacity .25s;opacity:0;pointer-events:none}
+.ed #ex-cel .ce-card.open{opacity:1;pointer-events:auto}
+.ed #ex-cel .ce-card::before{content:"";position:absolute;top:var(--ay,24px);width:12px;height:12px;background:inherit;border:inherit;border-width:0 0 1px 1px;transform:translateY(-50%) rotate(45deg);display:none}
+.ed #ex-cel .ce-card.r::before{display:block;left:-7px}.ed #ex-cel .ce-card.l::before{display:block;right:-7px;transform:translateY(-50%) rotate(225deg)}
+.ed #ex-cel .ce-card h4{font:600 19px/1.2 var(--e-disp);margin:0 24px 8px 0;color:var(--e-ink)}
+.ed #ex-cel .ce-card h4 .tag{display:block;font:500 10.5px var(--e-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--e-sg);margin-bottom:4px}
+.ed #ex-cel .ce-card p{margin:0 0 8px}.ed #ex-cel .ce-card .ce-rt{font:500 11px var(--e-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--e-mut);margin:0 24px 6px 0}
+.ed #ex-cel .ce-x{position:absolute;right:8px;top:6px;width:32px;height:32px;border:0;background:none;font:400 22px/1 var(--e-disp);color:var(--e-mut);cursor:pointer;border-radius:50%}.ed #ex-cel .ce-x:hover{background:var(--e-plate2)}
+.ed #ex-cel .ce-dots{list-style:none;display:flex;gap:5px;padding:0;margin:0 0 10px}.ed #ex-cel .ce-dots>li{width:9px;height:9px;border-radius:50%;background:var(--e-rule);margin:0!important;padding:0!important}.ed #ex-cel .ce-dots>li::before{display:none!important}.ed #ex-cel .ce-dots li.d{background:var(--e-sg);opacity:.55}.ed #ex-cel .ce-dots li.c{background:var(--e-sg);box-shadow:0 0 0 3px var(--e-sgl)}
+.ed #ex-cel svg.hl .ce:not(.on) .ce-l{display:none}
+@media (max-width:699px){.ed #ex-cel .ce-card{position:static;width:auto;max-height:none;opacity:1;pointer-events:auto;border-radius:0;box-shadow:none;border-width:1px 0 0;background:var(--e-plate)}.ed #ex-cel .ce-card::before{display:none!important}.ed #ex-cel .ce-x{display:none}}
+.ed #ex-cel .ce-side{min-height:0}.ed #ex-cel .ce-side dl{display:block;margin:0}.ed #ex-cel .ce-side dl dt{font:500 10px/1.4 var(--e-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--e-mut);margin:10px 0 2px!important}.ed #ex-cel .ce-side dl dt{margin:0!important}.ed #ex-cel .ce-side dl dd{margin:0!important}
 @media (max-width:640px){.ed #ex-cel .ce-side dl{grid-template-columns:1fr;gap:2px}.ed #ex-cel .ce-side dl dt{margin-top:10px!important}}
 .ed #ex-cel .ce-side dt{margin-top:14px}
 .ed #ex-cel .ce-side .muted{color:var(--e-mut)}

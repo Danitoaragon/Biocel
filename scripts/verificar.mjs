@@ -107,7 +107,7 @@ try {
     check('Señalización: célula explorable (tarjeta y acercamiento)', /PKA/.test(cel.h) && cel.dt.includes('Qué ocurre después') && !/^0\.00 0\.00 1000/.test(cel.vb), `${cel.h} · viewBox ${cel.vb}`);
     await pg.click('#ex-cel [data-md="route"]'); await pg.click('#ex-cel .ce-r[data-r="rtk"]'); await pg.click('#ex-cel [data-a="play"]'); await pg.waitForTimeout(2200); await pg.click('#ex-cel [data-a="play"]');
     const st = await pg.evaluate(() => ({ t: document.querySelector('#ex-cel [data-a=play]').textContent, h: document.querySelector('#ex-cel .ce-side h4').textContent }));
-    check('Señalización: rutas con reproducir/pausa', /paso [2-9]/.test(st.h) && st.t !== 'Pausa', `${st.h} · botón «${st.t}»`);
+    check('Señalización: rutas con reproducir/pausa', /^[2-9]\/\d+/.test(st.h) && st.t !== 'Pausa', `${st.h} · botón «${st.t}»`);
     check('Señalización: figuras nuevas sin errores', errs.length === e0, errs.slice(e0).join(' | '));
   }
   // 4c. Índice lateral: se oculta y se vuelve a abrir (desktop, iPad y móvil)

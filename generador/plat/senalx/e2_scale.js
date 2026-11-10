@@ -76,7 +76,7 @@ function wireScale(fig){
   const svg=fig.querySelector('svg'),vg=[...fig.querySelectorAll('#sc-vg stop')],plate=fig.querySelector('.sc-plate'),L=[...svg.querySelectorAll('[data-l]')];
   const qa=fig.querySelector('.sc-qa'),sigBox=fig.querySelector('.sc-sig'),mech=fig.querySelector('.sc-mech'),lvl=fig.querySelector('.sc-lv');
   // escalas 1-2: el mismo modelo isométrico de la célula; la 2 es un acercamiento (misma orientación) a la membrana
-  {const E=X.cellDefs();const mk=(pf,lab)=>X.cell3D.build(E,{idp:pf,labels:lab,els:(order)=>order.map(id=>`<g class="ce3" data-id="${id}">${E[id].g(E[id].x,E[id].y)}</g>`).join('')}).svg;
+  {const E=X.cellDefs();const mk=(pf,lab)=>X.cell3D.build(E,{idp:pf,labels:lab,el:(id,e)=>`<g class="ce3" data-id="${id}"${e.rot?` transform="rotate(${e.rot.toFixed(1)} ${e.x.toFixed(1)} ${e.y.toFixed(1)})"`:''}>${e.g(e.x,e.y)}</g>`}).svg;
     const s0=Math.min(W/1000,H/700),ox=(W-1000*s0)/2,oy=(H-700*s0)/2;const g=E.gsr;
     L[0].innerHTML=`<rect class="b-exo" width="${W}" height="${H}"/>`+mk('e0',true).replace('<svg ',`<svg x="${f1(ox)}" y="${f1(oy)}" width="${f1(1000*s0)}" height="${f1(700*s0)}" `)+`<g class="sc-foc" data-go="1" role="button" tabindex="0" aria-label="Acercarse a la membrana"><circle cx="${f1(ox+g.x*s0)}" cy="${f1(oy+g.y*s0)}" r="26"/><text class="b-tag halo" x="${f1(ox+g.x*s0)}" y="${f1(oy+g.y*s0-34)}" text-anchor="middle">membrana plasmática</text></g>`;
     FOC[0]=[ox+g.x*s0,oy+g.y*s0];
